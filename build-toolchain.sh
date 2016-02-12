@@ -38,7 +38,7 @@ if [ "$2" == "clean" ]; then
 fi
 mv Makefile Makefile.bk
 cp $WORK/packages/build_x86_64/Makefile.icetools Makefile
-make -j$nproc
+make -j$(( $(nproc) -1))
 make install DESTDIR=$TCDIR PREFIX=""
 mv Makefile.bk Makefile
 cd ..
@@ -49,7 +49,7 @@ cd arachne-pnr
 if [ "$2" == "clean" ]; then
     make clean
 fi
-make -j$nproc LIBS="-static -static-libstdc++ -static-libgcc -lm"
+make -j$(( $(nproc) -1)) LIBS="-static -static-libstdc++ -static-libgcc -lm"
 make install DESTDIR=$TCDIR PREFIX="" ICEBOX="$TCDIR/share/icebox"
 cd ..
 
@@ -61,7 +61,7 @@ if [ "$2" == "clean" ]; then
 fi
 mv Makefile Makefile.bk
 cp $WORK/packages/build_x86_64/Makefile.yosys Makefile
-make -j$nproc || exit 1
+make -j$nproc$(( $(nproc) -1)) || exit 1
 make install DESTDIR=$TCDIR PREFIX=""
 mv Makefile.bk Makefile
 cd ..
