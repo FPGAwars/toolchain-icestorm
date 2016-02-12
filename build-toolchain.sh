@@ -38,7 +38,7 @@ if [ "$2" == "clean" ]; then
 fi
 mv Makefile Makefile.bk
 cp $WORK/packages/build_x86_64/Makefile.icetools Makefile
-make -j$nproc
+make -j$nproc PREFIX="~/.platformio/packages/toolchain-icestorm"
 make  install DESTDIR=$TCDIR PREFIX=""
 mv Makefile.bk Makefile
 cd ..
