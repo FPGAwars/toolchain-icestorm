@@ -49,8 +49,11 @@ cd arachne-pnr
 if [ "$2" == "clean" ]; then
     make clean
 fi
-make -j$(( $(nproc) -1)) LIBS="-static -static-libstdc++ -static-libgcc -lm"
+mv Makefile Makefile.bk
+cp $WORK/packages/build_x86_64/Makefile.arachne Makefile
+make -j$(( $(nproc) -1))
 make install DESTDIR=$TCDIR PREFIX="" ICEBOX="$TCDIR/share/icebox"
+mv Makefile.bk Makefile
 cd ..
 
 # Install Yosys
