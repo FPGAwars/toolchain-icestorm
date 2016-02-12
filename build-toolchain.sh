@@ -38,8 +38,8 @@ if [ "$2" == "clean" ]; then
 fi
 mv Makefile Makefile.bk
 cp $WORK/packages/build_x86_64/Makefile.icetools Makefile
-make -j$nproc PREFIX="~/.platformio/packages/toolchain-icestorm"
-make  install DESTDIR=$TCDIR PREFIX=""
+make -j$nproc
+make install DESTDIR=$TCDIR PREFIX=""
 mv Makefile.bk Makefile
 cd ..
 
@@ -71,5 +71,5 @@ cd $WORK
 tar -czvf $TARBALL $NAME
 
 # Install toolchain into local
-# cp -r $TCDIR $HOME/.platformio/packages/
+cp -r $TCDIR $HOME/.platformio/packages/
 rm -r $TCDIR
