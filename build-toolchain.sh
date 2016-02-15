@@ -74,5 +74,4 @@ cd $WORK
 tar -czvf $TARBALL $NAME
 
 # Install toolchain into local
-cp -r $TCDIR $HOME/.platformio/packages/
 rm -r $TCDIR
