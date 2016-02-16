@@ -1,10 +1,17 @@
 language:
-- c
+- cpp
 branches:
   except:
   - master
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
 before_script:
 - sudo apt-get update -qq
+- export CXX="g++-4.8" CC="gcc-4.8"
 script:
 - source build-toolchain.sh clean
 deploy:
