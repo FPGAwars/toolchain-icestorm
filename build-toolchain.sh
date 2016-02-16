@@ -64,5 +64,4 @@ mv Makefile.bk Makefile
 cd ..
 
 # Package tarball
-cd $WORK
-tar -czvf $TARBALL $TCDIR
+tar -czvf $TARBALL $NAME
