@@ -8,22 +8,16 @@
 
 NAME=toolchain-icestorm
 ARCH=x86_64
-VERSION=4
+VERSION=5
 PACKNAME=$NAME-$ARCH-$VERSION
-TARBALL=$PACKNAME.tar.gz
-TCDIR=$PWD/$NAME
-
-# Go to code directory
-if [ -z "$1" ]; then
-    echo "Add your code directory. Ex: ., .., ~/code [clean]"
-    exit 1
-fi
+TCDIR=$PWD/dist/$NAME
+TARBALL=$PWD/dist/$PACKNAME.tar.gz
 
 # Store current dir
 WORK=$PWD
 
-# -- Enter into the code directory
-cd $1
+# Enter into the code directory
+mkdir -p dist; cd dist
 
 # Install dependencies
 sudo apt-get install build-essential clang bison flex libreadline-dev \
@@ -33,7 +27,7 @@ sudo apt-get install build-essential clang bison flex libreadline-dev \
 # Install Icestorm
 git -C icestorm pull || git clone https://github.com/cliffordwolf/icestorm.git icestorm
 cd icestorm
-if [ "$2" == "clean" ]; then
+if [ "$1" == "clean" ]; then
     make clean
 fi
 mv Makefile Makefile.bk
@@ -46,7 +40,7 @@ cd ..
 # Install Arachne-PNR
 git -C arachne-pnr pull || git clone https://github.com/cseed/arachne-pnr.git arachne-pnr
 cd arachne-pnr
-if [ "$2" == "clean" ]; then
+if [ "$1" == "clean" ]; then
     make clean
 fi
 mv Makefile Makefile.bk
@@ -59,7 +53,7 @@ cd ..
 # Install Yosys
 git -C yosys pull || git clone https://github.com/cliffordwolf/yosys.git yosys
 cd yosys
-if [ "$2" == "clean" ]; then
+if [ "$1" == "clean" ]; then
     make clean
 fi
 mv Makefile Makefile.bk
@@ -71,7 +65,4 @@ cd ..
 
 # Package tarball
 cd $WORK
-tar -czvf $TARBALL $NAME
-
-# Install toolchain into local
-rm -r $TCDIR
+tar -czvf $TARBALL $TCDIR

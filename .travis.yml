@@ -3,23 +3,15 @@ language:
 branches:
   except:
   - master
-before_install:
-- sudo apt-get update -qq
-install:
-- sudo apt-get install -qq build-essential clang bison flex libreadline-dev
-- sudo apt-get install -qq gawk tcl-dev libffi-dev git mercurial graphviz
-- sudo apt-get install -qq xdot pkg-config python python3 libftdi-dev
 before_script:
-- export NAME=toolchain-icestorm
-- export ARCH=x86_64
-- export VERSION=4
+- sudo apt-get update -qq
 script:
-- bash build-toolchain.sh . clean
+- source build-toolchain.sh clean
 deploy:
   provider: releases
   api_key:
     secure: TZ14sIS56k+QT18riv6rxttRsDI0q9gEknUwBe4w9MEoaWQAhtRHDhjGq78TheZjY4wwrWS8DohqxKgRjgIEo7qI2vbHReLcacheOXxiEvvce5QqhzmIc1Uqvi0sxOrNVvEuqH8loXAEPLKaWG2WzVuu2XVEvhMmcyqTYDP8U/3sFsa/zrH54+HKg+/qLvfcEgmu5/FVH54VHNwoQhaShfPxkcu/9dxXrdw0lD+Si3NkWe7y7Int63tus3bx9LWxJ+fRBjQ6sFZW5Ev+Q9wHuJ3sD5KkGbP6Rg0oqBsMii0UCB+DkT/LtQ7dTyoPbMxL6QGKF5wI/X/2PKoc340WIGCw71x9cRJJCHR+gOP/RLaAD9RM1Jj9GdUxgUiCK9L4uYqhVGMVPBKRYeAwFV1jcPnMrHcMmplvJpcxJZXmoefjvjPjopiQBHqLSDqA9r7qaNArFtXRktQL5VEv5/ZNRrxBIrtizmMRG+KB6+hElh6iKZgck16q3XHSWuIahR2b7krCAcj2xiH5nKE/kDnAlI2CAQAqVtEhih563sSa4ILW+c7qTrVyNmvzM5SToHXBO5BZcba2RmEYKXoUKSPmOnFRGTgUAaLtKXGySgcR0GEOejnuXmeg43iMZyQn+8FIxKWPbcNzSyDsVoVr3jPZMstGV6E9nooZ7VHnysaNjvA=
-  file: $NAME-$ARCH-$VERSION.tar.gz
+  file: $TARBALL
   skip_cleanup: true
   on:
     tags: true
