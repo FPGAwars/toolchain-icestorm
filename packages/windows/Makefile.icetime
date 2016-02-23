@@ -1,0 +1,23 @@
+
+CC=x86_64-w64-mingw32-g++
+CXX=x86_64-w64-mingw32-g++
+
+LDLIBS = -lm -lstdc++ -static
+CXXFLAGS = -MD -O0 -Wall -std=c++11 -I/usr/local/include -DPREFIX='"$(PREFIX)"'
+
+all: icetime.exe
+
+icetime.exe: icetime.o
+	$(CC) -o $@ $(LDFLAGS) $^ $(LDLIBS)
+
+icetime.o: icetime.cc timings.inc
+
+timings.inc: timings.py ../icefuzz/timings_*.txt
+	python3 timings.py > timings.inc.new
+	mv timings.inc.new timings.inc
+
+clean:
+	rm -f icetime icetime.exe timings.inc *.o *.d
+	rm -rf test[0-9]*
+
+.PHONY: all  clean
