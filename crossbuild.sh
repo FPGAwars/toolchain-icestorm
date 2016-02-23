@@ -5,7 +5,6 @@
 NAME=toolchain-icestorm
 ARCH=windows
 VERSION=1
-$TCDIR=$PWD/windist/$NAME
 
 # Store current dir
 WORK=$PWD
@@ -31,8 +30,23 @@ mkdir -p $WORK/windist/$NAME/bin
 cp iceprog.exe $WORK/windist/$NAME/bin
 
 
-# ----------- Building icetime
+# ----------- Build icetime
 cd ../icetime
 cp $WORK/packages/windows/Makefile.icetime Makefile
 make -j$(( $(nproc) -1))
 cp icetime.exe $WORK/windist/$NAME/bin
+
+# ----------- Build arachne
+cd ../..
+git -C arachne-pnr pull || git clone https://github.com/cseed/arachne-pnr.git
+cd arachne-pnr
+cp $WORK/packages/windows/Makefile.arachne Makefile
+make -j$(( $(nproc) -1))
+cp bin/arachne-pnr.exe $WORK/windist/$NAME/bin
+
+mkdir -p $WORK/windist/$NAME/share
+mkdir -p $WORK/windist/$NAME/share/arachne-pnr
+cp $WORK/packages/windows/*.bin $WORK/windist/$NAME/share/arachne-pnr
+
+mkdir -p $WORK/windist/$NAME/share/icebox
+cp $WORK/packages/windows/*.txt $WORK/windist/$NAME/share/icebox
