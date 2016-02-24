@@ -7,8 +7,8 @@
 # This tarball can be unpacked in ~/.platformio/packages
 
 NAME=toolchain-icestorm
-ARCH=x86_64
-VERSION=5
+ARCH=linux_x86_64
+VERSION=6
 PACKNAME=$NAME-$ARCH-$VERSION
 TCDIR=$PWD/dist/$NAME
 TARBALL=$PWD/dist/$PACKNAME.tar.gz
