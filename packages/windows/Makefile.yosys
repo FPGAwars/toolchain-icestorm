@@ -10,8 +10,6 @@ ENABLE_TCL := 0
 ENABLE_READLINE := 0
 ENABLE_ABC := 1
 
-ENABLE_LIBYOSYS := 0
-
 # other configuration flags
 ENABLE_GPROF := 0
 ENABLE_NDEBUG := 0
@@ -163,10 +161,6 @@ EXE = .exe
 
 else ifneq ($(CONFIG),none)
 $(error Invalid CONFIG setting '$(CONFIG)'. Valid values: clang, gcc, gcc-4.6, emcc, none)
-endif
-
-ifeq ($(ENABLE_LIBYOSYS),1)
-TARGETS += libyosys.so
 endif
 
 ifeq ($(ENABLE_READLINE),1)
@@ -394,17 +388,10 @@ install: $(TARGETS) $(EXTRA_TARGETS)
 	$(INSTALL_SUDO) install $(TARGETS) $(DESTDIR)$(PREFIX)/bin/
 	$(INSTALL_SUDO) mkdir -p $(DESTDIR)$(PREFIX)/share/yosys
 	$(INSTALL_SUDO) cp -r share/. $(DESTDIR)$(PREFIX)/share/yosys/.
-ifeq ($(ENABLE_LIBYOSYS),1)
-	$(INSTALL_SUDO) cp libyosys.so $(DESTDIR)$(PREFIX)/lib/
-	$(INSTALL_SUDO) ldconfig
-endif
 
 uninstall:
 	$(INSTALL_SUDO) rm -vf $(addprefix $(DESTDIR)$(PREFIX)/bin/,$(notdir $(TARGETS)))
 	$(INSTALL_SUDO) rm -rvf $(DESTDIR)$(PREFIX)/share/yosys/
-ifeq ($(ENABLE_LIBYOSYS),1)
-	$(INSTALL_SUDO) rm -vf $(DESTDIR)$(PREFIX)/lib/libyosys.so
-endif
 
 update-manual: $(TARGETS) $(EXTRA_TARGETS)
 	cd manual && ../yosys -p 'help -write-tex-command-reference-manual'
