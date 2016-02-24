@@ -9,10 +9,7 @@ CONFIG := clang
 ENABLE_TCL := 0
 ENABLE_READLINE := 0
 ENABLE_ABC := 1
-ENABLE_PLUGINS := 0
 
-ENABLE_VERIFIC := 0
-ENABLE_COVER := 0
 ENABLE_LIBYOSYS := 0
 
 # other configuration flags
@@ -102,9 +99,7 @@ ifneq ($(SANITIZER),)
 $(info [Clang Sanitizer] $(SANITIZER))
 CXXFLAGS += -g -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize=$(SANITIZER)
 LDFLAGS += -g -fsanitize=$(SANITIZER)
-ifeq ($(SANITIZER),address)
-ENABLE_COVER := 0
-endif
+
 ifeq ($(SANITIZER),memory)
 CXXFLAGS += -fPIE
 LDFLAGS += -fPIE
@@ -182,10 +177,6 @@ LDLIBS += -lpdcurses
 endif
 endif
 
-ifeq ($(ENABLE_PLUGINS),1)
-CXXFLAGS += -DYOSYS_ENABLE_PLUGINS $(shell pkg-config --silence-errors --cflags libffi)
-LDLIBS += $(shell pkg-config --silence-errors --libs libffi || echo -lffi) -ldl
-endif
 
 ifeq ($(ENABLE_TCL),1)
 TCL_VERSION ?= tcl$(shell echo 'puts [info tclversion]' | tclsh)
@@ -208,16 +199,6 @@ CXXFLAGS += -DYOSYS_ENABLE_ABC
 TARGETS += yosys-abc$(EXE)
 endif
 
-ifeq ($(ENABLE_VERIFIC),1)
-VERIFIC_DIR ?= /usr/local/src/verific_lib_eval
-VERIFIC_COMPONENTS ?= verilog vhdl database util containers sdf
-CXXFLAGS += $(patsubst %,-I$(VERIFIC_DIR)/%,$(VERIFIC_COMPONENTS)) -DYOSYS_ENABLE_VERIFIC
-LDLIBS += $(patsubst %,$(VERIFIC_DIR)/%/*-linux.a,$(VERIFIC_COMPONENTS))
-endif
-
-ifeq ($(ENABLE_COVER),1)
-CXXFLAGS += -DYOSYS_ENABLE_COVER
-endif
 
 define add_share_file
 EXTRA_TARGETS += $(subst //,/,$(1)/$(notdir $(2)))
@@ -493,13 +474,11 @@ config-emcc: clean
 	echo 'CONFIG := emcc' > Makefile.conf
 	echo 'ENABLE_TCL := 0' >> Makefile.conf
 	echo 'ENABLE_ABC := 0' >> Makefile.conf
-	echo 'ENABLE_PLUGINS := 0' >> Makefile.conf
 	echo 'ENABLE_READLINE := 0' >> Makefile.conf
 
 config-mxe: clean
 	echo 'CONFIG := mxe' > Makefile.conf
 	echo 'ENABLE_TCL := 0' >> Makefile.conf
-	echo 'ENABLE_PLUGINS := 0' >> Makefile.conf
 	echo 'ENABLE_READLINE := 0' >> Makefile.conf
 
 config-gprof: clean
