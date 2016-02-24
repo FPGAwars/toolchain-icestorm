@@ -10,10 +10,6 @@ ENABLE_TCL := 0
 ENABLE_READLINE := 0
 ENABLE_ABC := 1
 
-# other configuration flags
-ENABLE_GPROF := 0
-ENABLE_NDEBUG := 0
-
 # clang sanitizers
 SANITIZER =
 # SANITIZER = address
@@ -177,15 +173,6 @@ TCL_VERSION ?= tcl$(shell echo 'puts [info tclversion]' | tclsh)
 TCL_INCLUDE ?= /usr/include/$(TCL_VERSION)
 CXXFLAGS += -I$(TCL_INCLUDE) -DYOSYS_ENABLE_TCL
 LDLIBS += -l$(TCL_VERSION)
-endif
-
-ifeq ($(ENABLE_GPROF),1)
-CXXFLAGS += -pg
-LDFLAGS += -pg
-endif
-
-ifeq ($(ENABLE_NDEBUG),1)
-CXXFLAGS := -O3 -DNDEBUG $(filter-out -Os,$(CXXFLAGS))
 endif
 
 ifeq ($(ENABLE_ABC),1)
@@ -470,7 +457,6 @@ config-mxe: clean
 
 config-gprof: clean
 	echo 'CONFIG := gcc' > Makefile.conf
-	echo 'ENABLE_GPROF := 1' >> Makefile.conf
 
 config-sudo:
 	echo "INSTALL_SUDO := sudo" >> Makefile.conf
