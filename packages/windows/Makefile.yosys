@@ -12,11 +12,6 @@ ENABLE_ABC := 1
 
 # clang sanitizers
 SANITIZER =
-# SANITIZER = address
-# SANITIZER = memory
-# SANITIZER = undefined
-# SANITIZER = cfi
-
 
 PREFIX ?= /usr/local
 INSTALL_SUDO :=
@@ -94,14 +89,6 @@ $(info [Clang Sanitizer] $(SANITIZER))
 CXXFLAGS += -g -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize=$(SANITIZER)
 LDFLAGS += -g -fsanitize=$(SANITIZER)
 
-ifeq ($(SANITIZER),memory)
-CXXFLAGS += -fPIE
-LDFLAGS += -fPIE
-endif
-ifeq ($(SANITIZER),cfi)
-CXXFLAGS += -flto
-LDFLAGS += -flto
-endif
 endif
 
 else ifeq ($(CONFIG),gcc)
