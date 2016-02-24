@@ -1,7 +1,6 @@
 
 CONFIG := clang
 # CONFIG := gcc
-# CONFIG := gcc-4.6
 # CONFIG := emcc
 # CONFIG := mxe
 
@@ -96,11 +95,6 @@ CXX = gcc
 LD = gcc
 CXXFLAGS += -std=gnu++0x -Os
 
-else ifeq ($(CONFIG),gcc-4.6)
-CXX = gcc-4.6
-LD = gcc-4.6
-CXXFLAGS += -std=gnu++0x -Os
-
 else ifeq ($(CONFIG),emcc)
 CXX = emcc
 LD = emcc
@@ -142,8 +136,6 @@ ABCMKARGS += ARCHFLAGS="-DSIZEOF_VOID_P=4 -DSIZEOF_LONG=4 -DSIZEOF_INT=4 -DWIN32
 ABCMKARGS += LIBS="lib/x86/pthreadVC2.lib -s" ABC_USE_NO_READLINE=1 CC="$(CXX)" CXX="$(CXX)"
 EXE = .exe
 
-else ifneq ($(CONFIG),none)
-$(error Invalid CONFIG setting '$(CONFIG)'. Valid values: clang, gcc, gcc-4.6, emcc, none)
 endif
 
 ifeq ($(ENABLE_READLINE),1)
@@ -428,9 +420,6 @@ config-clang: clean
 config-gcc: clean
 	echo 'CONFIG := gcc' > Makefile.conf
 
-config-gcc-4.6: clean
-	echo 'CONFIG := gcc-4.6' > Makefile.conf
-
 config-emcc: clean
 	echo 'CONFIG := emcc' > Makefile.conf
 	echo 'ENABLE_TCL := 0' >> Makefile.conf
@@ -462,4 +451,4 @@ echo-git-rev:
 -include techlibs/*/*.d
 
 .PHONY: all top-all abc test install install-abc manual clean mrproper qtcreator
-.PHONY: config-clean config-clang config-gcc config-gcc-4.6 config-gprof config-sudo
+.PHONY: config-clean config-clang config-gcc config-gprof config-sudo
