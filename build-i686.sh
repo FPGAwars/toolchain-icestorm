@@ -7,7 +7,7 @@
 # This tarball can be unpacked in ~/.platformio/packages
 
 NAME=toolchain-icestorm
-ARCH=linux_x86_64
+ARCH=linux_i686
 VERSION=6
 PACKNAME=$NAME-$ARCH-$VERSION
 TCDIR=$PWD/dist/$NAME
@@ -15,6 +15,8 @@ TARBALL=$PWD/dist/$PACKNAME.tar.gz
 
 # Store current dir
 WORK=$PWD
+
+nproc=2
 
 # Enter into the code directory
 mkdir -p dist; cd dist
@@ -30,11 +32,12 @@ cd icestorm
 if [ "$1" == "clean" ]; then
     make clean
 fi
-mv Makefile Makefile.bk
-cp $WORK/packages/build_x86_64/Makefile.icetools Makefile
-make -j$(( $(nproc) -1))
+cp $WORK/packages/build_i686/Makefile.icetools Makefile
+cp $WORK/packages/build_i686/Makefile.iceprog iceprog/Makefile
+cp $WORK/packages/build_i686/Makefile.icetime icetime/Makefile
+cp $WORK/packages/build_i686/Makefile.icepack icepack/Makefile
+make 
 make install DESTDIR=$TCDIR PREFIX=""
-mv Makefile.bk Makefile
 cd ..
 
 # Install Arachne-PNR
@@ -43,11 +46,9 @@ cd arachne-pnr
 if [ "$1" == "clean" ]; then
     make clean
 fi
-mv Makefile Makefile.bk
 cp $WORK/packages/build_x86_64/Makefile.arachne Makefile
-make -j$(( $(nproc) -1))
+make 
 make install DESTDIR=$TCDIR PREFIX="" ICEBOX="$TCDIR/share/icebox"
-mv Makefile.bk Makefile
 cd ..
 
 # Install Yosys
@@ -56,11 +57,9 @@ cd yosys
 if [ "$1" == "clean" ]; then
     make clean
 fi
-mv Makefile Makefile.bk
 cp $WORK/packages/build_x86_64/Makefile.yosys Makefile
-make -j$nproc$(( $(nproc) -1)) || exit 1
+make  || exit 1
 make install DESTDIR=$TCDIR PREFIX=""
-mv Makefile.bk Makefile
 cd ..
 
 # Package tarball
