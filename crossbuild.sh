@@ -50,3 +50,16 @@ cp $WORK/packages/windows/*.bin $WORK/windist/$NAME/share/arachne-pnr
 
 mkdir -p $WORK/windist/$NAME/share/icebox
 cp $WORK/packages/windows/*.txt $WORK/windist/$NAME/share/icebox
+
+# -- Build yosys
+cd ..
+git -C yosys pull || git clone https://github.com/cliffordwolf/yosys.git
+cd yosys
+cp $WORK/packages/windows/Makefile.yosys Makefile
+
+# Apply patches (temporal)
+cp $WORK/packages/windows/patches/log.h $WORK/winbuild/yosys/kernel
+cp $WORK/packages/windows/patches/blifparse.cc $WORK/winbuild/yosys/frontends/blif
+
+# Compile
+make -j$(( $(nproc) -1))
