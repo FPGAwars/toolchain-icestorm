@@ -1,0 +1,14 @@
+CC=gcc
+LDLIBS = -lftdi -lusb
+LDFLAGS = -static -L /usr/lib/x86_64-linux-gnu
+CFLAGS = -MD -O0 -Wall -std=c99
+
+all: iceprog
+
+iceprog: iceprog.o
+
+clean:
+	rm -f iceprog
+	rm -f *.o *.d
+
+.PHONY: all clean
