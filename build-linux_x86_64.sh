@@ -45,6 +45,19 @@ TARBALL=$PACKNAME.tar.gz
 # Store current dir
 WORK=$PWD
 
+if [ "$1" == "clean" ]; then
+  echo "-----> CLEAN"
+
+  # -- Remove the final package
+  rm -r -f $PACK_DIR/$NAME-$ARCH-*
+
+  # -- Remove the build dir
+  rm -r -f $BUILD_DIR
+  exit
+fi
+
+
+
 # Install dependencies
 echo "Installing dependencies..."
 sudo apt-get install build-essential clang bison flex libreadline-dev \
@@ -71,6 +84,12 @@ cd $WORK/$BUILD_DIR
 mkdir -p $NAME
 mkdir -p $NAME/bin
 
+# -- Create the example folder
+mkdir -p $NAME/examples
+
+# -- Copy all the examples into it
+cp -r $WORK/build-data/examples/* $WORK/$BUILD_DIR/$NAME/examples
+
 # ---- Copy the upstream sources into the build directory
 cp -r $WORK/$UPSTREAM/$ICESTORM/$ICEPROG .
 
@@ -89,7 +108,9 @@ bash $WORK/test/test_iceprog.sh iceprog
 # -- Copy the executable to the bin dir
 cp iceprog $INSTALL/bin
 
-# -- Create the package
+# ---------------------- Create the package
+
+
 cd $WORK/$BUILD_DIR
 tar vzcf $TARBALL $NAME
 
