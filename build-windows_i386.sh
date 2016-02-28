@@ -86,6 +86,12 @@ cd $WORK/$BUILD_DIR
 mkdir -p $NAME
 mkdir -p $NAME/bin
 
+# -- Create the example folder
+mkdir -p $NAME/examples
+
+# -- Copy all the examples into it
+cp -r $WORK/build-data/examples/* $WORK/$BUILD_DIR/$NAME/examples
+
 # ---- Copy the upstream sources into the build directory
 cp -r $WORK/$UPSTREAM/$ICESTORM/$ICEPROG .
 
