@@ -46,6 +46,19 @@ ZIPBALL=$PACKNAME.zip
 # Store current dir
 WORK=$PWD
 
+# -- TARGET: CLEAN. Remove the build dir and the generated packages
+# --  then exit
+if [ "$1" == "clean" ]; then
+  echo "-----> CLEAN"
+
+  # -- Remove the final package
+  rm -r -f $PACK_DIR/$NAME-$ARCH-*
+
+  # -- Remove the build dir
+  rm -r -f $BUILD_DIR
+  exit
+fi
+
 # Install dependencies
 echo "Installing dependencies..."
 sudo apt-get install build-essential clang bison flex libreadline-dev \
