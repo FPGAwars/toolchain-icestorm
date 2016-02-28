@@ -38,7 +38,7 @@ NAME=toolchain-icestorm
 # -- Directory for installation the target files
 INSTALL=$PWD/$BUILD_DIR/$NAME
 
-VERSION=6
+VERSION=7
 PACKNAME=$NAME-$ARCH-$VERSION
 TARBALL=$PACKNAME.tar.gz
 ZIPBALL=$PACKNAME.zip
