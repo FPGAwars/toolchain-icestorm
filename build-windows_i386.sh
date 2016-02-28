@@ -41,6 +41,7 @@ INSTALL=$PWD/$BUILD_DIR/$NAME
 VERSION=6
 PACKNAME=$NAME-$ARCH-$VERSION
 TARBALL=$PACKNAME.tar.gz
+ZIPBALL=$PACKNAME.zip
 
 # Store current dir
 WORK=$PWD
@@ -89,7 +90,8 @@ cp iceprog.exe $INSTALL/bin
 
 # -- Create the package
 cd $WORK/$BUILD_DIR
-tar vzcf $TARBALL $NAME
+#tar vzcf $TARBALL $NAME
+zip -r $ZIPBALL $NAME
 
 # -- Move the package to the packages dir
-mv $TARBALL $WORK/$PACK_DIR
+mv $ZIPBALL $WORK/$PACK_DIR
