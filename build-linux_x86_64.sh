@@ -45,6 +45,8 @@ TARBALL=$PACKNAME.tar.gz
 # Store current dir
 WORK=$PWD
 
+# -- TARGET: CLEAN. Remove the build dir and the generated packages
+# --  then exit
 if [ "$1" == "clean" ]; then
   echo "-----> CLEAN"
 
