@@ -1,0 +1,15 @@
+CXX = g++
+LDLIBS = -lm -lstdc++
+CXXFLAGS = -MD -O0 -ggdb -std=c++11
+LDFLAGS = -static
+
+all: icepack
+
+icepack$(EXE): icepack.o
+	$(CC) -o $@ $(LDFLAGS) $^ $(LDLIBS)
+
+clean:
+	rm -f icepack
+	rm -f *.o *.d
+
+.PHONY: all install uninstall clean
