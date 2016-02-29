@@ -25,8 +25,7 @@ BUILD_DIR=build_$ARCH
 
 # -- Icestorm directory
 ICESTORM=icestorm
-
-# -- Iceprog directory
+ICEPACK=icepack
 ICEPROG=iceprog
 
 # --- Directory where the files for patching the upstream are located
@@ -106,6 +105,27 @@ make
 
 # -- Copy the executable to the bin dir
 cp iceprog.exe $INSTALL/bin
+
+# ---------------- Compile the icepack
+cd $WORK/$BUILD_DIR
+
+# -- Copy the sources into the build directory
+cp -r $WORK/$UPSTREAM/$ICESTORM/$ICEPACK .
+cd $ICEPACK
+
+# -- Apply the patches
+cp $WORK/$DATA/Makefile.icepack $WORK/$BUILD_DIR/$ICEPACK/Makefile
+
+# -- Compile it
+make
+
+# -- Copy the executable to the bin dir
+cp icepack.exe $INSTALL/bin
+
+
+
+
+
 
 # -- Create the package
 cd $WORK/$BUILD_DIR

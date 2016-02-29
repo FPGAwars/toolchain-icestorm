@@ -1,12 +1,12 @@
-CXX = g++
+CXX = i686-w64-mingw32-g++
 LDLIBS = -lm -lstdc++
 CXXFLAGS = -MD -O0 -ggdb -std=c++11
 LDFLAGS = -static
 
-all: icepack
+all: icepack.exe
 
-icepack: icepack.o
-	$(CC) -o $@ $(LDFLAGS) $^ $(LDLIBS)
+icepack.exe: icepack.o
+	$(CXX) -o $@ $(LDFLAGS) $^ $(LDLIBS)
 
 clean:
 	rm -f icepack
