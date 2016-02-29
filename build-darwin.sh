@@ -1,6 +1,6 @@
 #####################################################
-# Icestorm toolchain builder for linux_i686  archs  #
-# It should be execute on a Linux x86_64 machine    #
+# Icestorm toolchain builder for MAC darwing        #
+# This script should be execute on a mac terminal   #
 #####################################################
 
 # Generate toolchain-icestorm.tar.gz from source code
@@ -18,7 +18,7 @@ GIT_ICESTORM=https://github.com/cliffordwolf/icestorm.git
 PACK_DIR=packages
 
 # -- Target architecture
-ARCH=linux_i686
+ARCH=darwin
 
 # -- Directory for compiling the tools
 BUILD_DIR=build_$ARCH
@@ -62,11 +62,7 @@ fi
 
 # Install dependencies
 echo "Installing dependencies..."
-sudo apt-get install build-essential clang bison flex libreadline-dev \
-                     gawk tcl-dev libffi-dev git mercurial graphviz   \
-                     xdot pkg-config python python3 gcc-multilib \
-                     g++-multilib libudev-dev:i386 libftdi-dev:i386 \
-                     libftdi1:i386
+sudo brew install libusb libftdi python3 gnu-sed gawk mercurial bison
 
 # Create the upstream directory and enter into it
 mkdir -p $UPSTREAM
@@ -120,3 +116,38 @@ tar vzcf $TARBALL $NAME
 
 # -- Move the package to the packages dir
 mv $TARBALL $WORK/$PACK_DIR
+
+#cp $WORK/packages/build_x86_64/Makefile.icetools Makefile
+#cp $WORK/packages/build_x86_64/Makefile.icepack icepack/Makefile
+#cp $WORK/packages/build_x86_64/Makefile.iceprog iceprog/Makefile
+#cp $WORK/packages/build_x86_64/Makefile.icetime icetime/Makefile
+#make -j$(( $(nproc) -1))
+#make install DESTDIR=$TCDIR PREFIX=""
+
+#cd ..
+
+# Install Arachne-PNR
+#git -C arachne-pnr pull || git clone https://github.com/cseed/arachne-pnr.git arachne-pnr
+#cd arachne-pnr
+#if [ "$1" == "clean" ]; then
+#    make clean
+#fi
+#cp $WORK/packages/build_x86_64/Makefile.arachne Makefile
+#make -j$(( $(nproc) -1))
+#make install DESTDIR=$TCDIR PREFIX="" ICEBOX="$TCDIR/share/icebox"
+#cd ..
+
+# Install Yosys
+#git -C yosys pull || git clone https://github.com/cliffordwolf/yosys.git yosys
+#cd yosys
+#if [ "$1" == "clean" ]; then
+#    make clean
+#fi
+
+#cp $WORK/packages/build_x86_64/Makefile.yosys Makefile
+#make -j$nproc$(( $(nproc) -1)) || exit 1
+#make install DESTDIR=$TCDIR PREFIX=""
+#cd ..
+
+# Package tarball
+#tar -czvf $TARBALL $NAME
