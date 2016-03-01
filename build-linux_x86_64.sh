@@ -133,7 +133,7 @@ cd $WORK/$UPSTREAM
 git -C $ARACHNE pull || git clone --depth=1 $GIT_ARACHNE
 
 cd $WORK/$BUILD_DIR
-cp -r $WORK/$UPSTREAM/$ARACHNE $ARACHNE
+cp -r $WORK/$UPSTREAM/$ARACHNE .
 cd $ARACHNE
 
 # -- Apply the patches
