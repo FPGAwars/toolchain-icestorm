@@ -1,7 +1,7 @@
 CXX = clang++
 LDLIBS = -lm -lstdc++
 CXXFLAGS = -MD -O0 -ggdb -std=c++11
-LDFLAGS = -static
+LDFLAGS =
 
 all: icepack
 
