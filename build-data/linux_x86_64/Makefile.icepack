@@ -6,7 +6,7 @@ LDFLAGS = -static
 all: icepack
 
 icepack: icepack.o
-	$(CC) -o $@ $(LDFLAGS) $^ $(LDLIBS)
+	$(CXX) -o $@ $(LDFLAGS) $^ $(LDLIBS)
 
 clean:
 	rm -f icepack
