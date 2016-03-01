@@ -13,6 +13,7 @@ UPSTREAM=upstream
 
 # -- Git url were to retieve the upstream sources
 GIT_ICESTORM=https://github.com/cliffordwolf/icestorm.git
+GIT_ARACHNE=https://github.com/cseed/arachne-pnr.git
 
 # -- Folder for storing the generated packages
 PACK_DIR=packages
@@ -25,10 +26,9 @@ BUILD_DIR=build_$ARCH
 
 # -- Icestorm directory
 ICESTORM=icestorm
-
-# -- Icetools directory names
 ICEPROG=iceprog
 ICEPACK=icepack
+ARACHNE=arachne-pnr
 
 # --- Directory where the files for patching the upstream are located
 DATA=build-data/$ARCH
@@ -86,6 +86,7 @@ cd $WORK/$BUILD_DIR
 # --- Create the target folder
 mkdir -p $NAME
 mkdir -p $NAME/bin
+mkdir -p $NAME/share
 
 # -- Create the example folder
 mkdir -p $NAME/examples
@@ -127,24 +128,38 @@ make
 # -- Copy the executable to the bin dir
 cp icepack $INSTALL/bin
 
+# ----------- Compile Arachne-pnr ----------------------------------
+cd $WORK/$UPSTREAM
+git -C $ARACHNE pull || git clone --depth=1 $GIT_ARACHNE
+
+cd $WORK/$BUILD_DIR
+cp -r $WORK/$UPSTREAM/$ARACHNE $ARACHNE
+cd $ARACHNE
+
+# -- Apply the patches
+cp $WORK/$DATA/Makefile.arachne $WORK/$BUILD_DIR/$ARACHNE/Makefile
+
+# -- Copy the chipdb*.bin data files
+cp -r $WORK/build-data/$ARACHNE $WORK/$BUILD_DIR/$NAME/share
+
+# -- Compile it
+make
+
+# -- Copy the executable to the bin dir
+cp bin/arachne-pnr $INSTALL/bin
 
 
 
-# ---------------------- Create the package
+
+
+# ---------------------- Create the package --------------------------
 cd $WORK/$BUILD_DIR
 tar vzcf $TARBALL $NAME
 
 # -- Move the package to the packages dir
 mv $TARBALL $WORK/$PACK_DIR
 
-#cp $WORK/packages/build_x86_64/Makefile.icetools Makefile
-#cp $WORK/packages/build_x86_64/Makefile.icepack icepack/Makefile
-#cp $WORK/packages/build_x86_64/Makefile.iceprog iceprog/Makefile
-#cp $WORK/packages/build_x86_64/Makefile.icetime icetime/Makefile
-#make -j$(( $(nproc) -1))
-#make install DESTDIR=$TCDIR PREFIX=""
 
-#cd ..
 
 # Install Arachne-PNR
 #git -C arachne-pnr pull || git clone https://github.com/cseed/arachne-pnr.git arachne-pnr
