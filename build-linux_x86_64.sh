@@ -140,7 +140,8 @@ cd $ARACHNE
 cp $WORK/$DATA/Makefile.arachne $WORK/$BUILD_DIR/$ARACHNE/Makefile
 
 # -- Copy the chipdb*.bin data files
-cp -r $WORK/build-data/$ARACHNE $WORK/$BUILD_DIR/$NAME/share
+mkdir -p $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
+cp -r $WORK/build-data/$ARACHNE/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 
 # -- Compile it
 make
