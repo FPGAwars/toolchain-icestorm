@@ -136,6 +136,8 @@ cd $ARACHNE
 # -- Apply the patches
 cp $WORK/$DATA/Makefile.arachne $WORK/$BUILD_DIR/$ARACHNE/Makefile
 
+cp -r $WORK/$DATA/arachne.patch/* $WORK/$BUILD_DIR/$ARACHNE
+
 # -- Copy the chipdb*.bin data files
 cp -r $WORK/build-data/$ARACHNE $WORK/$BUILD_DIR/$NAME/share
 
