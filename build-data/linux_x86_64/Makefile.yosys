@@ -1,36 +1,114 @@
 
+CONFIG := gcc
+# CONFIG := gcc
+# CONFIG := gcc-4.6
+# CONFIG := emcc
+# CONFIG := mxe
 
+# features (the more the better)
+ENABLE_TCL := 0
 ENABLE_ABC := 1
+ENABLE_PLUGINS := 0
+ENABLE_READLINE := 0
+ENABLE_VERIFIC := 0
+ENABLE_COVER := 0
+ENABLE_LIBYOSYS := 0
+
+# other configuration flags
+ENABLE_GPROF := 0
+ENABLE_NDEBUG := 0
+
+PREFIX ?= /usr/local
+INSTALL_SUDO :=
+
+TARGET_BINDIR := $(DESTDIR)$(PREFIX)/bin
+TARGET_DATDIR := $(DESTDIR)$(PREFIX)/share/yosys
+
 EXE =
 OBJS =
 GENFILES =
 EXTRA_OBJS =
 EXTRA_TARGETS =
-TARGETS = yosys
+TARGETS = yosys$(EXE) yosys-config
+
+PRETTY = 0
+SMALL = 0
 
 all: top-all
 
 YOSYS_SRC := $(dir $(firstword $(MAKEFILE_LIST)))
-CXXFLAGS += -Wall -Wextra -I. -I"$(YOSYS_SRC)" -MD -D_YOSYS_ -fPIC -I$(DESTDIR)$(PREFIX)/include \
-            -std=gnu++0x -Os -DYOSYS_ENABLE_ABC
-LDFLAGS += -L$(DESTDIR)$(PREFIX)/lib -rdynamic
-LDLIBS = -static -lstdc++ -lm -lrt
+VPATH := $(YOSYS_SRC)
+
+CXXFLAGS += -Wall -Wextra -ggdb -I. -I"$(YOSYS_SRC)" -MD -D_YOSYS_ -fPIC -I$(DESTDIR)$(PREFIX)/include
+LDFLAGS += -L$(DESTDIR)$(PREFIX)/lib
+LDLIBS = -static -lstdc++ -lm
+SED = sed
+BISON = bison
+
+ifeq (Darwin,$(findstring Darwin,$(shell uname)))
+	# add macports/homebrew include and library path to search directories, don't use '-rdynamic' and '-lrt':
+	CXXFLAGS += -I/opt/local/include -I/usr/local/opt/readline/include
+	LDFLAGS += -L/opt/local/lib -L/usr/local/opt/readline/lib
+	# add homebrew's libffi include and library path
+	CXXFLAGS += $(shell PKG_CONFIG_PATH=$$(brew list libffi | grep pkgconfig | xargs dirname) pkg-config --silence-errors --cflags libffi)
+	LDFLAGS += $(shell PKG_CONFIG_PATH=$$(brew list libffi | grep pkgconfig | xargs dirname) pkg-config --silence-errors --libs libffi)
+	# use bison installed by homebrew if available
+	BISON = $(shell (brew list bison | grep -m1 "bin/bison") || echo bison)
+	SED = sed
+else
+	LDFLAGS += -rdynamic
+	LDLIBS += -lrt
+endif
+
 YOSYS_VER := 0.6
 GIT_REV := $(shell cd $(YOSYS_SRC) && git rev-parse --short HEAD 2> /dev/null || echo UNKNOWN)
 OBJS = kernel/version_$(GIT_REV).o
-CXX = g++
-LD = g++
+
+# set 'ABCREV = default' to use abc/ as it is
+#
+# Note: If you do ABC development, make sure that 'abc' in this directory
+# is just a symlink to your actual ABC working directory, as 'make mrproper'
+# will remove the 'abc' directory and you do not want to accidentally
+# delete your work on ABC..
+ABCREV = ae7d65e71adc
+ABCPULL = 1
+ABCMKARGS = CC="$(CXX)" CXX="$(CXX)"
+
+define newline
+endef
+
+CXX = gcc
+LD = gcc
+CXXFLAGS += -std=gnu++0x -Os
+
+
+ifeq ($(ENABLE_ABC),1)
+CXXFLAGS += -DYOSYS_ENABLE_ABC
+endif
 
 define add_share_file
 EXTRA_TARGETS += $(subst //,/,$(1)/$(notdir $(2)))
 $(subst //,/,$(1)/$(notdir $(2))): $(2)
-	mkdir -p $(1)
-	cp "$(YOSYS_SRC)"/$(2) $(subst //,/,$(1)/$(notdir $(2)))
+	$$(P) mkdir -p $(1)
+	$$(Q) cp "$(YOSYS_SRC)"/$(2) $(subst //,/,$(1)/$(notdir $(2)))
+endef
+
+define add_gen_share_file
+EXTRA_TARGETS += $(subst //,/,$(1)/$(notdir $(2)))
+$(subst //,/,$(1)/$(notdir $(2))): $(2)
+	$$(P) mkdir -p $(1)
+	$$(Q) cp $(2) $(subst //,/,$(1)/$(notdir $(2)))
 endef
 
 define add_include_file
 $(eval $(call add_share_file,$(dir share/include/$(1)),$(1)))
 endef
+
+
+P_SHOW = ->
+P =
+Q =
+S =
 
 $(eval $(call add_include_file,kernel/yosys.h))
 $(eval $(call add_include_file,kernel/hashlib.h))
@@ -58,6 +136,8 @@ OBJS += libs/bigint/BigUnsigned.o libs/bigint/BigUnsignedInABase.o
 
 OBJS += libs/sha1/sha1.o
 
+ifneq ($(SMALL),1)
+
 OBJS += libs/subcircuit/subcircuit.o
 
 OBJS += libs/ezsat/ezsat.o
@@ -73,28 +153,37 @@ include $(YOSYS_SRC)/passes/*/Makefile.inc
 include $(YOSYS_SRC)/backends/*/Makefile.inc
 include $(YOSYS_SRC)/techlibs/*/Makefile.inc
 
+endif
 
-top-all: $(TARGETS)
+top-all: $(TARGETS) $(EXTRA_TARGETS)
 	@echo ""
 	@echo "  Build successful."
 	@echo ""
 
+yosys$(EXE): $(OBJS)
+	$(P) $(LD) -o yosys$(EXE) $(LDFLAGS) $(OBJS) $(LDLIBS)
 
-yosys: $(OBJS)
-	$(LD) -o yosys $(LDFLAGS) $(OBJS) $(LDLIBS)
+libyosys.so: $(filter-out kernel/driver.o,$(OBJS))
+	$(P) $(LD) -o libyosys.so -shared -Wl,-soname,libyosys.so $(LDFLAGS) $^ $(LDLIBS)
 
 %.o: %.cc
-	mkdir -p $(dir $@)
-	$(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
+	$(Q) mkdir -p $(dir $@)
+	$(P) $(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
 
 %.o: %.cpp
-	mkdir -p $(dir $@)
-	$(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
+	$(Q) mkdir -p $(dir $@)
+	$(P) $(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
 
 kernel/version_$(GIT_REV).cc: $(YOSYS_SRC)/Makefile
-	rm -f kernel/version_*.o kernel/version_*.d kernel/version_*.cc
-	mkdir -p kernel && echo "namespace Yosys { extern const char *yosys_version_str; const char *yosys_version_str=\"Yosys $(YOSYS_VER) (git sha1 $(GIT_REV), $(notdir $(CXX)) ` \
+	$(P) rm -f kernel/version_*.o kernel/version_*.d kernel/version_*.cc
+	$(Q) mkdir -p kernel && echo "namespace Yosys { extern const char *yosys_version_str; const char *yosys_version_str=\"Yosys $(YOSYS_VER) (git sha1 $(GIT_REV), $(notdir $(CXX)) ` \
 			$(CXX) --version | tr ' ()' '\n' | grep '^[0-9]' | head -n1` $(filter -f% -m% -O% -DNDEBUG,$(CXXFLAGS)))\"; }" > kernel/version_$(GIT_REV).cc
+
+yosys-config: misc/yosys-config.in
+	$(P) $(SED) -e 's#@CXXFLAGS@#$(subst -I. -I"$(YOSYS_SRC)",-I"$(TARGET_DATDIR)/include",$(CXXFLAGS))#;' \
+			-e 's#@CXX@#$(CXX)#;' -e 's#@LDFLAGS@#$(LDFLAGS)#;' -e 's#@LDLIBS@#$(LDLIBS)#;' \
+			-e 's#@BINDIR@#$(TARGET_BINDIR)#;' -e 's#@DATDIR@#$(TARGET_DATDIR)#;' < $< > yosys-config
+	$(Q) chmod +x yosys-config
 
 
 clean:
