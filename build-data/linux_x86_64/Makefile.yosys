@@ -1,5 +1,5 @@
 
-CONFIG := clang
+CONFIG := gcc
 # CONFIG := gcc
 # CONFIG := mxe
 
@@ -17,9 +17,9 @@ all: top-all
 YOSYS_SRC := $(dir $(firstword $(MAKEFILE_LIST)))
 VPATH := $(YOSYS_SRC)
 
-CXXFLAGS += -Wall -Wextra -ggdb -I. -I"$(YOSYS_SRC)" -MD -D_YOSYS_ -fPIC -I$(DESTDIR)$(PREFIX)/include
+CXXFLAGS += -Wall -Wextra -I. -I"$(YOSYS_SRC)" -MD -D_YOSYS_ -fPIC -I$(DESTDIR)$(PREFIX)/include
 LDFLAGS += -L$(DESTDIR)$(PREFIX)/lib
-LDLIBS = -lstdc++ -lm
+LDLIBS = -static-libstdc++  -static-libgcc -lstdc++ -lm
 SED = sed
 BISON = bison
 
@@ -90,23 +90,13 @@ endif
 define add_share_file
 EXTRA_TARGETS += $(subst //,/,$(1)/$(notdir $(2)))
 $(subst //,/,$(1)/$(notdir $(2))): $(2)
-	$$(P) mkdir -p $(1)
-	$$(Q) cp "$(YOSYS_SRC)"/$(2) $(subst //,/,$(1)/$(notdir $(2)))
+	mkdir -p $(1)
+	cp "$(YOSYS_SRC)"/$(2) $(subst //,/,$(1)/$(notdir $(2)))
 endef
 
 define add_include_file
 $(eval $(call add_share_file,$(dir share/include/$(1)),$(1)))
 endef
-
-# -- PRETTY
-P_STATUS = 0
-P_OFFSET = 0
-P_UPDATE = $(eval P_STATUS=$(shell echo $(OBJS) yosys$(EXE) | gawk 'BEGIN { RS = " "; I = $(P_STATUS)+0; } $$1 == "$@" && NR > I { I = NR; } END { print I; }'))
-P_SHOW = [$(shell gawk "BEGIN { N=$(words $(OBJS) yosys$(EXE)); printf \"%3d\", $(P_OFFSET)+90*$(P_STATUS)/N; exit; }")%]
-P = @echo "$(if $(findstring $@,$(TARGETS) $(EXTRA_TARGETS)),$(eval P_OFFSET = 10))$(call P_UPDATE)$(call P_SHOW) Building $@";
-Q = @
-S = -s
-
 
 $(eval $(call add_include_file,kernel/yosys.h))
 $(eval $(call add_include_file,kernel/hashlib.h))
@@ -150,34 +140,31 @@ include $(YOSYS_SRC)/backends/*/Makefile.inc
 include $(YOSYS_SRC)/techlibs/*/Makefile.inc
 
 
-top-all: $(TARGETS) $(EXTRA_TARGETS)
+top-all: $(TARGETS)
 	@echo ""
 	@echo "  Build successful."
 	@echo ""
 
 
 yosys$(EXE): $(OBJS)
-	$(P) $(LD) -o yosys$(EXE) $(LDFLAGS) $(OBJS) $(LDLIBS)
-
-libyosys.so: $(filter-out kernel/driver.o,$(OBJS))
-	$(P) $(LD) -o libyosys.so -shared -Wl,-soname,libyosys.so $(LDFLAGS) $^ $(LDLIBS)
+	$(LD) -o yosys$(EXE) $(LDFLAGS) $(OBJS) $(LDLIBS)
 
 %.o: %.cc
-	$(Q) mkdir -p $(dir $@)
-	$(P) $(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
+	mkdir -p $(dir $@)
+	$(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
 
 %.o: %.cpp
-	$(Q) mkdir -p $(dir $@)
-	$(P) $(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
+	mkdir -p $(dir $@)
+	$(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
 
 kernel/version_$(GIT_REV).cc: $(YOSYS_SRC)/Makefile
-	$(P) rm -f kernel/version_*.o kernel/version_*.d kernel/version_*.cc
-	$(Q) mkdir -p kernel && echo "namespace Yosys { extern const char *yosys_version_str; const char *yosys_version_str=\"Yosys $(YOSYS_VER) (git sha1 $(GIT_REV), $(notdir $(CXX)) ` \
+	rm -f kernel/version_*.o kernel/version_*.d kernel/version_*.cc
+	mkdir -p kernel && echo "namespace Yosys { extern const char *yosys_version_str; const char *yosys_version_str=\"Yosys $(YOSYS_VER) (git sha1 $(GIT_REV), $(notdir $(CXX)) ` \
 			$(CXX) --version | tr ' ()' '\n' | grep '^[0-9]' | head -n1` $(filter -f% -m% -O% -DNDEBUG,$(CXXFLAGS)))\"; }" > kernel/version_$(GIT_REV).cc
 
 
 abc/abc-$(ABCREV)$(EXE):
-	$(P)
+
 ifneq ($(ABCREV),default)
 	$(Q) if ( cd abc 2> /dev/null && hg identify; ) | grep -q +; then \
 		echo 'REEBE: NOP pbagnvaf ybpny zbqvsvpngvbaf! Frg NOPERI=qrsnhyg va Lbflf Znxrsvyr!' | tr 'A-Za-z' 'N-ZA-Mn-za-m'; false; \
@@ -197,7 +184,7 @@ ifeq ($(ABCREV),default)
 endif
 
 yosys-abc$(EXE): abc/abc-$(ABCREV)$(EXE)
-	$(P) cp abc/abc-$(ABCREV)$(EXE) yosys-abc$(EXE)
+	cp abc/abc-$(ABCREV)$(EXE) yosys-abc$(EXE)
 
 clean:
 	rm -rf share
