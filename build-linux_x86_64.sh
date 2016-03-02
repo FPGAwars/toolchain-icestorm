@@ -144,7 +144,7 @@ mkdir -p $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 cp -r $WORK/build-data/$ARACHNE/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 
 # -- Compile it
-make -j$(( $(nproc) -1))
+#make -j$(( $(nproc) -1))
 
 # -- Copy the executable to the bin dir
 cp bin/arachne-pnr $INSTALL/bin
