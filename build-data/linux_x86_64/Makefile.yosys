@@ -31,7 +31,6 @@ EXTRA_OBJS =
 EXTRA_TARGETS =
 TARGETS = yosys$(EXE) yosys-config
 
-PRETTY = 1
 SMALL = 0
 
 all: top-all
@@ -127,7 +126,7 @@ define add_include_file
 $(eval $(call add_share_file,$(dir share/include/$(1)),$(1)))
 endef
 
-ifeq ($(PRETTY), 1)
+# -- PRETTY
 P_STATUS = 0
 P_OFFSET = 0
 P_UPDATE = $(eval P_STATUS=$(shell echo $(OBJS) yosys$(EXE) | gawk 'BEGIN { RS = " "; I = $(P_STATUS)+0; } $$1 == "$@" && NR > I { I = NR; } END { print I; }'))
@@ -135,12 +134,7 @@ P_SHOW = [$(shell gawk "BEGIN { N=$(words $(OBJS) yosys$(EXE)); printf \"%3d\", 
 P = @echo "$(if $(findstring $@,$(TARGETS) $(EXTRA_TARGETS)),$(eval P_OFFSET = 10))$(call P_UPDATE)$(call P_SHOW) Building $@";
 Q = @
 S = -s
-else
-P_SHOW = ->
-P =
-Q =
-S =
-endif
+
 
 $(eval $(call add_include_file,kernel/yosys.h))
 $(eval $(call add_include_file,kernel/hashlib.h))
@@ -168,8 +162,6 @@ OBJS += libs/bigint/BigUnsigned.o libs/bigint/BigUnsignedInABase.o
 
 OBJS += libs/sha1/sha1.o
 
-ifneq ($(SMALL),1)
-
 OBJS += libs/subcircuit/subcircuit.o
 
 OBJS += libs/ezsat/ezsat.o
@@ -185,31 +177,28 @@ include $(YOSYS_SRC)/passes/*/Makefile.inc
 include $(YOSYS_SRC)/backends/*/Makefile.inc
 include $(YOSYS_SRC)/techlibs/*/Makefile.inc
 
-else
+#include frontends/verilog/Makefile.inc
+#include frontends/ilang/Makefile.inc
+#include frontends/ast/Makefile.inc
+#include frontends/blif/Makefile.inc
 
-include frontends/verilog/Makefile.inc
-include frontends/ilang/Makefile.inc
-include frontends/ast/Makefile.inc
-include frontends/blif/Makefile.inc
+#OBJS += passes/hierarchy/hierarchy.o
+#OBJS += passes/cmds/select.o
+#OBJS += passes/cmds/show.o
+#OBJS += passes/cmds/stat.o
+#OBJS += passes/cmds/cover.o
+#OBJS += passes/cmds/design.o
+#OBJS += passes/cmds/plugin.o
 
-OBJS += passes/hierarchy/hierarchy.o
-OBJS += passes/cmds/select.o
-OBJS += passes/cmds/show.o
-OBJS += passes/cmds/stat.o
-OBJS += passes/cmds/cover.o
-OBJS += passes/cmds/design.o
-OBJS += passes/cmds/plugin.o
+#include passes/proc/Makefile.inc
+#include passes/opt/Makefile.inc
+#include passes/techmap/Makefile.inc
 
-include passes/proc/Makefile.inc
-include passes/opt/Makefile.inc
-include passes/techmap/Makefile.inc
+#include backends/verilog/Makefile.inc
+#include backends/ilang/Makefile.inc
 
-include backends/verilog/Makefile.inc
-include backends/ilang/Makefile.inc
+#include techlibs/common/Makefile.inc
 
-include techlibs/common/Makefile.inc
-
-endif
 
 top-all: $(TARGETS) $(EXTRA_TARGETS)
 	@echo ""
