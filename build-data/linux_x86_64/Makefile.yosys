@@ -1,37 +1,16 @@
 
 CONFIG := clang
 # CONFIG := gcc
-# CONFIG := gcc-4.6
-# CONFIG := emcc
 # CONFIG := mxe
 
-# features (the more the better)
-ENABLE_TCL := 0
 ENABLE_ABC := 1
-ENABLE_PLUGINS := 0
-ENABLE_READLINE := 0
-ENABLE_VERIFIC := 0
-ENABLE_COVER := 0
-ENABLE_LIBYOSYS := 0
-
-# other configuration flags
-ENABLE_GPROF := 0
-ENABLE_NDEBUG := 0
-
-PREFIX ?= /usr/local
-INSTALL_SUDO :=
-
-TARGET_BINDIR := $(DESTDIR)$(PREFIX)/bin
-TARGET_DATDIR := $(DESTDIR)$(PREFIX)/share/yosys
 
 EXE =
 OBJS =
 GENFILES =
 EXTRA_OBJS =
 EXTRA_TARGETS =
-TARGETS = yosys$(EXE) yosys-config
-
-SMALL = 0
+TARGETS = yosys
 
 all: top-all
 
@@ -115,13 +94,6 @@ $(subst //,/,$(1)/$(notdir $(2))): $(2)
 	$$(Q) cp "$(YOSYS_SRC)"/$(2) $(subst //,/,$(1)/$(notdir $(2)))
 endef
 
-define add_gen_share_file
-EXTRA_TARGETS += $(subst //,/,$(1)/$(notdir $(2)))
-$(subst //,/,$(1)/$(notdir $(2))): $(2)
-	$$(P) mkdir -p $(1)
-	$$(Q) cp $(2) $(subst //,/,$(1)/$(notdir $(2)))
-endef
-
 define add_include_file
 $(eval $(call add_share_file,$(dir share/include/$(1)),$(1)))
 endef
@@ -177,28 +149,6 @@ include $(YOSYS_SRC)/passes/*/Makefile.inc
 include $(YOSYS_SRC)/backends/*/Makefile.inc
 include $(YOSYS_SRC)/techlibs/*/Makefile.inc
 
-#include frontends/verilog/Makefile.inc
-#include frontends/ilang/Makefile.inc
-#include frontends/ast/Makefile.inc
-#include frontends/blif/Makefile.inc
-
-#OBJS += passes/hierarchy/hierarchy.o
-#OBJS += passes/cmds/select.o
-#OBJS += passes/cmds/show.o
-#OBJS += passes/cmds/stat.o
-#OBJS += passes/cmds/cover.o
-#OBJS += passes/cmds/design.o
-#OBJS += passes/cmds/plugin.o
-
-#include passes/proc/Makefile.inc
-#include passes/opt/Makefile.inc
-#include passes/techmap/Makefile.inc
-
-#include backends/verilog/Makefile.inc
-#include backends/ilang/Makefile.inc
-
-#include techlibs/common/Makefile.inc
-
 
 top-all: $(TARGETS) $(EXTRA_TARGETS)
 	@echo ""
@@ -225,11 +175,6 @@ kernel/version_$(GIT_REV).cc: $(YOSYS_SRC)/Makefile
 	$(Q) mkdir -p kernel && echo "namespace Yosys { extern const char *yosys_version_str; const char *yosys_version_str=\"Yosys $(YOSYS_VER) (git sha1 $(GIT_REV), $(notdir $(CXX)) ` \
 			$(CXX) --version | tr ' ()' '\n' | grep '^[0-9]' | head -n1` $(filter -f% -m% -O% -DNDEBUG,$(CXXFLAGS)))\"; }" > kernel/version_$(GIT_REV).cc
 
-yosys-config: misc/yosys-config.in
-	$(P) $(SED) -e 's#@CXXFLAGS@#$(subst -I. -I"$(YOSYS_SRC)",-I"$(TARGET_DATDIR)/include",$(CXXFLAGS))#;' \
-			-e 's#@CXX@#$(CXX)#;' -e 's#@LDFLAGS@#$(LDFLAGS)#;' -e 's#@LDLIBS@#$(LDLIBS)#;' \
-			-e 's#@BINDIR@#$(TARGET_BINDIR)#;' -e 's#@DATDIR@#$(TARGET_DATDIR)#;' < $< > yosys-config
-	$(Q) chmod +x yosys-config
 
 abc/abc-$(ABCREV)$(EXE):
 	$(P)
