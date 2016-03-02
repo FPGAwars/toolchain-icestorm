@@ -1,10 +1,6 @@
 
-CONFIG := gcc
-# CONFIG := gcc
-# CONFIG := mxe
 
 ENABLE_ABC := 1
-
 EXE =
 OBJS =
 GENFILES =
@@ -15,77 +11,15 @@ TARGETS = yosys
 all: top-all
 
 YOSYS_SRC := $(dir $(firstword $(MAKEFILE_LIST)))
-VPATH := $(YOSYS_SRC)
-
-CXXFLAGS += -Wall -Wextra -I. -I"$(YOSYS_SRC)" -MD -D_YOSYS_ -fPIC -I$(DESTDIR)$(PREFIX)/include
-LDFLAGS += -L$(DESTDIR)$(PREFIX)/lib
-LDLIBS = -static -lstdc++ -lm
-SED = sed
-BISON = bison
-
-ifeq (Darwin,$(findstring Darwin,$(shell uname)))
-	# add macports/homebrew include and library path to search directories, don't use '-rdynamic' and '-lrt':
-	CXXFLAGS += -I/opt/local/include -I/usr/local/opt/readline/include
-	LDFLAGS += -L/opt/local/lib -L/usr/local/opt/readline/lib
-	# add homebrew's libffi include and library path
-	CXXFLAGS += $(shell PKG_CONFIG_PATH=$$(brew list libffi | grep pkgconfig | xargs dirname) pkg-config --silence-errors --cflags libffi)
-	LDFLAGS += $(shell PKG_CONFIG_PATH=$$(brew list libffi | grep pkgconfig | xargs dirname) pkg-config --silence-errors --libs libffi)
-	# use bison installed by homebrew if available
-	BISON = $(shell (brew list bison | grep -m1 "bin/bison") || echo bison)
-	SED = sed
-else
-	LDFLAGS += -rdynamic
-	LDLIBS += -lrt
-endif
-
+CXXFLAGS += -Wall -Wextra -I. -I"$(YOSYS_SRC)" -MD -D_YOSYS_ -fPIC -I$(DESTDIR)$(PREFIX)/include \
+            -std=gnu++0x -Os -DYOSYS_ENABLE_ABC
+LDFLAGS += -L$(DESTDIR)$(PREFIX)/lib -rdynamic
+LDLIBS = -static -lstdc++ -lm -lrt
 YOSYS_VER := 0.6
 GIT_REV := $(shell cd $(YOSYS_SRC) && git rev-parse --short HEAD 2> /dev/null || echo UNKNOWN)
 OBJS = kernel/version_$(GIT_REV).o
-
-# set 'ABCREV = default' to use abc/ as it is
-#
-# Note: If you do ABC development, make sure that 'abc' in this directory
-# is just a symlink to your actual ABC working directory, as 'make mrproper'
-# will remove the 'abc' directory and you do not want to accidentally
-# delete your work on ABC..
-ABCREV = ae7d65e71adc
-ABCPULL = 1
-ABCMKARGS = CC="$(CXX)" CXX="$(CXX)"
-
-define newline
-endef
-
-
-ifeq ($(CONFIG),clang)
-CXX = clang
-LD = clang++
-CXXFLAGS += -std=c++11 -Os
-
-else ifeq ($(CONFIG),gcc)
 CXX = g++
 LD = g++
-CXXFLAGS += -std=gnu++0x -Os
-
-else ifeq ($(CONFIG),mxe)
-CXX = /usr/local/src/mxe/usr/bin/i686-pc-mingw32-gcc
-LD = /usr/local/src/mxe/usr/bin/i686-pc-mingw32-gcc
-CXXFLAGS += -std=gnu++0x -Os -D_POSIX_SOURCE
-CXXFLAGS := $(filter-out -fPIC,$(CXXFLAGS))
-LDFLAGS := $(filter-out -rdynamic,$(LDFLAGS)) -s
-LDLIBS := $(filter-out -lrt,$(LDLIBS))
-ABCMKARGS += ARCHFLAGS="-DSIZEOF_VOID_P=4 -DSIZEOF_LONG=4 -DSIZEOF_INT=4 -DWIN32_NO_DLL -x c++ -fpermissive -w"
-ABCMKARGS += LIBS="lib/x86/pthreadVC2.lib -s" ABC_USE_NO_READLINE=1 CC="$(CXX)" CXX="$(CXX)"
-EXE = .exe
-
-else ifneq ($(CONFIG),none)
-$(error Invalid CONFIG setting '$(CONFIG)'. Valid values: clang, gcc, gcc-4.6, emcc, none)
-endif
-
-
-ifeq ($(ENABLE_ABC),1)
-CXXFLAGS += -DYOSYS_ENABLE_ABC
-TARGETS += yosys-abc$(EXE)
-endif
 
 define add_share_file
 EXTRA_TARGETS += $(subst //,/,$(1)/$(notdir $(2)))
@@ -146,8 +80,8 @@ top-all: $(TARGETS)
 	@echo ""
 
 
-yosys$(EXE): $(OBJS)
-	$(LD) -o yosys$(EXE) $(LDFLAGS) $(OBJS) $(LDLIBS)
+yosys: $(OBJS)
+	$(LD) -o yosys $(LDFLAGS) $(OBJS) $(LDLIBS)
 
 %.o: %.cc
 	mkdir -p $(dir $@)
@@ -162,29 +96,6 @@ kernel/version_$(GIT_REV).cc: $(YOSYS_SRC)/Makefile
 	mkdir -p kernel && echo "namespace Yosys { extern const char *yosys_version_str; const char *yosys_version_str=\"Yosys $(YOSYS_VER) (git sha1 $(GIT_REV), $(notdir $(CXX)) ` \
 			$(CXX) --version | tr ' ()' '\n' | grep '^[0-9]' | head -n1` $(filter -f% -m% -O% -DNDEBUG,$(CXXFLAGS)))\"; }" > kernel/version_$(GIT_REV).cc
 
-
-abc/abc-$(ABCREV)$(EXE):
-
-ifneq ($(ABCREV),default)
-	$(Q) if ( cd abc 2> /dev/null && hg identify; ) | grep -q +; then \
-		echo 'REEBE: NOP pbagnvaf ybpny zbqvsvpngvbaf! Frg NOPERI=qrsnhyg va Lbflf Znxrsvyr!' | tr 'A-Za-z' 'N-ZA-Mn-za-m'; false; \
-	fi
-	$(Q) if test "`cd abc 2> /dev/null && hg identify | cut -f1 -d' '`" != "$(ABCREV)"; then \
-		test $(ABCPULL) -ne 0 || { echo 'REEBE: NOP abg hc gb qngr naq NOPCHYY frg gb 0 va Znxrsvyr!' | tr 'A-Za-z' 'N-ZA-Mn-za-m'; exit 1; }; \
-		echo "Pulling ABC from bitbucket.org:"; set -x; \
-		test -d abc || hg clone https://bitbucket.org/alanmi/abc abc; \
-		cd abc && $(MAKE) DEP= clean && hg pull && hg update -r $(ABCREV); \
-	fi
-endif
-	$(Q) rm -f abc/abc-[0-9a-f]*
-	$(Q) cd abc && $(MAKE) $(S) $(ABCMKARGS) PROG="abc-$(ABCREV)$(EXE)" MSG_PREFIX="$(eval P_OFFSET = 5)$(call P_SHOW)$(eval P_OFFSET = 10) ABC: "
-
-ifeq ($(ABCREV),default)
-.PHONY: abc/abc-$(ABCREV)$(EXE)
-endif
-
-yosys-abc$(EXE): abc/abc-$(ABCREV)$(EXE)
-	cp abc/abc-$(ABCREV)$(EXE) yosys-abc$(EXE)
 
 clean:
 	rm -rf share
