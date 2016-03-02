@@ -149,7 +149,17 @@ make
 # -- Copy the executable to the bin dir
 cp bin/arachne-pnr $INSTALL/bin
 
+# ------------ Compile Yosys 0.6 --------------------------------
+cd $WORK/$UPSTREAM
+wget https://github.com/cliffordwolf/yosys/archive/yosys-0.6.tar.gz
+tar vzxf yosys-0.6.tar.gz
 
+cd $WORK/$BUILD_DIR
+cp -r $WORK/$UPSTREAM/yosys-yosys-0.6 .
+cd yosys-yosys-0.6
+
+# -- Apply the patches
+cp $WORK/$DATA/Makefile.yosys $WORK/$BUILD_DIR/yosys-yosys-0.6/Makefile
 
 
 
