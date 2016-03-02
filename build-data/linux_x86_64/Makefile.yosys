@@ -19,7 +19,7 @@ VPATH := $(YOSYS_SRC)
 
 CXXFLAGS += -Wall -Wextra -I. -I"$(YOSYS_SRC)" -MD -D_YOSYS_ -fPIC -I$(DESTDIR)$(PREFIX)/include
 LDFLAGS += -L$(DESTDIR)$(PREFIX)/lib
-LDLIBS = -static-libstdc++  -static-libgcc -lstdc++ -lm
+LDLIBS = -static -lstdc++ -lm
 SED = sed
 BISON = bison
 
@@ -62,8 +62,8 @@ LD = clang++
 CXXFLAGS += -std=c++11 -Os
 
 else ifeq ($(CONFIG),gcc)
-CXX = gcc
-LD = gcc
+CXX = g++
+LD = g++
 CXXFLAGS += -std=gnu++0x -Os
 
 else ifeq ($(CONFIG),mxe)
