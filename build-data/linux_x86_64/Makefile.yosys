@@ -29,7 +29,7 @@ OBJS =
 GENFILES =
 EXTRA_OBJS =
 EXTRA_TARGETS =
-TARGETS = yosys$(EXE) yosys-config
+TARGETS = yosys$(EXE)
 
 PRETTY = 0
 SMALL = 0
@@ -155,7 +155,7 @@ include $(YOSYS_SRC)/techlibs/*/Makefile.inc
 
 endif
 
-top-all: $(TARGETS) $(EXTRA_TARGETS)
+top-all: $(TARGETS)
 	@echo ""
 	@echo "  Build successful."
 	@echo ""
@@ -178,12 +178,6 @@ kernel/version_$(GIT_REV).cc: $(YOSYS_SRC)/Makefile
 	$(P) rm -f kernel/version_*.o kernel/version_*.d kernel/version_*.cc
 	$(Q) mkdir -p kernel && echo "namespace Yosys { extern const char *yosys_version_str; const char *yosys_version_str=\"Yosys $(YOSYS_VER) (git sha1 $(GIT_REV), $(notdir $(CXX)) ` \
 			$(CXX) --version | tr ' ()' '\n' | grep '^[0-9]' | head -n1` $(filter -f% -m% -O% -DNDEBUG,$(CXXFLAGS)))\"; }" > kernel/version_$(GIT_REV).cc
-
-yosys-config: misc/yosys-config.in
-	$(P) $(SED) -e 's#@CXXFLAGS@#$(subst -I. -I"$(YOSYS_SRC)",-I"$(TARGET_DATDIR)/include",$(CXXFLAGS))#;' \
-			-e 's#@CXX@#$(CXX)#;' -e 's#@LDFLAGS@#$(LDFLAGS)#;' -e 's#@LDLIBS@#$(LDLIBS)#;' \
-			-e 's#@BINDIR@#$(TARGET_BINDIR)#;' -e 's#@DATDIR@#$(TARGET_DATDIR)#;' < $< > yosys-config
-	$(Q) chmod +x yosys-config
 
 
 clean:
