@@ -18,14 +18,6 @@ ENABLE_LIBYOSYS := 0
 ENABLE_GPROF := 0
 ENABLE_NDEBUG := 0
 
-# clang sanitizers
-SANITIZER =
-# SANITIZER = address
-# SANITIZER = memory
-# SANITIZER = undefined
-# SANITIZER = cfi
-
-
 PREFIX ?= /usr/local
 INSTALL_SUDO :=
 
@@ -111,53 +103,10 @@ else ifneq ($(CONFIG),none)
 $(error Invalid CONFIG setting '$(CONFIG)'. Valid values: clang, gcc, gcc-4.6, emcc, none)
 endif
 
-ifeq ($(ENABLE_LIBYOSYS),1)
-TARGETS += libyosys.so
-endif
-
-ifeq ($(ENABLE_READLINE),1)
-CXXFLAGS += -DYOSYS_ENABLE_READLINE
-LDLIBS += -lreadline
-ifeq ($(CONFIG),mxe)
-LDLIBS += -lpdcurses
-endif
-endif
-
-ifeq ($(ENABLE_PLUGINS),1)
-CXXFLAGS += -DYOSYS_ENABLE_PLUGINS $(shell pkg-config --silence-errors --cflags libffi)
-LDLIBS += $(shell pkg-config --silence-errors --libs libffi || echo -lffi) -ldl
-endif
-
-ifeq ($(ENABLE_TCL),1)
-TCL_VERSION ?= tcl$(shell echo 'puts [info tclversion]' | tclsh)
-TCL_INCLUDE ?= /usr/include/$(TCL_VERSION)
-CXXFLAGS += -I$(TCL_INCLUDE) -DYOSYS_ENABLE_TCL
-LDLIBS += -l$(TCL_VERSION)
-endif
-
-ifeq ($(ENABLE_GPROF),1)
-CXXFLAGS += -pg
-LDFLAGS += -pg
-endif
-
-ifeq ($(ENABLE_NDEBUG),1)
-CXXFLAGS := -O3 -DNDEBUG $(filter-out -Os,$(CXXFLAGS))
-endif
 
 ifeq ($(ENABLE_ABC),1)
 CXXFLAGS += -DYOSYS_ENABLE_ABC
 TARGETS += yosys-abc$(EXE)
-endif
-
-ifeq ($(ENABLE_VERIFIC),1)
-VERIFIC_DIR ?= /usr/local/src/verific_lib_eval
-VERIFIC_COMPONENTS ?= verilog vhdl database util containers sdf
-CXXFLAGS += $(patsubst %,-I$(VERIFIC_DIR)/%,$(VERIFIC_COMPONENTS)) -DYOSYS_ENABLE_VERIFIC
-LDLIBS += $(patsubst %,$(VERIFIC_DIR)/%/*-linux.a,$(VERIFIC_COMPONENTS))
-endif
-
-ifeq ($(ENABLE_COVER),1)
-CXXFLAGS += -DYOSYS_ENABLE_COVER
 endif
 
 define add_share_file
@@ -267,9 +216,6 @@ top-all: $(TARGETS) $(EXTRA_TARGETS)
 	@echo "  Build successful."
 	@echo ""
 
-ifeq ($(CONFIG),emcc)
-yosys.js: $(filter-out yosysjs-$(YOSYS_VER).zip,$(EXTRA_TARGETS))
-endif
 
 yosys$(EXE): $(OBJS)
 	$(P) $(LD) -o yosys$(EXE) $(LDFLAGS) $(OBJS) $(LDLIBS)
