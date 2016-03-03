@@ -144,7 +144,7 @@ mkdir -p $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 cp -r $WORK/build-data/$ARACHNE/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 
 # -- Compile it
-#make -j$(( $(nproc) -1))
+make -j$(( $(nproc) -1))
 
 # -- Copy the executable to the bin dir
 cp bin/arachne-pnr $INSTALL/bin
@@ -172,6 +172,23 @@ cp -r $WORK/build-data/yosys/share/* $INSTALL/share/yosys
 
 # -- Copy the executable files
 cp yosys $INSTALL/bin
+
+
+# ----------------- Compile yosys-abc --------------------------------
+echo "-------------> BUILDING YOSYS-ABS:"
+cd $WORK/$UPSTREAM
+test -d abc || hg clone https://bitbucket.org/alanmi/abc abc
+
+cd $WORK/$BUILD_DIR
+cp -r $WORK/$UPSTREAM/abc .
+cd abc
+
+# -- Apply the patches
+cp $WORK/$DATA/Makefile.yosys-abc $WORK/$BUILD_DIR/abc/Makefile
+
+# -- Compile it
+make -j$(( $(nproc) -1))
+
 cp yosys-abc $INSTALL/bin
 
 # ---------------------- Create the package --------------------------
@@ -180,31 +197,3 @@ tar vzcf $TARBALL $NAME
 
 # -- Move the package to the packages dir
 mv $TARBALL $WORK/$PACK_DIR
-
-
-
-# Install Arachne-PNR
-#git -C arachne-pnr pull || git clone https://github.com/cseed/arachne-pnr.git arachne-pnr
-#cd arachne-pnr
-#if [ "$1" == "clean" ]; then
-#    make clean
-#fi
-#cp $WORK/packages/build_x86_64/Makefile.arachne Makefile
-#make -j$(( $(nproc) -1))
-#make install DESTDIR=$TCDIR PREFIX="" ICEBOX="$TCDIR/share/icebox"
-#cd ..
-
-# Install Yosys
-#git -C yosys pull || git clone https://github.com/cliffordwolf/yosys.git yosys
-#cd yosys
-#if [ "$1" == "clean" ]; then
-#    make clean
-#fi
-
-#cp $WORK/packages/build_x86_64/Makefile.yosys Makefile
-#make -j$nproc$(( $(nproc) -1)) || exit 1
-#make install DESTDIR=$TCDIR PREFIX=""
-#cd ..
-
-# Package tarball
-#tar -czvf $TARBALL $NAME
