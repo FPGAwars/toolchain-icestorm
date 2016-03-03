@@ -1,28 +1,18 @@
 
-PREFIX ?= /usr/local
-
-EXE =
-OBJS =
-GENFILES =
-EXTRA_OBJS =
-EXTRA_TARGETS =
-
 all: yosys
-
-YOSYS_SRC := ./
 
 CXX = gcc
 LD = gcc
-CXXFLAGS += -Wall -Wextra -I. -MD -D_YOSYS_ -fPIC -I$(PREFIX)/include
-CXXFLAGS += -std=gnu++0x -Os
+CXXFLAGS = -Wall -Wextra -I. -MD -D_YOSYS_ -fPIC -std=gnu++0x -Os
 CXXFLAGS += -DYOSYS_ENABLE_ABC
-LDFLAGS += -L$(PREFIX)/lib -rdynamic
+LDFLAGS = -rdynamic
 LDLIBS = -static -lstdc++ -lm -lrt
 SED = sed
 BISON = bison
 YOSYS_VER := 0.6
 OBJS = kernel/version_Apio_build_0.6.o
-OBJS += kernel/driver.o kernel/register.o kernel/rtlil.o kernel/log.o kernel/calc.o
+OBJS += kernel/driver.o kernel/register.o kernel/rtlil.o kernel/log.o
+OBJS += kernel/calc.o
 OBJS += kernel/yosys.o kernel/cellaigs.o
 
 kernel/log.o: CXXFLAGS += -DYOSYS_SRC='./'
@@ -61,7 +51,7 @@ yosys: $(OBJS)
 
 clean:
 	rm -rf share
-	rm -f $(OBJS) $(GENFILES) yosys $(EXTRA_TARGETS) $(EXTRA_OBJS)
+	rm -f $(OBJS) yosys
 	rm -f kernel/version_*.o
 	rm -f libs/*/*.d frontends/*/*.d passes/*/*.d backends/*/*.d
 	rm -f kernel/*.d techlibs/*/*.d
