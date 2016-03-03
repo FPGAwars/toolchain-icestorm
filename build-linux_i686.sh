@@ -176,7 +176,22 @@ cp -r $WORK/build-data/yosys/share/* $INSTALL/share/yosys
 # -- Copy the executable files
 cp yosys $INSTALL/bin
 
+# ----------------- Compile yosys-abc --------------------------------
+echo "-------------> BUILDING YOSYS-ABS:"
+cd $WORK/$UPSTREAM
+test -d abc || hg clone https://bitbucket.org/alanmi/abc abc
 
+cd $WORK/$BUILD_DIR
+cp -r $WORK/$UPSTREAM/abc .
+cd abc
+
+# -- Apply the patches
+cp $WORK/$DATA/Makefile.yosys-abc $WORK/$BUILD_DIR/abc/Makefile
+
+# -- Compile it
+make -j$(( $(nproc) -1))
+
+cp yosys-abc $INSTALL/bin
 
 
 # ---------------------- Create the package
