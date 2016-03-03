@@ -167,7 +167,8 @@ make -j$(( $(nproc) -1))
 
 # -- Copy the share folder to the install folder
 mkdir -p $INSTALL/share/
-cp -r $WORK/build-data/yosys/share/* $INSTALL/share
+mkdir -p $INSTALL/share/yosys
+cp -r $WORK/build-data/yosys/share/* $INSTALL/share/yosys
 
 # -- Copy the executable files
 cp yosys $INSTALL/bin
