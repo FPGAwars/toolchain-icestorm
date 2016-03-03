@@ -14,6 +14,7 @@ UPSTREAM=upstream
 # -- Git url were to retieve the upstream sources
 GIT_ICESTORM=https://github.com/cliffordwolf/icestorm.git
 GIT_ARACHNE=https://github.com/cseed/arachne-pnr.git
+REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/yosys-0.6.tar.gz
 
 # -- Folder for storing the generated packages
 PACK_DIR=packages
@@ -151,9 +152,46 @@ make
 # -- Copy the executable to the bin dir
 cp bin/arachne-pnr $INSTALL/bin
 
+# ------------ Compile Yosys 0.6 --------------------------------
+cd $WORK/$UPSTREAM
+test -e yosys-0.6.tar.gz || wget $REL_YOSYS
+tar vzxf yosys-0.6.tar.gz
 
+cd $WORK/$BUILD_DIR
+cp -r $WORK/$UPSTREAM/yosys-yosys-0.6 .
+cd yosys-yosys-0.6
 
+# -- Apply the patches
+cp $WORK/$DATA/Makefile.yosys $WORK/$BUILD_DIR/yosys-yosys-0.6/Makefile
+cp $WORK/build-data/yosys/version*.cc $WORK/$BUILD_DIR/yosys-yosys-0.6/kernel
 
+# -- Compile it
+make -j$(( $(nproc) -1))
+
+# -- Copy the share folder to the install folder
+mkdir -p $INSTALL/share/
+mkdir -p $INSTALL/share/yosys
+cp -r $WORK/build-data/yosys/share/* $INSTALL/share/yosys
+
+# -- Copy the executable files
+cp yosys $INSTALL/bin
+
+# ----------------- Compile yosys-abc --------------------------------
+echo "-------------> BUILDING YOSYS-ABS:"
+cd $WORK/$UPSTREAM
+test -d abc || hg clone https://bitbucket.org/alanmi/abc abc
+
+cd $WORK/$BUILD_DIR
+cp -r $WORK/$UPSTREAM/abc .
+cd abc
+
+# -- Apply the patches
+cp $WORK/$DATA/Makefile.yosys-abc $WORK/$BUILD_DIR/abc/Makefile
+
+# -- Compile it
+make -j$(( $(nproc) -1))
+
+cp yosys-abc $INSTALL/bin
 
 
 # ---------------------- Create the package
