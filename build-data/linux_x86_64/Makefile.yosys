@@ -34,20 +34,17 @@ include passes/*/Makefile.inc
 include backends/*/Makefile.inc
 include techlibs/*/Makefile.inc
 
-test:
-	@echo "YOSYS_SRC:"
-	@echo $(YOSYS_SRC)
 
 yosys: $(OBJS)
 	$(LD) -o yosys $(LDFLAGS) $(OBJS) $(LDLIBS)
 
 %.o: %.cc
 	mkdir -p $(dir $@)
-	$(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
+	$(CXX) -o $@ -c $(CXXFLAGS) $<
 
 %.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
+	$(CXX) -o $@ -c $(CXXFLAGS) $<
 
 clean:
 	rm -rf share
