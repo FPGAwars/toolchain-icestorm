@@ -1,114 +1,40 @@
 
-CONFIG := gcc
-# CONFIG := gcc
-# CONFIG := gcc-4.6
-# CONFIG := emcc
-# CONFIG := mxe
-
-# features (the more the better)
-ENABLE_TCL := 0
-ENABLE_ABC := 1
-ENABLE_PLUGINS := 0
-ENABLE_READLINE := 0
-ENABLE_VERIFIC := 0
-ENABLE_COVER := 0
-ENABLE_LIBYOSYS := 0
-
-# other configuration flags
-ENABLE_GPROF := 0
-ENABLE_NDEBUG := 0
-
 PREFIX ?= /usr/local
-INSTALL_SUDO :=
-
-TARGET_BINDIR := $(DESTDIR)$(PREFIX)/bin
-TARGET_DATDIR := $(DESTDIR)$(PREFIX)/share/yosys
 
 EXE =
 OBJS =
 GENFILES =
 EXTRA_OBJS =
 EXTRA_TARGETS =
-TARGETS = yosys$(EXE)
 
-PRETTY = 0
-SMALL = 0
+all: yosys
 
-all: top-all
-
-YOSYS_SRC := $(dir $(firstword $(MAKEFILE_LIST)))
-VPATH := $(YOSYS_SRC)
-
-CXXFLAGS += -Wall -Wextra -ggdb -I. -I"$(YOSYS_SRC)" -MD -D_YOSYS_ -fPIC -I$(DESTDIR)$(PREFIX)/include
-LDFLAGS += -L$(DESTDIR)$(PREFIX)/lib
-LDLIBS = -static -lstdc++ -lm
-SED = sed
-BISON = bison
-
-ifeq (Darwin,$(findstring Darwin,$(shell uname)))
-	# add macports/homebrew include and library path to search directories, don't use '-rdynamic' and '-lrt':
-	CXXFLAGS += -I/opt/local/include -I/usr/local/opt/readline/include
-	LDFLAGS += -L/opt/local/lib -L/usr/local/opt/readline/lib
-	# add homebrew's libffi include and library path
-	CXXFLAGS += $(shell PKG_CONFIG_PATH=$$(brew list libffi | grep pkgconfig | xargs dirname) pkg-config --silence-errors --cflags libffi)
-	LDFLAGS += $(shell PKG_CONFIG_PATH=$$(brew list libffi | grep pkgconfig | xargs dirname) pkg-config --silence-errors --libs libffi)
-	# use bison installed by homebrew if available
-	BISON = $(shell (brew list bison | grep -m1 "bin/bison") || echo bison)
-	SED = sed
-else
-	LDFLAGS += -rdynamic
-	LDLIBS += -lrt
-endif
-
-YOSYS_VER := 0.6
-GIT_REV := Apio_build_0.6
-OBJS = kernel/version_$(GIT_REV).o
-
-# set 'ABCREV = default' to use abc/ as it is
-#
-# Note: If you do ABC development, make sure that 'abc' in this directory
-# is just a symlink to your actual ABC working directory, as 'make mrproper'
-# will remove the 'abc' directory and you do not want to accidentally
-# delete your work on ABC..
-ABCREV = ae7d65e71adc
-ABCPULL = 1
-ABCMKARGS = CC="$(CXX)" CXX="$(CXX)"
-
-define newline
-endef
+YOSYS_SRC := ./
 
 CXX = gcc
 LD = gcc
+CXXFLAGS += -Wall -Wextra -I. -MD -D_YOSYS_ -fPIC -I$(PREFIX)/include
 CXXFLAGS += -std=gnu++0x -Os
-
-
-ifeq ($(ENABLE_ABC),1)
 CXXFLAGS += -DYOSYS_ENABLE_ABC
-endif
+LDFLAGS += -L$(PREFIX)/lib -rdynamic
+LDLIBS = -static -lstdc++ -lm -lrt
+SED = sed
+BISON = bison
+YOSYS_VER := 0.6
+OBJS = kernel/version_Apio_build_0.6.o
+
 
 define add_share_file
 EXTRA_TARGETS += $(subst //,/,$(1)/$(notdir $(2)))
 $(subst //,/,$(1)/$(notdir $(2))): $(2)
-	$$(P) mkdir -p $(1)
+	$$(P)mkdir -p $(1)
 	$$(Q) cp "$(YOSYS_SRC)"/$(2) $(subst //,/,$(1)/$(notdir $(2)))
-endef
-
-define add_gen_share_file
-EXTRA_TARGETS += $(subst //,/,$(1)/$(notdir $(2)))
-$(subst //,/,$(1)/$(notdir $(2))): $(2)
-	$$(P) mkdir -p $(1)
-	$$(Q) cp $(2) $(subst //,/,$(1)/$(notdir $(2)))
 endef
 
 define add_include_file
 $(eval $(call add_share_file,$(dir share/include/$(1)),$(1)))
 endef
 
-
-P_SHOW = ->
-P =
-Q =
-S =
 
 $(eval $(call add_include_file,kernel/yosys.h))
 $(eval $(call add_include_file,kernel/hashlib.h))
@@ -128,37 +54,29 @@ $(eval $(call add_include_file,libs/sha1/sha1.h))
 $(eval $(call add_include_file,passes/fsm/fsmdata.h))
 $(eval $(call add_include_file,backends/ilang/ilang_backend.h))
 
-OBJS += kernel/driver.o kernel/register.o kernel/rtlil.o kernel/log.o kernel/calc.o kernel/yosys.o kernel/cellaigs.o
-kernel/log.o: CXXFLAGS += -DYOSYS_SRC='"$(YOSYS_SRC)"'
+OBJS += kernel/driver.o kernel/register.o kernel/rtlil.o kernel/log.o kernel/calc.o 
+OBJS += kernel/yosys.o kernel/cellaigs.o
 
-OBJS += libs/bigint/BigIntegerAlgorithms.o libs/bigint/BigInteger.o libs/bigint/BigIntegerUtils.o
+kernel/log.o: CXXFLAGS += -DYOSYS_SRC='./'
+
+OBJS += libs/bigint/BigIntegerAlgorithms.o libs/bigint/BigInteger.o
+OBJS += libs/bigint/BigIntegerUtils.o
 OBJS += libs/bigint/BigUnsigned.o libs/bigint/BigUnsignedInABase.o
-
 OBJS += libs/sha1/sha1.o
-
 OBJS += libs/subcircuit/subcircuit.o
-
 OBJS += libs/ezsat/ezsat.o
 OBJS += libs/ezsat/ezminisat.o
-
 OBJS += libs/minisat/Options.o
 OBJS += libs/minisat/SimpSolver.o
 OBJS += libs/minisat/Solver.o
 OBJS += libs/minisat/System.o
 
-include $(YOSYS_SRC)/frontends/*/Makefile.inc
-include $(YOSYS_SRC)/passes/*/Makefile.inc
-include $(YOSYS_SRC)/backends/*/Makefile.inc
-include $(YOSYS_SRC)/techlibs/*/Makefile.inc
-
-top-all: test $(TARGETS)
-	@echo ""
-	@echo "  Build successful."
-	@echo ""
+include frontends/*/Makefile.inc
+include passes/*/Makefile.inc
+include backends/*/Makefile.inc
+include techlibs/*/Makefile.inc
 
 test:
-	@echo "GIT-REV:"
-	@echo $(GIT-REV)
 	@echo "YOSYS_SRC:"
 	@echo $(YOSYS_SRC)
 
@@ -175,7 +93,7 @@ yosys: $(OBJS)
 
 clean:
 	rm -rf share
-	rm -f $(OBJS) $(GENFILES) $(TARGETS) $(EXTRA_TARGETS) $(EXTRA_OBJS)
+	rm -f $(OBJS) $(GENFILES) yosys $(EXTRA_TARGETS) $(EXTRA_OBJS)
 	rm -f kernel/version_*.o
 	rm -f libs/*/*.d frontends/*/*.d passes/*/*.d backends/*/*.d
 	rm -f kernel/*.d techlibs/*/*.d
