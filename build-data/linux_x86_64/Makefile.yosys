@@ -1,6 +1,8 @@
 
 all: yosys
 
+#-- Configuration
+
 CXX = gcc
 LD = gcc
 CXXFLAGS = -Wall -Wextra -I. -MD -D_YOSYS_ -fPIC -std=gnu++0x -Os
@@ -10,6 +12,8 @@ LDLIBS = -static -lstdc++ -lm -lrt
 SED = sed
 BISON = bison
 YOSYS_VER := 0.6
+
+# -- Dependencies
 OBJS = kernel/version_Apio_build_0.6.o
 OBJS += kernel/driver.o kernel/register.o kernel/rtlil.o kernel/log.o
 OBJS += kernel/calc.o
@@ -35,6 +39,7 @@ include backends/*/Makefile.inc
 include techlibs/*/Makefile.inc
 
 
+# - Build rules
 yosys: $(OBJS)
 	$(LD) -o yosys $(LDFLAGS) $(OBJS) $(LDLIBS)
 
