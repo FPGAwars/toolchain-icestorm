@@ -197,31 +197,3 @@ tar vzcf $TARBALL $NAME
 
 # -- Move the package to the packages dir
 mv $TARBALL $WORK/$PACK_DIR
-
-
-
-# Install Arachne-PNR
-#git -C arachne-pnr pull || git clone https://github.com/cseed/arachne-pnr.git arachne-pnr
-#cd arachne-pnr
-#if [ "$1" == "clean" ]; then
-#    make clean
-#fi
-#cp $WORK/packages/build_x86_64/Makefile.arachne Makefile
-#make -j$(( $(nproc) -1))
-#make install DESTDIR=$TCDIR PREFIX="" ICEBOX="$TCDIR/share/icebox"
-#cd ..
-
-# Install Yosys
-#git -C yosys pull || git clone https://github.com/cliffordwolf/yosys.git yosys
-#cd yosys
-#if [ "$1" == "clean" ]; then
-#    make clean
-#fi
-
-#cp $WORK/packages/build_x86_64/Makefile.yosys Makefile
-#make -j$nproc$(( $(nproc) -1)) || exit 1
-#make install DESTDIR=$TCDIR PREFIX=""
-#cd ..
-
-# Package tarball
-#tar -czvf $TARBALL $NAME
