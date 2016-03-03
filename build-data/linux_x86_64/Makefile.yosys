@@ -2,7 +2,7 @@
 all: yosys
 
 #-- Configuration
-
+TARGET = yosys
 CXX = gcc
 LD = gcc
 CXXFLAGS = -Wall -Wextra -I. -MD -D_YOSYS_ -fPIC -std=gnu++0x -Os
@@ -11,6 +11,22 @@ LDFLAGS = -rdynamic
 LDLIBS = -static -lstdc++ -lm -lrt
 SED = sed
 BISON = bison
+SMALL = 0
+YOSYS_VER := 0.6
+ENABLE_TCL := 0
+ENABLE_ABC := 1
+ENABLE_PLUGINS := 0
+ENABLE_READLINE := 0
+ENABLE_VERIFIC := 0
+ENABLE_COVER := 0
+ENABLE_LIBYOSYS := 0
+ENABLE_GPROF := 0
+ENABLE_NDEBUG := 0
+
+GENFILES =
+EXTRA_OBJS =
+EXTRA_TARGETS =
+YOSYS_SRC := ./
 YOSYS_VER := 0.6
 
 # -- Dependencies
@@ -40,6 +56,13 @@ include techlibs/*/Makefile.inc
 
 
 # - Build rules
+
+top-all: $(TARGETS) $(EXTRA_TARGETS)
+	@echo ""
+	@echo "  Build successful."
+	@echo ""
+
+
 yosys: $(OBJS)
 	$(LD) -o yosys $(LDFLAGS) $(OBJS) $(LDLIBS)
 
@@ -53,7 +76,7 @@ yosys: $(OBJS)
 
 clean:
 	rm -rf share
-	rm -f $(OBJS) yosys
+	rm -f $(OBJS) $(GENFILES) $(TARGETS) $(EXTRA_TARGETS) $(EXTRA_OBJS)
 	rm -f kernel/version_*.o
 	rm -f libs/*/*.d frontends/*/*.d passes/*/*.d backends/*/*.d
 	rm -f kernel/*.d techlibs/*/*.d
