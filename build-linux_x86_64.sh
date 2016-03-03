@@ -14,6 +14,7 @@ UPSTREAM=upstream
 # -- Git url were to retieve the upstream sources
 GIT_ICESTORM=https://github.com/cliffordwolf/icestorm.git
 GIT_ARACHNE=https://github.com/cseed/arachne-pnr.git
+REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/yosys-0.6.tar.gz
 
 # -- Folder for storing the generated packages
 PACK_DIR=packages
@@ -151,7 +152,7 @@ cp bin/arachne-pnr $INSTALL/bin
 
 # ------------ Compile Yosys 0.6 --------------------------------
 cd $WORK/$UPSTREAM
-wget https://github.com/cliffordwolf/yosys/archive/yosys-0.6.tar.gz
+test -e yosys-0.6.tar.gz || wget $REL_YOSYS
 tar vzxf yosys-0.6.tar.gz
 
 cd $WORK/$BUILD_DIR
