@@ -61,7 +61,7 @@ else
 endif
 
 YOSYS_VER := 0.6
-GIT_REV := $(shell cd $(YOSYS_SRC) && git rev-parse --short HEAD 2> /dev/null || echo UNKNOWN)
+GIT_REV := Apio_build_0.6
 OBJS = kernel/version_$(GIT_REV).o
 
 # set 'ABCREV = default' to use abc/ as it is
@@ -136,8 +136,6 @@ OBJS += libs/bigint/BigUnsigned.o libs/bigint/BigUnsignedInABase.o
 
 OBJS += libs/sha1/sha1.o
 
-ifneq ($(SMALL),1)
-
 OBJS += libs/subcircuit/subcircuit.o
 
 OBJS += libs/ezsat/ezsat.o
@@ -153,35 +151,31 @@ include $(YOSYS_SRC)/passes/*/Makefile.inc
 include $(YOSYS_SRC)/backends/*/Makefile.inc
 include $(YOSYS_SRC)/techlibs/*/Makefile.inc
 
-endif
-
-top-all: $(TARGETS)
+top-all: test $(TARGETS)
 	@echo ""
 	@echo "  Build successful."
 	@echo ""
 
-yosys$(EXE): $(OBJS)
-	$(P) $(LD) -o yosys$(EXE) $(LDFLAGS) $(OBJS) $(LDLIBS)
+test:
+	@echo "GIT-REV:"
+	@echo $(GIT-REV)
+	@echo "YOSYS_SRC:"
+	@echo $(YOSYS_SRC)
 
-libyosys.so: $(filter-out kernel/driver.o,$(OBJS))
-	$(P) $(LD) -o libyosys.so -shared -Wl,-soname,libyosys.so $(LDFLAGS) $^ $(LDLIBS)
+yosys: $(OBJS)
+	$(LD) -o yosys $(LDFLAGS) $(OBJS) $(LDLIBS)
 
 %.o: %.cc
-	$(Q) mkdir -p $(dir $@)
-	$(P) $(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
+	mkdir -p $(dir $@)
+	$(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
 
 %.o: %.cpp
-	$(Q) mkdir -p $(dir $@)
-	$(P) $(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
-
-kernel/version_$(GIT_REV).cc: $(YOSYS_SRC)/Makefile
-	$(P) rm -f kernel/version_*.o kernel/version_*.d kernel/version_*.cc
-	$(Q) mkdir -p kernel && echo "namespace Yosys { extern const char *yosys_version_str; const char *yosys_version_str=\"Yosys $(YOSYS_VER) (git sha1 $(GIT_REV), $(notdir $(CXX)) ` \
-			$(CXX) --version | tr ' ()' '\n' | grep '^[0-9]' | head -n1` $(filter -f% -m% -O% -DNDEBUG,$(CXXFLAGS)))\"; }" > kernel/version_$(GIT_REV).cc
-
+	mkdir -p $(dir $@)
+	$(CXX) -o $@ -c $(CPPFLAGS) $(CXXFLAGS) $<
 
 clean:
 	rm -rf share
 	rm -f $(OBJS) $(GENFILES) $(TARGETS) $(EXTRA_TARGETS) $(EXTRA_OBJS)
-	rm -f kernel/version_*.o kernel/version_*.cc abc/abc-[0-9a-f]*
-	rm -f libs/*/*.d frontends/*/*.d passes/*/*.d backends/*/*.d kernel/*.d techlibs/*/*.d
+	rm -f kernel/version_*.o
+	rm -f libs/*/*.d frontends/*/*.d passes/*/*.d backends/*/*.d
+	rm -f kernel/*.d techlibs/*/*.d

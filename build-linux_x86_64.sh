@@ -160,6 +160,7 @@ cd yosys-yosys-0.6
 
 # -- Apply the patches
 cp $WORK/$DATA/Makefile.yosys $WORK/$BUILD_DIR/yosys-yosys-0.6/Makefile
+cp $WORK/build-data/yosys/version*.cc $WORK/$BUILD_DIR/yosys-yosys-0.6/kernel
 
 # -- Compile it
 make -j$(( $(nproc) -1))
