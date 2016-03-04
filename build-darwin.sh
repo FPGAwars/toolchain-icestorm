@@ -65,7 +65,7 @@ fi
 
 # Install dependencies
 echo "Installing dependencies..."
-sudo brew install libusb libftdi python3 gnu-sed gawk mercurial bison
+sudo brew install libusb libftdi python3 gnu-sed gawk mercurial bison wget
 
 # Create the upstream directory and enter into it
 mkdir -p $UPSTREAM
@@ -160,7 +160,7 @@ cp $WORK/$DATA/Makefile.yosys $WORK/$BUILD_DIR/yosys-yosys-0.6/Makefile
 cp $WORK/build-data/yosys/version*.cc $WORK/$BUILD_DIR/yosys-yosys-0.6/kernel
 
 # -- Compile it
-make -j$(( $(nproc) -1))
+make 
 
 # -- Copy the share folder to the install folder
 mkdir -p $INSTALL/share/
