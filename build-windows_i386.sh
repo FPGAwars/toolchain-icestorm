@@ -14,6 +14,8 @@ UPSTREAM=upstream
 # -- Git url were to retieve the upstream sources
 GIT_ICESTORM=https://github.com/cliffordwolf/icestorm.git
 GIT_ARACHNE=https://github.com/cseed/arachne-pnr.git
+REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/yosys-0.6.tar.gz
+
 
 # -- Folder for storing the generated packages
 PACK_DIR=packages
@@ -142,11 +144,34 @@ cp -r $WORK/$DATA/arachne.patch/* $WORK/$BUILD_DIR/$ARACHNE
 cp -r $WORK/build-data/$ARACHNE $WORK/$BUILD_DIR/$NAME/share
 
 # -- Compile it
-make
+#make
 
 # -- Copy the executable to the bin dir
 cp bin/arachne-pnr.exe $INSTALL/bin
 
+# ------------ Compile Yosys 0.6 --------------------------------
+cd $WORK/$UPSTREAM
+test -e yosys-0.6.tar.gz || wget $REL_YOSYS
+tar vzxf yosys-0.6.tar.gz
+
+cd $WORK/$BUILD_DIR
+cp -r $WORK/$UPSTREAM/yosys-yosys-0.6 .
+cd yosys-yosys-0.6
+
+# -- Apply the patches
+cp $WORK/$DATA/Makefile.yosys $WORK/$BUILD_DIR/yosys-yosys-0.6/Makefile
+cp $WORK/build-data/yosys/version*.cc $WORK/$BUILD_DIR/yosys-yosys-0.6/kernel
+
+# -- Compile it
+make -j$(( $(nproc) -1))
+
+# -- Copy the share folder to the install folder
+mkdir -p $INSTALL/share/
+mkdir -p $INSTALL/share/yosys
+cp -r $WORK/build-data/yosys/share/* $INSTALL/share/yosys
+
+# -- Copy the executable files
+cp yosys.exe $INSTALL/bin
 
 
 
