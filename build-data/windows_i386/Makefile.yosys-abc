@@ -1,0 +1,101 @@
+
+CC   := i686-w64-mingw32-gcc
+CXX  := i686-w64-mingw32-gcc
+LD   := i686-w64-mingw32-gcc
+PROG := yosys-abc.exe
+
+MODULES := \
+	$(wildcard src/ext*) \
+	src/base/abc src/base/abci src/base/cmd src/base/io src/base/main \
+	src/base/ver src/base/wlc src/base/bac src/base/cba src/base/pla src/base/test \
+	src/map/mapper src/map/mio src/map/super src/map/if \
+	src/map/amap src/map/cov src/map/scl src/map/mpm \
+	src/misc/extra src/misc/mvc src/misc/st src/misc/util src/misc/nm \
+	src/misc/vec src/misc/hash src/misc/tim src/misc/bzlib src/misc/zlib \
+	src/misc/mem src/misc/bar src/misc/bbl src/misc/parse \
+	src/opt/cut src/opt/fxu src/opt/rwr src/opt/mfs src/opt/sim \
+	src/opt/ret src/opt/fret src/opt/res src/opt/lpk src/opt/nwk src/opt/rwt \
+	src/opt/cgt src/opt/csw src/opt/dar src/opt/dau src/opt/sfm \
+	src/sat/bsat src/sat/csat src/sat/msat src/sat/psat src/sat/cnf src/sat/bmc \
+	src/bool/bdc src/bool/deco src/bool/dec src/bool/kit src/bool/lucky \
+	src/bool/rsb src/bool/rpo \
+	src/proof/pdr src/proof/abs src/proof/live src/proof/ssc src/proof/int \
+	src/proof/cec src/proof/dch src/proof/fraig src/proof/fra src/proof/ssw \
+	src/aig/aig src/aig/saig src/aig/gia src/aig/ioa src/aig/ivy src/aig/hop \
+	src/aig/miniaig
+
+all: $(PROG)
+default: $(PROG)
+
+ARCHFLAGS_EXE ?= ./arch_flags
+
+$(ARCHFLAGS_EXE) : arch_flags.c
+	$(CC) arch_flags.c -o $(ARCHFLAGS_EXE)
+
+INCLUDES += -Isrc
+
+ARCHFLAGS := -DSIZEOF_VOID_P=4 -DSIZEOF_LONG=4 -DSIZEOF_INT=4 -DWIN32 -DWIN32_NO_DLL -x c++ -fpermissive -w
+
+OPTFLAGS  ?= -g -O
+
+CFLAGS    += -Wall -Wno-unused-function -Wno-write-strings -Wno-sign-compare $(ARCHFLAGS)
+ABC_USE_NO_READLINE=1
+
+# compile CUDD with ABC
+ifndef ABC_USE_NO_CUDD
+  CFLAGS += -DABC_USE_CUDD=1
+  MODULES += src/bdd/cudd src/bdd/extrab src/bdd/dsd src/bdd/epd src/bdd/mtr src/bdd/reo src/bdd/cas src/bdd/bbr src/bdd/llb
+  $(info $(MSG_PREFIX)Compiling with CUDD)
+endif
+
+
+CFLAGS += -Wno-unused-but-set-variable
+LIBS += -static -lm
+
+CXXFLAGS += $(CFLAGS)
+
+SRC  :=
+GARBAGE := core core.* *.stackdump ./tags $(PROG) arch_flags
+
+.PHONY: all default clean docs cmake_info
+
+include $(patsubst %, %/module.make, $(MODULES))
+
+OBJ := \
+	$(patsubst %.cc, %.o, $(filter %.cc, $(SRC))) \
+	$(patsubst %.cpp, %.o, $(filter %.cpp, $(SRC))) \
+	$(patsubst %.c, %.o,  $(filter %.c, $(SRC)))  \
+	$(patsubst %.y, %.o,  $(filter %.y, $(SRC)))
+
+DEP := $(OBJ:.o=.d)
+
+# implicit rules
+
+%.o: %.c
+	$(CC) -c $(OPTFLAGS) $(INCLUDES) $(CFLAGS) $< -o $@
+
+%.o: %.cc
+	$(CXX) -c $(OPTFLAGS) $(INCLUDES) $(CXXFLAGS) $< -o $@
+
+%.o: %.cpp
+	$(CXX) -c $(OPTFLAGS) $(INCLUDES) $(CXXFLAGS) $< -o $@
+
+%.d: %.c
+	./depends.sh $(CC) `dirname $*.c` $(OPTFLAGS) $(INCLUDES) $(CFLAGS) $*.c > $@
+
+%.d: %.cc
+	./depends.sh $(CXX) `dirname $*.cc` $(OPTFLAGS) $(INCLUDES) $(CXXFLAGS) $*.cc > $@
+
+%.d: %.cpp
+	./depends.sh $(CXX) `dirname $*.cpp` $(OPTFLAGS) $(INCLUDES) $(CXXFLAGS) $*.cpp > $@
+
+
+# Actual targets
+
+depend: $(DEP)
+
+clean:
+	rm -rvf $(PROG) lib$(PROG).a $(OBJ) $(GARBAGE) $(OBJ:.o=.d)
+
+$(PROG): $(OBJ)
+	$(LD) -o $@ $^  $(LIBS)
