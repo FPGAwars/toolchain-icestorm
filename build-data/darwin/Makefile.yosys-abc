@@ -51,7 +51,7 @@ endif
 
 
 CFLAGS += -Wno-unused-but-set-variable
-LIBS += -static -ldl -lm
+LIBS += -ldl -lm
 
 CXXFLAGS += $(CFLAGS)
 
