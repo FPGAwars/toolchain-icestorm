@@ -106,26 +106,26 @@ cd $WORK/$BUILD_DIR/$ICEPROG
 cp $WORK/$DATA/Makefile.iceprog $WORK/$BUILD_DIR/$ICEPROG/Makefile
 
 # -- Compile it!
-make
-
-# -- Copy the executable to the bin dir
-cp iceprog $INSTALL/bin
-
-# ---------------- Compile the icepack
-#cd $WORK/$BUILD_DIR
-
-# -- Copy the sources into the build directory
-#cp -r $WORK/$UPSTREAM/$ICESTORM/$ICEPACK .
-#cd $ICEPACK
-
-# -- Apply the patches
-#cp $WORK/$DATA/Makefile.icepack $WORK/$BUILD_DIR/$ICEPACK/Makefile
-
-# -- Compile it
 #make
 
 # -- Copy the executable to the bin dir
-#cp icepack $INSTALL/bin
+#cp iceprog $INSTALL/bin
+
+# ---------------- Compile the icepack
+cd $WORK/$BUILD_DIR
+
+# -- Copy the sources into the build directory
+cp -r $WORK/$UPSTREAM/$ICESTORM/$ICEPACK .
+cd $ICEPACK
+
+# -- Apply the patches
+cp $WORK/$DATA/Makefile.icepack $WORK/$BUILD_DIR/$ICEPACK/Makefile
+
+# -- Compile it
+make
+
+# -- Copy the executable to the bin dir
+cp icepack $INSTALL/bin
 
 # ----------- Compile Arachne-pnr ----------------------------------
 #cd $WORK/$UPSTREAM
