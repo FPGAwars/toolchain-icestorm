@@ -143,34 +143,34 @@ mkdir -p $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 cp -r $WORK/build-data/$ARACHNE/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 
 # -- Compile it
-make -j$(( $(nproc) -1))
-
-# -- Copy the executable to the bin dir
-cp bin/arachne-pnr $INSTALL/bin
-
-# ------------ Compile Yosys 0.6 --------------------------------
-#cd $WORK/$UPSTREAM
-#test -e yosys-0.6.tar.gz || wget $REL_YOSYS
-#tar vzxf yosys-0.6.tar.gz
-
-#cd $WORK/$BUILD_DIR
-#cp -r $WORK/$UPSTREAM/yosys-yosys-0.6 .
-#cd yosys-yosys-0.6
-
-# -- Apply the patches
-#cp $WORK/$DATA/Makefile.yosys $WORK/$BUILD_DIR/yosys-yosys-0.6/Makefile
-#cp $WORK/build-data/yosys/version*.cc $WORK/$BUILD_DIR/yosys-yosys-0.6/kernel
-
-# -- Compile it
 #make -j$(( $(nproc) -1))
 
+# -- Copy the executable to the bin dir
+#cp bin/arachne-pnr $INSTALL/bin
+
+# ------------ Compile Yosys 0.6 --------------------------------
+cd $WORK/$UPSTREAM
+test -e yosys-0.6.tar.gz || wget $REL_YOSYS
+tar vzxf yosys-0.6.tar.gz
+
+cd $WORK/$BUILD_DIR
+cp -r $WORK/$UPSTREAM/yosys-yosys-0.6 .
+cd yosys-yosys-0.6
+
+# -- Apply the patches
+cp $WORK/$DATA/Makefile.yosys $WORK/$BUILD_DIR/yosys-yosys-0.6/Makefile
+cp $WORK/build-data/yosys/version*.cc $WORK/$BUILD_DIR/yosys-yosys-0.6/kernel
+
+# -- Compile it
+make -j$(( $(nproc) -1))
+
 # -- Copy the share folder to the install folder
-#mkdir -p $INSTALL/share/
-#mkdir -p $INSTALL/share/yosys
-#cp -r $WORK/build-data/yosys/share/* $INSTALL/share/yosys
+mkdir -p $INSTALL/share/
+mkdir -p $INSTALL/share/yosys
+cp -r $WORK/build-data/yosys/share/* $INSTALL/share/yosys
 
 # -- Copy the executable files
-#cp yosys $INSTALL/bin
+cp yosys $INSTALL/bin
 
 
 # ----------------- Compile yosys-abc --------------------------------
