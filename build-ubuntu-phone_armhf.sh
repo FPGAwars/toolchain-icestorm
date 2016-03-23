@@ -106,10 +106,10 @@ cd $WORK/$BUILD_DIR/$ICEPROG
 cp $WORK/$DATA/Makefile.iceprog $WORK/$BUILD_DIR/$ICEPROG/Makefile
 
 # -- Compile it!
-#make
+make
 
 # -- Copy the executable to the bin dir
-#cp iceprog $INSTALL/bin
+cp iceprog $INSTALL/bin
 
 # ---------------- Compile the icepack
 cd $WORK/$BUILD_DIR
@@ -122,7 +122,7 @@ cd $ICEPACK
 cp $WORK/$DATA/Makefile.icepack $WORK/$BUILD_DIR/$ICEPACK/Makefile
 
 # -- Compile it
-#make
+make
 
 # -- Copy the executable to the bin dir
 #cp icepack $INSTALL/bin
@@ -143,10 +143,10 @@ mkdir -p $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 cp -r $WORK/build-data/$ARACHNE/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 
 # -- Compile it
-#make -j$(( $(nproc) -1))
+make -j$(( $(nproc) -1))
 
 # -- Copy the executable to the bin dir
-#cp bin/arachne-pnr $INSTALL/bin
+cp bin/arachne-pnr $INSTALL/bin
 
 # ------------ Compile Yosys 0.6 --------------------------------
 cd $WORK/$UPSTREAM
@@ -162,7 +162,7 @@ cp $WORK/$DATA/Makefile.yosys $WORK/$BUILD_DIR/yosys-yosys-0.6/Makefile
 cp $WORK/build-data/yosys/version*.cc $WORK/$BUILD_DIR/yosys-yosys-0.6/kernel
 
 # -- Compile it
-#make -j$(( $(nproc) -1))
+make -j$(( $(nproc) -1))
 
 # -- Copy the share folder to the install folder
 mkdir -p $INSTALL/share/
@@ -170,7 +170,7 @@ mkdir -p $INSTALL/share/yosys
 cp -r $WORK/build-data/yosys/share/* $INSTALL/share/yosys
 
 # -- Copy the executable files
-#cp yosys $INSTALL/bin
+cp yosys $INSTALL/bin
 
 
 # ----------------- Compile yosys-abc --------------------------------
@@ -191,8 +191,8 @@ make -j$(( $(nproc) -1))
 cp yosys-abc $INSTALL/bin
 
 # ---------------------- Create the package --------------------------
-#cd $WORK/$BUILD_DIR
-#tar vzcf $TARBALL $NAME
+cd $WORK/$BUILD_DIR
+tar vzcf $TARBALL $NAME
 
 # -- Move the package to the packages dir
-#mv $TARBALL $WORK/$PACK_DIR
+mv $TARBALL $WORK/$PACK_DIR
