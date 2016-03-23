@@ -122,31 +122,31 @@ cd $ICEPACK
 cp $WORK/$DATA/Makefile.icepack $WORK/$BUILD_DIR/$ICEPACK/Makefile
 
 # -- Compile it
-make
+#make
 
 # -- Copy the executable to the bin dir
-cp icepack $INSTALL/bin
+#cp icepack $INSTALL/bin
 
 # ----------- Compile Arachne-pnr ----------------------------------
-#cd $WORK/$UPSTREAM
-#git -C $ARACHNE pull || git clone --depth=1 $GIT_ARACHNE
+cd $WORK/$UPSTREAM
+git -C $ARACHNE pull || git clone --depth=1 $GIT_ARACHNE
 
-#cd $WORK/$BUILD_DIR
-#cp -r $WORK/$UPSTREAM/$ARACHNE .
-#cd $ARACHNE
+cd $WORK/$BUILD_DIR
+cp -r $WORK/$UPSTREAM/$ARACHNE .
+cd $ARACHNE
 
 # -- Apply the patches
-#cp $WORK/$DATA/Makefile.arachne $WORK/$BUILD_DIR/$ARACHNE/Makefile
+cp $WORK/$DATA/Makefile.arachne $WORK/$BUILD_DIR/$ARACHNE/Makefile
 
 # -- Copy the chipdb*.bin data files
-#mkdir -p $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
-#cp -r $WORK/build-data/$ARACHNE/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
+mkdir -p $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
+cp -r $WORK/build-data/$ARACHNE/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 
 # -- Compile it
-#make -j$(( $(nproc) -1))
+make -j$(( $(nproc) -1))
 
 # -- Copy the executable to the bin dir
-#cp bin/arachne-pnr $INSTALL/bin
+cp bin/arachne-pnr $INSTALL/bin
 
 # ------------ Compile Yosys 0.6 --------------------------------
 #cd $WORK/$UPSTREAM
