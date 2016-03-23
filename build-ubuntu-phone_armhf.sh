@@ -108,11 +108,8 @@ cp $WORK/$DATA/Makefile.iceprog $WORK/$BUILD_DIR/$ICEPROG/Makefile
 # -- Compile it!
 make
 
-# -- TEST the generated executable
-#bash $WORK/test/test_iceprog.sh iceprog
-
 # -- Copy the executable to the bin dir
-#cp iceprog $INSTALL/bin
+cp iceprog $INSTALL/bin
 
 # ---------------- Compile the icepack
 #cd $WORK/$BUILD_DIR
