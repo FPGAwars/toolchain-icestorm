@@ -125,7 +125,7 @@ cp $WORK/$DATA/Makefile.icepack $WORK/$BUILD_DIR/$ICEPACK/Makefile
 make
 
 # -- Copy the executable to the bin dir
-#cp icepack $INSTALL/bin
+cp icepack $INSTALL/bin
 
 # ----------- Compile Arachne-pnr ----------------------------------
 cd $WORK/$UPSTREAM
