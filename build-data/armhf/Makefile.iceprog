@@ -1,6 +1,8 @@
 CC=arm-linux-gnueabihf-gcc
-LDLIBS = -lftdi -lusb
-LDFLAGS = -static -L /usr/lib
+
+PREFIX = ../../build-data/armhf
+LDLIBS = -lftdi1 -lusb-1.0 -lm -lpthread
+LDFLAGS =  -L $(PREFIX)/lib
 CFLAGS = -MD -O0 -Wall -std=c99
 
 all: iceprog
