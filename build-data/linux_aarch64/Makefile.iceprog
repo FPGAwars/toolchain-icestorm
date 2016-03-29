@@ -1,0 +1,16 @@
+CC=aarch64-linux-gnu-gcc
+
+PREFIX = ../../build-data/linux_aarch64
+LDLIBS = -lftdi1 -lusb-1.0 -lm -lpthread
+LDFLAGS =  -L $(PREFIX)/lib -static
+CFLAGS = -MD -O0 -Wall -std=c99
+
+all: iceprog
+
+iceprog: iceprog.o
+
+clean:
+	rm -f iceprog
+	rm -f *.o *.d
+
+.PHONY: all clean
