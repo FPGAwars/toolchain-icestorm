@@ -8,11 +8,11 @@
 # This tarball can be unpacked in ~/.platformio/packages
 
 #---- DEBUG
-COMPILE_ICEPROG=0
-COMPILE_ICEPACK=0
+COMPILE_ICEPROG=1
+COMPILE_ICEPACK=1
 COMPILE_ARACHNE=1
-COMPILE_YOSYS=0
-COMPILE_YOSYS_ABC=0
+COMPILE_YOSYS=1
+COMPILE_YOSYS_ABC=1
 CREATE_PACKAGE=1
 
 # -- Upstream folder. This is where all the toolchain is stored
@@ -157,7 +157,7 @@ if [ $COMPILE_ARACHNE == "1" ]; then
     cp -r $WORK/$DATA/arachne.patch/* $WORK/$BUILD_DIR/$ARACHNE
 
     # -- Copy the chipdb*.bin data files
-    cp -r $WORK/build-data/$ARACHNE $WORK/$BUILD_DIR/$NAME/share
+    cp -r $WORK/build-data/$ARACHNE/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 
     # -- Compile it
     make
