@@ -1,6 +1,6 @@
 CC=arm-linux-gnueabihf-gcc
 
-PREFIX = ../../build-data/armhf
+PREFIX = ../../build-data/linux_armv7l
 LDLIBS = -lftdi1 -lusb-1.0 -lm -lpthread
 LDFLAGS =  -L $(PREFIX)/lib
 CFLAGS = -MD -O0 -Wall -std=c99
