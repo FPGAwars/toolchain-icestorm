@@ -20,7 +20,7 @@ REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/yosys-0.6.tar.gz
 PACK_DIR=packages
 
 # -- Target architecture
-ARCH=armhf
+ARCH=linux_armv7l
 
 # -- Directory for compiling the tools
 BUILD_DIR=build_$ARCH
