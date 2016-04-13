@@ -154,8 +154,6 @@ if [ $COMPILE_ARACHNE == "1" ]; then
     # -- Apply the patches
     cp $WORK/$DATA/Makefile.arachne $WORK/$BUILD_DIR/$ARACHNE/Makefile
 
-    cp -r $WORK/$DATA/arachne.patch/* $WORK/$BUILD_DIR/$ARACHNE
-
     # -- Copy the chipdb*.bin data files
     cp -r $WORK/build-data/$ARACHNE/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 
@@ -215,7 +213,7 @@ if [ $COMPILE_YOSYS_ABC == "1" ]; then
     cp yosys-abc.exe $INSTALL/bin
 fi
 
-if [ $COMPILE_YOSYS_ABC == "1" ]; then
+if [ $CREATE_PACKAGE == "1" ]; then
 
     # -- Create the package
     cd $WORK/$BUILD_DIR
