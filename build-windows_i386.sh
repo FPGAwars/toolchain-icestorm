@@ -155,6 +155,7 @@ if [ $COMPILE_ARACHNE == "1" ]; then
     cp $WORK/$DATA/Makefile.arachne $WORK/$BUILD_DIR/$ARACHNE/Makefile
 
     # -- Copy the chipdb*.bin data files
+    mkdir -p $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
     cp -r $WORK/build-data/$ARACHNE/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 
     # -- Compile it
