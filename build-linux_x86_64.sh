@@ -7,6 +7,13 @@
 # sources: http://www.clifford.at/icestorm/
 # This tarball can be unpacked in ~/.platformio/packages
 
+#---- DEBUG
+COMPILE_ICESTORM=1
+COMPILE_ARACHNE=1
+COMPILE_YOSYS=1
+COMPILE_YOSYS_ABC=1
+CREATE_PACKAGE=1
+
 # -- Upstream folder. This is where all the toolchain is stored
 # -- from the github
 UPSTREAM=upstream
@@ -27,8 +34,6 @@ BUILD_DIR=build_$ARCH
 
 # -- Icestorm directory
 ICESTORM=icestorm
-ICEPROG=iceprog
-ICEPACK=icepack
 ARACHNE=arachne-pnr
 
 # --- Directory where the files for patching the upstream are located
@@ -38,9 +43,9 @@ DATA=build-data/$ARCH
 NAME=toolchain-icestorm
 
 # -- Directory for installation the target files
-INSTALL=$PWD/$BUILD_DIR/$NAME
+INSTALL=$PWD/$PACK_DIR/$NAME
 
-VERSION=7
+VERSION=8
 PACKNAME=$NAME-$ARCH-$VERSION
 TARBALL=$PACKNAME.tar.gz
 
@@ -61,140 +66,124 @@ if [ "$1" == "clean" ]; then
 fi
 
 
-
 # Install dependencies
 echo "Installing dependencies..."
 sudo apt-get install build-essential clang bison flex libreadline-dev \
                      gawk tcl-dev libffi-dev git mercurial graphviz   \
-                     xdot pkg-config python python3 libftdi-dev
+                     xdot pkg-config python python3 libftdi1-dev # <- version 1!
 
 # Create the upstream directory and enter into it
 mkdir -p $UPSTREAM
-cd $WORK/$UPSTREAM
 
-# -------- Clone the toolchain from the github
-# -- Icetools
-git -C $ICESTORM pull || git clone $GIT_ICESTORM $ICESTORM
+# Create the packages directory
+mkdir -p $WORK/$PACK_DIR
 
-# -------- Create the packages directory
-cd $WORK
-mkdir -p $PACK_DIR
+# Create the build dir
+mkdir -p $WORK/$BUILD_DIR
 
-# -------- Create the build dir and enter into it
-mkdir -p $BUILD_DIR
-cd $WORK/$BUILD_DIR
 
-# --- Create the target folder
-mkdir -p $NAME
-mkdir -p $NAME/bin
-mkdir -p $NAME/share
+# --------- Compile icestorm ---------------------------------------
+if [ $COMPILE_ICESTORM == "1" ]; then
 
-# -- Create the example folder
-mkdir -p $NAME/examples
+    cd $WORK/$UPSTREAM
+    # -------- Clone the toolchain from the github
+    git -C $ICESTORM pull || git clone --depth=1 $GIT_ICESTORM $ICESTORM
 
-# -- Copy all the examples into it
-cp -r $WORK/build-data/examples/* $WORK/$BUILD_DIR/$NAME/examples
+    # ---- Copy the upstream sources into the build directory
+    cp -r $WORK/$UPSTREAM/$ICESTORM $WORK/$BUILD_DIR
 
-# ---- Copy the upstream sources into the build directory
-cp -r $WORK/$UPSTREAM/$ICESTORM/$ICEPROG .
+    cd $WORK/$BUILD_DIR/$ICESTORM
 
-# --------- Compile the iceprog
-cd $WORK/$BUILD_DIR/$ICEPROG
+    # -- Compile it
+    make -j$(( $(nproc) -1)) STATIC=1
 
-# -- Apply the patches
-cp $WORK/$DATA/Makefile.iceprog $WORK/$BUILD_DIR/$ICEPROG/Makefile
+    # -- TEST the generated executables
+    bash $WORK/test/test_bin.sh iceprog/iceprog
+    bash $WORK/test/test_bin.sh icepack/icepack
+    bash $WORK/test/test_bin.sh icetime/icetime
 
-# -- Compile it!
-make
+    # -- Install in install dir
+    make install PREFIX=$INSTALL
 
-# -- TEST the generated executable
-bash $WORK/test/test_iceprog.sh iceprog
-
-# -- Copy the executable to the bin dir
-cp iceprog $INSTALL/bin
-
-# ---------------- Compile the icepack
-cd $WORK/$BUILD_DIR
-
-# -- Copy the sources into the build directory
-cp -r $WORK/$UPSTREAM/$ICESTORM/$ICEPACK .
-cd $ICEPACK
-
-# -- Apply the patches
-cp $WORK/$DATA/Makefile.icepack $WORK/$BUILD_DIR/$ICEPACK/Makefile
-
-# -- Compile it
-make
-
-# -- Copy the executable to the bin dir
-cp icepack $INSTALL/bin
+fi
 
 # ----------- Compile Arachne-pnr ----------------------------------
-cd $WORK/$UPSTREAM
-git -C $ARACHNE pull || git clone --depth=1 $GIT_ARACHNE
+if [ $COMPILE_ARACHNE == "1" ]; then
 
-cd $WORK/$BUILD_DIR
-cp -r $WORK/$UPSTREAM/$ARACHNE .
-cd $ARACHNE
+    cd $WORK/$UPSTREAM
+    git -C $ARACHNE pull || git clone --depth=1 $GIT_ARACHNE $ARACHNE
 
-# -- Apply the patches
-cp $WORK/$DATA/Makefile.arachne $WORK/$BUILD_DIR/$ARACHNE/Makefile
+    cp -r $WORK/$UPSTREAM/$ARACHNE $WORK/$BUILD_DIR
+    cd $WORK/$BUILD_DIR/$ARACHNE
 
-# -- Copy the chipdb*.bin data files
-mkdir -p $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
-cp -r $WORK/build-data/$ARACHNE/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
+    # -- Apply the patches
+    cp $WORK/$DATA/Makefile.arachne $WORK/$BUILD_DIR/$ARACHNE/Makefile
 
-# -- Compile it
-make -j$(( $(nproc) -1))
+    # -- Copy the chipdb*.bin data files
+    mkdir -p $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
+    cp -r $INSTALL/share/icebox/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 
-# -- Copy the executable to the bin dir
-cp bin/arachne-pnr $INSTALL/bin
+    # -- Compile it
+    make -j$(( $(nproc) -1))
+
+    # -- Copy the executable to the bin dir
+    cp bin/arachne-pnr $INSTALL/bin
+
+fi
 
 # ------------ Compile Yosys 0.6 --------------------------------
-cd $WORK/$UPSTREAM
-test -e yosys-0.6.tar.gz || wget $REL_YOSYS
-tar vzxf yosys-0.6.tar.gz
+if [ $COMPILE_YOSYS == "1" ]; then
 
-cd $WORK/$BUILD_DIR
-cp -r $WORK/$UPSTREAM/yosys-yosys-0.6 .
-cd yosys-yosys-0.6
+    cd $WORK/$UPSTREAM
+    test -e yosys-0.6.tar.gz || wget $REL_YOSYS
+    tar vzxf yosys-0.6.tar.gz
 
-# -- Apply the patches
-cp $WORK/$DATA/Makefile.yosys $WORK/$BUILD_DIR/yosys-yosys-0.6/Makefile
-cp $WORK/build-data/yosys/version*.cc $WORK/$BUILD_DIR/yosys-yosys-0.6/kernel
+    cd $WORK/$BUILD_DIR
+    cp -r $WORK/$UPSTREAM/yosys-yosys-0.6 .
+    cd yosys-yosys-0.6
 
-# -- Compile it
-make -j$(( $(nproc) -1))
+    # -- Apply the patches
+    cp $WORK/$DATA/Makefile.yosys $WORK/$BUILD_DIR/yosys-yosys-0.6/Makefile
+    cp $WORK/build-data/yosys/version*.cc $WORK/$BUILD_DIR/yosys-yosys-0.6/kernel
 
-# -- Copy the share folder to the install folder
-mkdir -p $INSTALL/share/
-mkdir -p $INSTALL/share/yosys
-cp -r $WORK/build-data/yosys/share/* $INSTALL/share/yosys
+    # -- Compile it
+    make -j$(( $(nproc) -1))
 
-# -- Copy the executable files
-cp yosys $INSTALL/bin
+    # -- Copy the share folder to the install folder
+    mkdir -p $INSTALL/share/
+    mkdir -p $INSTALL/share/yosys
+    cp -r $WORK/build-data/yosys/share/* $INSTALL/share/yosys
 
+    # -- Copy the executable files
+    cp yosys $INSTALL/bin
+
+fi
 
 # ----------------- Compile yosys-abc --------------------------------
-echo "-------------> BUILDING YOSYS-ABS:"
-cd $WORK/$UPSTREAM
-test -d abc || hg clone https://bitbucket.org/alanmi/abc abc
+if [ $COMPILE_YOSYS_ABC == "1" ]; then
 
-cd $WORK/$BUILD_DIR
-cp -r $WORK/$UPSTREAM/abc .
-cd abc
+    echo "-------------> BUILDING YOSYS-ABS:"
+    cd $WORK/$UPSTREAM
+    test -d abc || hg clone https://bitbucket.org/alanmi/abc abc
 
-# -- Apply the patches
-cp $WORK/$DATA/Makefile.yosys-abc $WORK/$BUILD_DIR/abc/Makefile
+    cd $WORK/$BUILD_DIR
+    cp -r $WORK/$UPSTREAM/abc .
+    cd abc
 
-# -- Compile it
-make -j$(( $(nproc) -1))
+    # -- Apply the patches
+    cp $WORK/$DATA/Makefile.yosys-abc $WORK/$BUILD_DIR/abc/Makefile
 
-cp yosys-abc $INSTALL/bin
+    # -- Compile it
+    make -j$(( $(nproc) -1))
+
+    cp yosys-abc $INSTALL/bin
+
+fi
 
 # ---------------------- Create the package --------------------------
-cd $WORK/$BUILD_DIR
-tar vzcf $TARBALL $NAME
+if [ $CREATE_PACKAGE == "1" ]; then
 
-# -- Move the package to the packages dir
-mv $TARBALL $WORK/$PACK_DIR
+    cd $WORK/$PACK_DIR
+    tar vzcf $TARBALL $NAME
+
+fi
