@@ -9,7 +9,7 @@
 VERSION=8
 
 # -- Target architectures
-ARCHS=( linux_i686 )
+ARCHS=( linux_aarch64 )
 # ARCH = (linux_x86_64 linux_i686 linux_armv7l linux_aarch64 darwin windows)
 
 # -- Toolchain name

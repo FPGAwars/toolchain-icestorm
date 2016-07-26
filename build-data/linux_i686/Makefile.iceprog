@@ -1,4 +1,4 @@
-CC=gcc -m32
+CC = gcc -m32
 
 PREFIX = ../../../../build-data/linux_i686
 LDLIBS = -lftdi1 -lusb-1.0 -lm -lpthread

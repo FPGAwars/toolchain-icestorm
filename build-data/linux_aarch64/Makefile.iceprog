@@ -1,8 +1,8 @@
-CC=aarch64-linux-gnu-gcc
+CC = aarch64-linux-gnu-gcc
 
-PREFIX = ../../build-data/linux_aarch64
+PREFIX = ../../../../build-data/linux_aarch64
 LDLIBS = -lftdi1 -lusb-1.0 -lm -lpthread
-LDFLAGS =  -L $(PREFIX)/lib -static
+LDFLAGS = -static -L $(PREFIX)/lib
 CFLAGS = -MD -O0 -Wall -std=c99
 
 all: iceprog

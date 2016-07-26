@@ -1,8 +1,8 @@
-CC=arm-linux-gnueabihf-gcc
+CC = arm-linux-gnueabihf-gcc
 
-PREFIX = ../../build-data/linux_armv7l
+PREFIX = ../../../../build-data/linux_armv7l
 LDLIBS = -lftdi1 -lusb-1.0 -lm -lpthread
-LDFLAGS =  -L $(PREFIX)/lib -static 
+LDFLAGS = -static -L $(PREFIX)/lib
 CFLAGS = -MD -O0 -Wall -std=c99
 
 all: iceprog
