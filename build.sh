@@ -45,7 +45,17 @@ mkdir -p $UPSTREAM_DIR
 
 # -- Test script function
 function test_bin {
-  bash $WORK_DIR/test/test_bin.sh $1
+  $WORK_DIR/test/test_bin.sh $1
+  if [ $? != "0" ]; then
+    exit 1
+  fi
+}
+
+# -- Print function
+function print {
+  echo ""
+  echo $1
+  echo ""
 }
 
 
@@ -76,12 +86,12 @@ do
     # -- Remove the build dir
     rm -r -f $BUILD_DIR
 
-    echo "-----> CLEAN"
+    print ">> CLEAN"
     exit
   fi
 
   # -- Install dependencies
-  echo "Installing dependencies..."
+  print ">> Install dependencies"
   sudo apt-get install build-essential clang bison flex libreadline-dev \
                        gawk tcl-dev libffi-dev git mercurial graphviz   \
                        xdot pkg-config python python3 libftdi1-dev # <- ver 1!
@@ -96,39 +106,15 @@ do
   # --------- Compile icestorm ---------------------------------------
   if [ $COMPILE_ICESTORM == "1" ]; then
 
-      cd $UPSTREAM_DIR
-
-      # -- Clone the toolchain from the github
-      git -C $ICESTORM pull || git clone --depth=1 $GIT_ICESTORM $ICESTORM
-
-      # -- Copy the upstream sources into the build directory
-      rsync -a $ICESTORM $BUILD_DIR --exclude .git
-
-      cd $BUILD_DIR/$ICESTORM
-
-      # -- Apply the patches
-      cp $DATA/Makefile.iceprog $BUILD_DIR/$ICESTORM/iceprog/Makefile
-      # ...
-
-      # -- Compile it
-      make -j$(( $(nproc) -1)) STATIC=1 -C iceprog
-      make -j$(( $(nproc) -1)) STATIC=1 -C icepack
-      make -j$(( $(nproc) -1)) STATIC=1 -C icetime
-
-      # -- Test the generated executables
-      test_bin iceprog/iceprog
-      test_bin icepack/icepack
-      test_bin icetime/icetime
-
-      # -- Copy the executables to the bin dir
-      cp iceprog/iceprog $PACKAGE_DIR/$NAME/bin
-      cp icepack/icepack $PACKAGE_DIR/$NAME/bin
-      cp icetime/icetime $PACKAGE_DIR/$NAME/bin
+    print ">> Compile icestorm"
+    .  "compile_icestorm.sh"
 
   fi
 
   # ---------------------- Create the package --------------------------
   if [ $CREATE_PACKAGE == "1" ]; then
+
+    print ">> Create package"
 
     # --Tarball name
     TARBALL=$NAME-$ARCH-$VERSION.tar.gz
