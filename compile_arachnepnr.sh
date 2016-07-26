@@ -8,6 +8,12 @@ if [ $ARCH == "windows" ]; then
   EXT=".exe"
 fi
 
+if [ $ARCH == "darwin" ]; then
+  J=$(($(sysctl -n hw.ncpu)-1))
+else
+  J=$(($(nproc)-1))
+fi
+
 cd $UPSTREAM
 
 # -- Clone the sources from github
@@ -22,10 +28,12 @@ cd $BUILD_DIR/$ARACHNE
 cp $DATA/Makefile.arachne $BUILD_DIR/$ARACHNE/Makefile
 
 # -- Compile it
-make -j$(( $(nproc) -1))
+make -j$J
 
-# -- Test the generated executables
-test_bin bin/arachne-pnr$EXT
+if [ $ARCH != "darwin" ]; then
+  # -- Test the generated executables
+  test_bin bin/arachne-pnr$EXT
+fi
 
 # -- Copy the executable to the bin dir
 cp bin/arachne-pnr$EXT $PACKAGE_DIR/$NAME/bin

@@ -8,6 +8,12 @@ if [ $ARCH == "windows" ]; then
   EXT=".exe"
 fi
 
+if [ $ARCH == "darwin" ]; then
+  J=$(($(sysctl -n hw.ncpu)-1))
+else
+  J=$(($(nproc)-1))
+fi
+
 cd $UPSTREAM_DIR
 
 # -- Check and download the sources
@@ -22,7 +28,7 @@ cd $BUILD_DIR/$ABC
 cp $DATA/Makefile.yosys-abc $BUILD_DIR/$ABC/Makefile
 
 # -- Compile it
-make -j$(( $(nproc) -1))
+make -j$J
 
 # -- Copy the executable file
 cp yosys-abc$EXT $PACKAGE_DIR/$NAME/bin
