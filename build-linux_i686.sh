@@ -67,8 +67,7 @@ echo "Installing dependencies..."
 sudo apt-get install build-essential clang bison flex libreadline-dev \
                      gawk tcl-dev libffi-dev git mercurial graphviz   \
                      xdot pkg-config python python3 gcc-multilib \
-                     g++-multilib libudev-dev:i386 libftdi-dev:i386 \
-                     libftdi1:i386
+                     g++-multilib libftdi-dev:i386 libftdi1:i386
 
 # Create the upstream directory and enter into it
 mkdir -p $UPSTREAM
