@@ -28,7 +28,7 @@ make -j$(( $(nproc) -1))
 test_bin bin/arachne-pnr$EXT
 
 # -- Copy the executable to the bin dir
-cp bin/arachne-pnr$EXT $PACKAGE_DIR/$NAME/bin/arachne-pnr
+cp bin/arachne-pnr$EXT $PACKAGE_DIR/$NAME/bin
 
 # -- Copy the chipdb*.bin data files
 mkdir -p $PACKAGE_DIR/$NAME/share/$ARACHNE
