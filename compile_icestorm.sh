@@ -7,7 +7,7 @@ fi
 
 cd $UPSTREAM_DIR
 
-# -- Clone the toolchain from the github
+# -- Clone the sources from github
 git -C $ICESTORM pull || git clone --depth=1 $GIT_ICESTORM $ICESTORM
 
 # -- Copy the upstream sources into the build directory

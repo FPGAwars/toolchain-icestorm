@@ -28,6 +28,10 @@ if [ $ARCH == "linux_aarch64" ]; then
                           gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 fi
 
+if [ $ARCH == "darwin" ]; then
+  brew install libusb libftdi python3 gnu-sed gawk mercurial bison wget
+fi
+
 if [ $ARCH == "windows" ]; then
   sudo apt-get install -y build-essential clang bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz   \
