@@ -1,5 +1,8 @@
 # -- Compile Arachne PnR script
 
+ARACHNE=arachne-pnr
+GIT_ARACHNE=https://github.com/cseed/arachne-pnr.git
+
 EXT=""
 if [ $ARCH == "windows" ]; then
   EXT=".exe"

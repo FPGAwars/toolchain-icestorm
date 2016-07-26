@@ -9,24 +9,19 @@
 VERSION=8
 
 # -- Target architectures
-# ARCHS=( linux_x86_64 )
-ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
+ARCHS=( linux_x86_64 )
+# ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
 # ARCHS=( darwin )
 
 # -- Toolchain name
 NAME=toolchain-icestorm
 
 # -- Debug flags
-COMPILE_ICESTORM=1
-COMPILE_ARACHNE=1
-COMPILE_YOSYS=0
+COMPILE_ICESTORM=0
+COMPILE_ARACHNE=0
+COMPILE_YOSYS=1
 COMPILE_YOSYS_ABC=0
 CREATE_PACKAGE=1
-
-# -- Git url were to retieve the upstream sources
-GIT_ICESTORM=https://github.com/cliffordwolf/icestorm.git
-GIT_ARACHNE=https://github.com/cseed/arachne-pnr.git
-REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/yosys-0.6.tar.gz
 
 # -- Store current dir
 WORK_DIR=$PWD
@@ -57,11 +52,6 @@ function print {
   echo $1
   echo ""
 }
-
-
-# -- Icestorm directory
-ICESTORM=icestorm
-ARACHNE=arachne-pnr
 
 
 # -- Loop
@@ -103,7 +93,7 @@ do
   # -- Create the package folders
   mkdir -p $PACKAGE_DIR/$NAME/bin
   mkdir -p $PACKAGE_DIR/$NAME/share
-  cp -r $WORK_DIR/build-data/examples $PACKAGE_DIR/$NAME/examples
+  cp -r $WORK_DIR/build-data/examples $PACKAGE_DIR/$NAME
 
   # --------- Compile icestorm ---------------------------------------
   if [ $COMPILE_ICESTORM == "1" ]; then
@@ -118,6 +108,14 @@ do
 
     print ">> Compile arachne-pnr"
     . $WORK_DIR/compile_arachnepnr.sh
+
+  fi
+
+  # --------- Compile yosys ------------------------------------------
+  if [ $COMPILE_YOSYS == "1" ]; then
+
+    print ">> Compile yosys"
+    . $WORK_DIR/compile_yosys.sh
 
   fi
 

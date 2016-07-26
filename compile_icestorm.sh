@@ -1,5 +1,8 @@
 # -- Compile Icestorm script
 
+ICESTORM=icestorm
+GIT_ICESTORM=https://github.com/cliffordwolf/icestorm.git
+
 EXT=""
 if [ $ARCH == "windows" ]; then
   EXT=".exe"
