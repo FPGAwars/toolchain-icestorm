@@ -3,6 +3,6 @@
 *.vcd
 *.tar.gz
 dist/
-build_*
+builds/
 packages/
 upstream/

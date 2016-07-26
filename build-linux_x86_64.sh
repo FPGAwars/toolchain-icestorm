@@ -10,8 +10,8 @@
 #---- DEBUG
 COMPILE_ICESTORM=1
 COMPILE_ARACHNE=1
-COMPILE_YOSYS=1
-COMPILE_YOSYS_ABC=1
+COMPILE_YOSYS=0
+COMPILE_YOSYS_ABC=0
 CREATE_PACKAGE=1
 
 # -- Upstream folder. This is where all the toolchain is stored
@@ -43,7 +43,7 @@ DATA=build-data/$ARCH
 NAME=toolchain-icestorm
 
 # -- Directory for installation the target files
-INSTALL=$PWD/$PACK_DIR/$NAME
+INSTALL=$PWD/$BUILD_DIR/$NAME
 
 VERSION=8
 PACKNAME=$NAME-$ARCH-$VERSION
@@ -81,6 +81,11 @@ mkdir -p $WORK/$PACK_DIR
 # Create the build dir
 mkdir -p $WORK/$BUILD_DIR
 
+# Create target folder
+mkdir -p $WORK/$BUILD_DIR/$NAME
+mkdir -p $WORK/$BUILD_DIR/$NAME/bin
+mkdir -p $WORK/$BUILD_DIR/$NAME/share
+
 
 # --------- Compile icestorm ---------------------------------------
 if [ $COMPILE_ICESTORM == "1" ]; then
@@ -95,15 +100,19 @@ if [ $COMPILE_ICESTORM == "1" ]; then
     cd $WORK/$BUILD_DIR/$ICESTORM
 
     # -- Compile it
-    make -j$(( $(nproc) -1)) STATIC=1
+    make -j$(( $(nproc) -1)) STATIC=1 -C iceprog LDLIBS="-L/home/jesus/code/tools-usb-ftdi/build_linux_x86_64/lib -lm"
+    make -j$(( $(nproc) -1)) STATIC=1 -C icepack
+    make -j$(( $(nproc) -1)) STATIC=1 -C icetime
 
     # -- TEST the generated executables
     bash $WORK/test/test_bin.sh iceprog/iceprog
     bash $WORK/test/test_bin.sh icepack/icepack
     bash $WORK/test/test_bin.sh icetime/icetime
 
-    # -- Install in install dir
-    make install PREFIX=$INSTALL
+    # -- Copy the executables to the bin dir
+    cp iceprog/iceprog $INSTALL/bin/iceprog
+    cp icepack/icepack $INSTALL/bin/icepack
+    cp icetime/icetime $INSTALL/bin/icetime
 
 fi
 
@@ -121,13 +130,13 @@ if [ $COMPILE_ARACHNE == "1" ]; then
 
     # -- Copy the chipdb*.bin data files
     mkdir -p $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
-    cp -r $INSTALL/share/icebox/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
+    cp -r $WORK/build-data/$ARACHNE/chip*.bin $WORK/$BUILD_DIR/$NAME/share/$ARACHNE
 
     # -- Compile it
     make -j$(( $(nproc) -1))
 
     # -- Copy the executable to the bin dir
-    cp bin/arachne-pnr $INSTALL/bin
+    cp bin/arachne-pnr $INSTALL/bin/arachne-pnr
 
 fi
 
@@ -155,7 +164,7 @@ if [ $COMPILE_YOSYS == "1" ]; then
     cp -r $WORK/build-data/yosys/share/* $INSTALL/share/yosys
 
     # -- Copy the executable files
-    cp yosys $INSTALL/bin
+    cp yosys $INSTALL/bin/yosys
 
 fi
 
@@ -176,14 +185,15 @@ if [ $COMPILE_YOSYS_ABC == "1" ]; then
     # -- Compile it
     make -j$(( $(nproc) -1))
 
-    cp yosys-abc $INSTALL/bin
+    cp yosys-abc $INSTALL/bin/yosys
 
 fi
 
 # ---------------------- Create the package --------------------------
 if [ $CREATE_PACKAGE == "1" ]; then
 
-    cd $WORK/$PACK_DIR
+    cd $WORK/$BUILD_DIR
     tar vzcf $TARBALL $NAME
 
+    mv $TARBALL $WORK/$PACK_DIR
 fi
