@@ -17,10 +17,10 @@ ARCHS=( linux_x86_64 )
 NAME=toolchain-icestorm
 
 # -- Debug flags
-COMPILE_ICESTORM=0
-COMPILE_ARACHNE=0
+COMPILE_ICESTORM=1
+COMPILE_ARACHNE=1
 COMPILE_YOSYS=1
-COMPILE_YOSYS_ABC=0
+COMPILE_YOSYS_ABC=1
 CREATE_PACKAGE=1
 
 # -- Store current dir
@@ -116,6 +116,14 @@ do
 
     print ">> Compile yosys"
     . $WORK_DIR/compile_yosys.sh
+
+  fi
+
+  # --------- Compile yosys ------------------------------------------
+  if [ $COMPILE_YOSYS_ABC == "1" ]; then
+
+    print ">> Compile yosys abc"
+    . $WORK_DIR/compile_yosys_abc.sh
 
   fi
 

@@ -3,7 +3,6 @@
 YOSYS=yosys-yosys-0.6
 REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/yosys-0.6.tar.gz
 
-
 EXT=""
 if [ $ARCH == "windows" ]; then
   EXT=".exe"
@@ -33,7 +32,7 @@ make -j$(( $(nproc) -1))
 test_bin bin/yosys$EXT
 
 # -- Copy the executable file
-cp yosys $PACKAGE_DIR/$NAME/bin/yosys
+cp yosys$EXT $PACKAGE_DIR/$NAME/bin
 
 # -- Copy the share folder to the package folder
 mkdir -p $PACKAGE_DIR/$NAME/share/yosys
