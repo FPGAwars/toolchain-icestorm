@@ -35,5 +35,5 @@ test_bin yosys$EXT
 cp yosys$EXT $PACKAGE_DIR/$NAME/bin
 
 # -- Copy the share folder to the package folder
-mkdir -p $PACKAGE_DIR/$NAME/share/yosys
-cp -r $WORK_DIR/build-data/yosys/share/* $PACKAGE_DIR/$NAME/share/yosys
+mkdir -p $PACKAGE_DIR/$NAME/share
+cp -r $WORK_DIR/build-data/yosys/share/* $PACKAGE_DIR/$NAME/share
