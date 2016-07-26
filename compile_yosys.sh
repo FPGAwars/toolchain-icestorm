@@ -29,7 +29,7 @@ cp $WORK_DIR/build-data/yosys/version*.cc $BUILD_DIR/$YOSYS/kernel
 make -j$(( $(nproc) -1))
 
 # -- Test the generated executables
-test_bin bin/yosys$EXT
+test_bin yosys$EXT
 
 # -- Copy the executable file
 cp yosys$EXT $PACKAGE_DIR/$NAME/bin

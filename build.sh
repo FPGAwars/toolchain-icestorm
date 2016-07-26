@@ -9,7 +9,7 @@
 VERSION=8
 
 # -- Target architectures
-ARCHS=( linux_x86_64 )
+ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
 # ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
 # ARCHS=( darwin )
 
@@ -119,7 +119,7 @@ do
 
   fi
 
-  # --------- Compile yosys ------------------------------------------
+  # --------- Compile yosys-abc --------------------------------------
   if [ $COMPILE_YOSYS_ABC == "1" ]; then
 
     print ">> Compile yosys abc"
