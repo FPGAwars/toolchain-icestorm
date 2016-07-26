@@ -9,7 +9,7 @@
 VERSION=8
 
 # -- Target architectures
-ARCHS=( linux_x86_64 )
+ARCHS=( linux_x86_64 windows )
 # ARCH = (linux_x86_64 linux_i686 linux_armv7l linux_aarch64 darwin windows)
 
 # -- Toolchain name
@@ -50,7 +50,6 @@ function test_bin {
     exit 1
   fi
 }
-
 # -- Print function
 function print {
   echo ""
@@ -68,6 +67,9 @@ ARACHNE=arachne-pnr
 for ARCH in ${ARCHS[@]}
 do
 
+  echo ""
+  echo ">>> ARCHITECTURE $ARCH"
+
   # -- Directory for compiling the tools
   BUILD_DIR=$BUILDS_DIR/build_$ARCH
 
@@ -80,21 +82,19 @@ do
   # -- Remove the build dir and the generated packages then exit
   if [ "$1" == "clean" ]; then
 
-    # -- Remove the final package
+    # -- Remove the package dir
     rm -r -f $PACKAGE_DIR
 
     # -- Remove the build dir
     rm -r -f $BUILD_DIR
 
     print ">> CLEAN"
-    exit
+    continue
   fi
 
   # -- Install dependencies
   print ">> Install dependencies"
-  sudo apt-get install build-essential clang bison flex libreadline-dev \
-                       gawk tcl-dev libffi-dev git mercurial graphviz   \
-                       xdot pkg-config python python3 libftdi1-dev # <- ver 1!
+  . $WORK_DIR/install_dependencies.sh
 
   # -- Create the build dir
   mkdir -p $BUILD_DIR
@@ -107,20 +107,16 @@ do
   if [ $COMPILE_ICESTORM == "1" ]; then
 
     print ">> Compile icestorm"
-    .  "compile_icestorm.sh"
+    . $WORK_DIR/compile_icestorm.sh
 
   fi
 
-  # ---------------------- Create the package --------------------------
+  # --------- Create the package -------------------------------------
   if [ $CREATE_PACKAGE == "1" ]; then
 
     print ">> Create package"
+    . $WORK_DIR/create_package.sh
 
-    # --Tarball name
-    TARBALL=$NAME-$ARCH-$VERSION.tar.gz
-
-    cd $PACKAGE_DIR
-    tar vzcf $TARBALL $NAME
   fi
 
 done
