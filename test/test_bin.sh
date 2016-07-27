@@ -1,9 +1,12 @@
 #!/bin/bash
 
+# Test script
+
 FILE=$1
 
+echo "" >&2
 echo "Testing $FILE file" >&2
-echo "------------------" >&2
+echo "------------------------------" >&2
 
 function test0 {
     if "${@:2}"
@@ -32,5 +35,6 @@ test1 $FILE
 test2 $FILE
 test3 $FILE
 
-echo "------------------" >&2
+echo "------------------------------" >&2
 echo "All tests [PASSED]" >&2
+echo "" >&2

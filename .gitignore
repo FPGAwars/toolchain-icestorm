@@ -2,7 +2,6 @@
 *.out
 *.vcd
 *.tar.gz
-dist/
-build_*
-packages/
-upstream/
+_builds/
+_packages/
+_upstream/

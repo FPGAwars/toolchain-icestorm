@@ -1,8 +1,8 @@
-CC = gcc -m32
+CC = gcc
 
-PREFIX = ../../../../build-data/linux_i686
+PREFIX = ../../../../build-data/linux_x86_64
 LDLIBS = -lftdi1 -lusb-1.0 -lm -lpthread
-LDFLAGS = -static -L $(PREFIX)/lib -L /usr/lib/i386-linux-gnu
+LDFLAGS = -static -L $(PREFIX)/lib
 CFLAGS = -MD -O0 -Wall -std=c99
 
 all: iceprog
