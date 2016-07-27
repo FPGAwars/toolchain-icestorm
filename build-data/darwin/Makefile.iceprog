@@ -1,5 +1,6 @@
-CC=clang
-LDLIBS = -lm -lftdi
+CC = clang
+
+LDLIBS = -lm -lftdi1 -lusb-1.0
 LDFLAGS =
 CFLAGS = -MD -O0 -std=c99
 

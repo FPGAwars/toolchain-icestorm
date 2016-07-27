@@ -9,7 +9,7 @@
 VERSION=8
 
 # -- Target architectures
-ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
+ARCHS=( )
 # ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
 # ARCHS=( darwin )
 
@@ -53,6 +53,10 @@ function print {
   echo ""
 }
 
+# -- Check ARCHS
+if [ ${#ARCHS[@]} -eq 0 ]; then
+  print "NOTE: add your architectures to the ARCHS variable in the build.sh script"
+fi
 
 # -- Loop
 for ARCH in ${ARCHS[@]}
