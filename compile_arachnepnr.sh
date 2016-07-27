@@ -39,5 +39,9 @@ fi
 cp bin/arachne-pnr$EXT $PACKAGE_DIR/$NAME/bin
 
 # -- Copy the chipdb*.bin data files
-mkdir -p $PACKAGE_DIR/$NAME/share/$ARACHNE
-cp -r $WORK_DIR/build-data/$ARACHNE/chip*.bin $PACKAGE_DIR/$NAME/share/$ARACHNE
+if [ $ARCH == "windows" ]; then
+  cp -r $WORK_DIR/build-data/$ARACHNE/chip*.bin $PACKAGE_DIR/$NAME/bin
+else
+  mkdir -p $PACKAGE_DIR/$NAME/share/$ARACHNE
+  cp -r $WORK_DIR/build-data/$ARACHNE/chip*.bin $PACKAGE_DIR/$NAME/share/$ARACHNE
+fi
