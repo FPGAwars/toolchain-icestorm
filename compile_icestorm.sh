@@ -53,3 +53,7 @@ cp icepack/icepack$EXT $PACKAGE_DIR/$NAME/bin
 cp icetime/icetime$EXT $PACKAGE_DIR/$NAME/bin
 cp icepll/icepll$EXT $PACKAGE_DIR/$NAME/bin
 cp icebram/icebram$EXT $PACKAGE_DIR/$NAME/bin
+
+# -- Copy the chipdb*.txt data files
+mkdir -p $PACKAGE_DIR/$NAME/share/icebox
+cp -r $WORK_DIR/build-data/icebox/chip*.txt $PACKAGE_DIR/$NAME/share/icebox

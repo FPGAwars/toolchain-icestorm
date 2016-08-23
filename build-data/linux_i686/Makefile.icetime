@@ -1,7 +1,7 @@
 CXX = g++ -m32
 
 LDLIBS = -lm -lstdc++
-CXXFLAGS = -MD -O0 -ggdb -std=c++11 -DPREFIX='"/usr/local"'
+CXXFLAGS = -MD -O0 -ggdb -std=c++11 -DPREFIX="\"~/.apio/packages/toolchain-icestorm\""
 LDFLAGS = -static
 
 all: icetime
