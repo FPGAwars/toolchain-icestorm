@@ -1,0 +1,22 @@
+CXX = clang++
+
+LDLIBS = -lm -lstdc++
+CXXFLAGS = -MD -O0 -ggdb -std=c++11 -DPREFIX='"/usr/local"'
+LDFLAGS =
+
+all: icetime
+
+icetime: icetime.o
+	$(CXX) -o $@ $(LDFLAGS) $^ $(LDLIBS)
+
+icetime.o: icetime.cc timings.inc
+
+timings.inc: timings.py ../icefuzz/timings_*.txt
+	python3 timings.py > timings.inc.new
+	mv timings.inc.new timings.inc
+
+clean:
+	rm -f icetime timings.inc
+	rm -f *.o *.d
+
+.PHONY: all clean
