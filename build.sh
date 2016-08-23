@@ -9,7 +9,7 @@
 VERSION=8
 
 # -- Target architectures
-ARCHS=( )
+ARCHS=( linux_x86_64 )
 # ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
 # ARCHS=( darwin )
 
@@ -18,9 +18,9 @@ NAME=toolchain-icestorm
 
 # -- Debug flags
 COMPILE_ICESTORM=1
-COMPILE_ARACHNE=1
-COMPILE_YOSYS=1
-COMPILE_YOSYS_ABC=1
+COMPILE_ARACHNE=0
+COMPILE_YOSYS=0
+COMPILE_YOSYS_ABC=0
 CREATE_PACKAGE=1
 
 # -- Store current dir
