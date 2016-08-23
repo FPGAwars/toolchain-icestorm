@@ -1,8 +1,8 @@
-CXX = g++ -m32
+CXX = clang++
 
 LDLIBS = -lm -lstdc++
 CXXFLAGS = -MD -O0 -ggdb -std=c++11 -DPREFIX='"/usr/local"'
-LDFLAGS = -static
+LDFLAGS =
 
 all: icetime
 

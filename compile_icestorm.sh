@@ -27,21 +27,29 @@ cd $BUILD_DIR/$ICESTORM
 # -- Apply the patches
 cp $DATA/Makefile.iceprog $BUILD_DIR/$ICESTORM/iceprog/Makefile
 cp $DATA/Makefile.icepack $BUILD_DIR/$ICESTORM/icepack/Makefile
-# cp $DATA/Makefile.icetime $BUILD_DIR/$ICESTORM/icetime/Makefile
+cp $DATA/Makefile.icetime $BUILD_DIR/$ICESTORM/icetime/Makefile
+cp $DATA/Makefile.icepll $BUILD_DIR/$ICESTORM/icepll/Makefile
+cp $DATA/Makefile.icebram $BUILD_DIR/$ICESTORM/icebram/Makefile
 
 # -- Compile it
-make -j$J STATIC=1 -C iceprog
-make -j$J STATIC=1 -C icepack
-# make -j$J STATIC=1 -C icetime
+make -j$J -C iceprog
+make -j$J -C icepack
+make -j$J -C icetime
+make -j$J -C icepll
+make -j$J -C icebram
 
 # -- Test the generated executables
 if [ $ARCH != "darwin" ]; then
   test_bin iceprog/iceprog$EXT
   test_bin icepack/icepack$EXT
-  # test_bin icetime/icetime$EXT
+  test_bin icetime/icetime$EXT
+  test_bin icepll/icepll$EXT
+  test_bin icebram/icebram$EXT
 fi
 
 # -- Copy the executables to the bin dir
 cp iceprog/iceprog$EXT $PACKAGE_DIR/$NAME/bin
 cp icepack/icepack$EXT $PACKAGE_DIR/$NAME/bin
-# cp icetime/icetime$EXT $PACKAGE_DIR/$NAME/bin
+cp icetime/icetime$EXT $PACKAGE_DIR/$NAME/bin
+cp icepll/icepll$EXT $PACKAGE_DIR/$NAME/bin
+cp icebram/icebram$EXT $PACKAGE_DIR/$NAME/bin
