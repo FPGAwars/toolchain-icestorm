@@ -1,16 +1,16 @@
-CXX = g++ -m32
+CXX = arm-linux-gnueabihf-g++
 
 LDLIBS = -lm -lstdc++
 CXXFLAGS = -MD -O0 -ggdb -std=c++11
 LDFLAGS = -static
 
-all: icepack
+all: icepll
 
-icepack: icepack.o
+icepll: icepll.o
 	$(CXX) -o $@ $(LDFLAGS) $^ $(LDLIBS)
 
 clean:
-	rm -f icepack
+	rm -f icepll
 	rm -f *.o *.d
 
 .PHONY: all clean

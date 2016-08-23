@@ -21,6 +21,6 @@ bin/arachne-pnr.exe: src/arachne-pnr.o src/netlist.o src/blif.o src/pack.o src/p
 
 .PHONY: clean
 clean:
-	rm -f src/*.o tests/*.o src/*.d tests/*.d bin/arachne-pnr
+	rm -f src/*.o tests/*.o src/*.d tests/*.d bin/arachne-pnr.exe
 	rm -f share/arachne-pnr/*.bin
 	rm -f src/version_*

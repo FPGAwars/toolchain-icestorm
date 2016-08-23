@@ -1,12 +1,12 @@
-CXX = i686-w64-mingw32-g++
+CXX = arm-linux-gnueabihf-g++
 
 LDLIBS = -lm -lstdc++
 CXXFLAGS = -MD -O0 -ggdb -std=c++11 -DPREFIX="\"~/.apio/packages/toolchain-icestorm\""
 LDFLAGS = -static
 
-all: icetime.exe
+all: icetime
 
-icetime.exe: icetime.o
+icetime: icetime.o
 	$(CXX) -o $@ $(LDFLAGS) $^ $(LDLIBS)
 
 icetime.o: icetime.cc timings.inc
@@ -16,7 +16,7 @@ timings.inc: timings.py ../icefuzz/timings_*.txt
 	mv timings.inc.new timings.inc
 
 clean:
-	rm -f icetime.exe timings.inc
+	rm -f icetime timings.inc
 	rm -f *.o *.d
 
 .PHONY: all clean

@@ -14,7 +14,7 @@ else
   J=$(($(nproc)-1))
 fi
 
-cd $UPSTREAM
+cd $UPSTREAM_DIR
 
 # -- Clone the sources from github
 git -C $ARACHNE pull || git clone --depth=1 $GIT_ARACHNE $ARACHNE

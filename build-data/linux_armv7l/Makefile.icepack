@@ -1,5 +1,5 @@
-CXX = arm-linux-gnueabihf-gcc
-CC = arm-linux-gnueabihf-g++
+CXX = arm-linux-gnueabihf-g++
+
 LDLIBS = -lm -lstdc++
 CXXFLAGS = -MD -O0 -ggdb -std=c++11
 LDFLAGS = -static
@@ -7,7 +7,7 @@ LDFLAGS = -static
 all: icepack
 
 icepack: icepack.o
-	$(CC) -o $@ $(LDFLAGS) $^ $(LDLIBS)
+	$(CXX) -o $@ $(LDFLAGS) $^ $(LDLIBS)
 
 clean:
 	rm -f icepack

@@ -1,5 +1,5 @@
-CXX = aarch64-linux-gnu-g++
 CC = aarch64-linux-gnu-gcc
+CXX = aarch64-linux-gnu-g++
 
 CXXFLAGS = -I src -std=c++11 -MD -O2 -Wshadow -Wsign-compare -Werror
 LIBS = -static -static-libstdc++  -static-libgcc -lm

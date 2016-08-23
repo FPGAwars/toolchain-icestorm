@@ -1,4 +1,4 @@
-CXX = g++ -m32
+CXX = g++
 
 LDLIBS = -lm -lstdc++
 CXXFLAGS = -MD -O0 -ggdb -std=c++11
