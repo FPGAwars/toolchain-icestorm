@@ -4,13 +4,13 @@ LDLIBS = -lm -lstdc++
 CXXFLAGS = -MD -O0 -ggdb -std=c++11
 LDFLAGS = -static
 
-all: icepack.exe
+all: icebram.exe
 
-icepack.exe: icepack.o
+icebram.exe: icebram.o
 	$(CXX) -o $@ $(LDFLAGS) $^ $(LDLIBS)
 
 clean:
-	rm -f icepack.exe
+	rm -f icebram.exe
 	rm -f *.o *.d
 
 .PHONY: all clean
