@@ -6,7 +6,7 @@
 # Generate toolchain-icestorm-arch-ver.tar.gz from source code
 # sources: http://www.clifford.at/icestorm/
 
-VERSION=8
+VERSION=9
 
 # -- Target architectures
 ARCHS=( )
@@ -18,9 +18,9 @@ NAME=toolchain-icestorm
 
 # -- Debug flags
 COMPILE_ICESTORM=1
-COMPILE_ARACHNE=0
-COMPILE_YOSYS=0
-COMPILE_YOSYS_ABC=0
+COMPILE_ARACHNE=1
+COMPILE_YOSYS=1
+COMPILE_YOSYS_ABC=1
 CREATE_PACKAGE=1
 
 # -- Store current dir
