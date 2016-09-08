@@ -21,7 +21,7 @@ COMPILE_ICESTORM=1
 COMPILE_ARACHNE=1
 COMPILE_YOSYS=1
 COMPILE_YOSYS_ABC=1
-COMPILE_ICOPROG=1
+COMPILE_ICOTOOLS=1
 CREATE_PACKAGE=1
 
 # -- Store current dir
@@ -132,13 +132,13 @@ do
 
   fi
 
-  # --------- Compile icoprog ----------------------------------------
-  if [ $COMPILE_ICOPROG == "1" ]; then
+  # --------- Compile icotools ----------------------------------------
+  if [ $COMPILE_ICOTOOLS == "1" ]; then
 
     if [ $ARCH == "linux_armv7l" ]; then
 
-      print ">> Compile icoprog RPI2"
-      . $WORK_DIR/compile_icoprog.sh
+      print ">> Compile icotools RPI2"
+      . $WORK_DIR/compile_icotools.sh
 
     fi
 

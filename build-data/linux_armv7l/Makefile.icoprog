@@ -2,7 +2,7 @@ CC = arm-linux-gnueabihf-gcc
 
 LDLIBS = -lwiringPi -lrt -lstdc++ -lpthread
 CCFLAGS = -Wall -Os
-LDFLAGS = -static -L $(PWD)/wiringPi/ -I $(PWD)/wiringPi/
+LDFLAGS = -static -L $(WD) -I $(WD)
 
 all: icoprog
 
