@@ -102,7 +102,6 @@ do
   # -- Create the package folders
   mkdir -p $PACKAGE_DIR/$NAME/bin
   mkdir -p $PACKAGE_DIR/$NAME/share
-  cp -r $WORK_DIR/build-data/examples $PACKAGE_DIR/$NAME
 
   # --------- Compile icestorm ---------------------------------------
   if [ $COMPILE_ICESTORM == "1" ]; then
