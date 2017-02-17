@@ -6,10 +6,10 @@
 # Generate toolchain-icestorm-arch-ver.tar.gz from source code
 # sources: http://www.clifford.at/icestorm/
 
-VERSION=9
+VERSION=1.10.0
 
 # -- Target architectures
-ARCHS=( )
+ARCHS=( linux_x86_64 )
 # ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
 # ARCHS=( darwin )
 
@@ -17,12 +17,12 @@ ARCHS=( )
 NAME=toolchain-icestorm
 
 # -- Debug flags
-COMPILE_ICESTORM=1
-COMPILE_ARACHNE=1
+INSTALL_DEPS=1
 COMPILE_YOSYS=1
-COMPILE_YOSYS_ABC=1
-COMPILE_ICOTOOLS=1
-CREATE_PACKAGE=1
+COMPILE_ARACHNE=0
+COMPILE_ICESTORM=0
+COMPILE_ICOTOOLS=0
+CREATE_PACKAGE=0
 
 # -- Store current dir
 WORK_DIR=$PWD
@@ -88,9 +88,13 @@ do
     continue
   fi
 
-  # -- Install dependencies
-  print ">> Install dependencies"
-  . $WORK_DIR/install_dependencies.sh
+  # --------- Instal dependencies ------------------------------------
+  if [ $INSTALL_DEPS == "1" ]; then
+
+    print ">> Install dependencies"
+    . $WORK_DIR/scripts/install_dependencies.sh
+
+  fi
 
   # -- Create the build dir
   mkdir -p $BUILD_DIR
@@ -100,11 +104,11 @@ do
   mkdir -p $PACKAGE_DIR/$NAME/share
   cp -r $WORK_DIR/build-data/examples $PACKAGE_DIR/$NAME
 
-  # --------- Compile icestorm ---------------------------------------
-  if [ $COMPILE_ICESTORM == "1" ]; then
+  # --------- Compile yosys ------------------------------------------
+  if [ $COMPILE_YOSYS == "1" ]; then
 
-    print ">> Compile icestorm"
-    . $WORK_DIR/compile_icestorm.sh
+    print ">> Compile yosys"
+    . $WORK_DIR/scripts/compile_yosys.sh
 
   fi
 
@@ -112,23 +116,15 @@ do
   if [ $COMPILE_ARACHNE == "1" ]; then
 
     print ">> Compile arachne-pnr"
-    . $WORK_DIR/compile_arachnepnr.sh
+    . $WORK_DIR/scripts/compile_arachnepnr.sh
 
   fi
 
-  # --------- Compile yosys ------------------------------------------
-  if [ $COMPILE_YOSYS == "1" ]; then
+  # --------- Compile icestorm ---------------------------------------
+  if [ $COMPILE_ICESTORM == "1" ]; then
 
-    print ">> Compile yosys"
-    . $WORK_DIR/compile_yosys.sh
-
-  fi
-
-  # --------- Compile yosys-abc --------------------------------------
-  if [ $COMPILE_YOSYS_ABC == "1" ]; then
-
-    print ">> Compile yosys abc"
-    . $WORK_DIR/compile_yosys_abc.sh
+    print ">> Compile icestorm"
+    . $WORK_DIR/scripts/compile_icestorm.sh
 
   fi
 
@@ -137,8 +133,8 @@ do
 
     if [ $ARCH == "linux_armv7l" ]; then
 
-      print ">> Compile icotools RPI2"
-      . $WORK_DIR/compile_icotools.sh
+      print ">> Compile icotools RPI"
+      . $WORK_DIR/scripts/compile_icotools.sh
 
     fi
 
@@ -148,7 +144,7 @@ do
   if [ $CREATE_PACKAGE == "1" ]; then
 
     print ">> Create package"
-    . $WORK_DIR/create_package.sh
+    . $WORK_DIR/scripts/create_package.sh
 
   fi
 
