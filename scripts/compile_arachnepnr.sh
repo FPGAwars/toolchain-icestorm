@@ -24,11 +24,8 @@ rsync -a $ARACHNE $BUILD_DIR --exclude .git
 
 cd $BUILD_DIR/$ARACHNE
 
-# -- Apply the patches
-cp $DATA/Makefile.arachne $BUILD_DIR/$ARACHNE/Makefile
-
 # -- Compile it
-make -j$J
+make -j$J LIBS="-static" ICEBOX="$WORK_DIR/build-data/icebox"
 
 if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables
@@ -40,8 +37,8 @@ cp bin/arachne-pnr$EXT $PACKAGE_DIR/$NAME/bin
 
 # -- Copy the chipdb*.bin data files
 if [ $ARCH == "windows" ]; then
-  cp -r $WORK_DIR/build-data/$ARACHNE/chip*.bin $PACKAGE_DIR/$NAME/bin
+  cp -r share/$ARACHNE/chip*.bin $PACKAGE_DIR/$NAME/bin
 else
   mkdir -p $PACKAGE_DIR/$NAME/share/$ARACHNE
-  cp -r $WORK_DIR/build-data/$ARACHNE/chip*.bin $PACKAGE_DIR/$NAME/share/$ARACHNE
+  cp -r share/$ARACHNE/chip*.bin $PACKAGE_DIR/$NAME/share/$ARACHNE
 fi

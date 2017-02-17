@@ -48,8 +48,8 @@ cp yosys-abc$EXT $PACKAGE_DIR/$NAME/bin
 
 # -- Copy the share folder to the package folder
 if [ $ARCH == "windows" ]; then
-  cp -r $WORK_DIR/build-data/yosys/share/* $PACKAGE_DIR/$NAME/share
+  cp -r share/* $PACKAGE_DIR/$NAME/share
 else
   mkdir -p $PACKAGE_DIR/$NAME/share/yosys
-  cp -r $WORK_DIR/build-data/yosys/share/* $PACKAGE_DIR/$NAME/share/yosys
+  cp -r share/* $PACKAGE_DIR/$NAME/share/yosys
 fi

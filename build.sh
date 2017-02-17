@@ -18,9 +18,9 @@ NAME=toolchain-icestorm
 
 # -- Debug flags
 INSTALL_DEPS=1
-COMPILE_YOSYS=1
-COMPILE_ARACHNE=0
 COMPILE_ICESTORM=0
+COMPILE_ARACHNE=1
+COMPILE_YOSYS=0
 COMPILE_ICOTOOLS=0
 CREATE_PACKAGE=0
 
@@ -104,11 +104,11 @@ do
   mkdir -p $PACKAGE_DIR/$NAME/share
   cp -r $WORK_DIR/build-data/examples $PACKAGE_DIR/$NAME
 
-  # --------- Compile yosys ------------------------------------------
-  if [ $COMPILE_YOSYS == "1" ]; then
+  # --------- Compile icestorm ---------------------------------------
+  if [ $COMPILE_ICESTORM == "1" ]; then
 
-    print ">> Compile yosys"
-    . $WORK_DIR/scripts/compile_yosys.sh
+    print ">> Compile icestorm"
+    . $WORK_DIR/scripts/compile_icestorm.sh
 
   fi
 
@@ -120,11 +120,11 @@ do
 
   fi
 
-  # --------- Compile icestorm ---------------------------------------
-  if [ $COMPILE_ICESTORM == "1" ]; then
+  # --------- Compile yosys ------------------------------------------
+  if [ $COMPILE_YOSYS == "1" ]; then
 
-    print ">> Compile icestorm"
-    . $WORK_DIR/scripts/compile_icestorm.sh
+    print ">> Compile yosys"
+    . $WORK_DIR/scripts/compile_yosys.sh
 
   fi
 

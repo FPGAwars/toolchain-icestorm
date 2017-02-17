@@ -24,35 +24,24 @@ rsync -a $ICESTORM $BUILD_DIR --exclude .git
 
 cd $BUILD_DIR/$ICESTORM
 
-# -- Apply the patches
-cp $DATA/Makefile.iceprog $BUILD_DIR/$ICESTORM/iceprog/Makefile
-cp $DATA/Makefile.icepack $BUILD_DIR/$ICESTORM/icepack/Makefile
-cp $DATA/Makefile.icetime $BUILD_DIR/$ICESTORM/icetime/Makefile
-cp $DATA/Makefile.icepll $BUILD_DIR/$ICESTORM/icepll/Makefile
-cp $DATA/Makefile.icebram $BUILD_DIR/$ICESTORM/icebram/Makefile
+TOOLS="icepack iceprog icemulti icepll icetime icebram"
 
 # -- Compile it
-make -j$J -C iceprog
-make -j$J -C icepack
-make -j$J -C icetime
-make -j$J -C icepll
-make -j$J -C icebram
+make -j3 SUBDIRS="iceprog" LDLIBS="-lftdi1 -lusb-1.0 -lm -lpthread" \
+         LDFLAGS="-static -L $WORK_DIR/build-data/linux_x86_64/lib"
+make -j3 SUBDIRS="icepack icemulti icepll icetime icebram" STATIC=1
 
 # -- Test the generated executables
 if [ $ARCH != "darwin" ]; then
-  test_bin iceprog/iceprog$EXT
-  test_bin icepack/icepack$EXT
-  test_bin icetime/icetime$EXT
-  test_bin icepll/icepll$EXT
-  test_bin icebram/icebram$EXT
+  for dir in $TOOLS; do
+      test_bin $dir/$dir$EXT
+  done
 fi
 
 # -- Copy the executables to the bin dir
-cp iceprog/iceprog$EXT $PACKAGE_DIR/$NAME/bin
-cp icepack/icepack$EXT $PACKAGE_DIR/$NAME/bin
-cp icetime/icetime$EXT $PACKAGE_DIR/$NAME/bin
-cp icepll/icepll$EXT $PACKAGE_DIR/$NAME/bin
-cp icebram/icebram$EXT $PACKAGE_DIR/$NAME/bin
+for dir in $TOOLS; do
+    cp $dir/$dir$EXT $PACKAGE_DIR/$NAME/bin
+done
 
 # -- Copy the chipdb*.txt data files
 mkdir -p $PACKAGE_DIR/$NAME/share/icebox
