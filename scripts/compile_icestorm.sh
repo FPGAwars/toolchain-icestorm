@@ -29,7 +29,7 @@ TOOLS="icepack iceprog icemulti icepll icetime icebram"
 # -- Compile it
 make -j3 SUBDIRS="iceprog" LDLIBS="-lftdi1 -lusb-1.0 -lm -lpthread" \
          LDFLAGS="-static -L $WORK_DIR/build-data/linux_x86_64/lib"
-make -j3 SUBDIRS="icepack icemulti icepll icetime icebram" STATIC=1 \
+make -j3 SUBDIRS="icebox icepack icemulti icepll icetime icebram" STATIC=1
 
 # -- Test the generated executables
 if [ $ARCH != "darwin" ]; then
@@ -43,6 +43,6 @@ for dir in $TOOLS; do
     cp $dir/$dir$EXT $PACKAGE_DIR/$NAME/bin
 done
 
-# -- Copy the chipdb*.bin data files
+# -- Copy the chipdb*.txt data files
 mkdir -p $PACKAGE_DIR/$NAME/share/chipdb
-cp -r $WORK_DIR/build-data/chipdb/chip*.bin $PACKAGE_DIR/$NAME/share/chipdb
+cp -r icebox/chip*.txt $PACKAGE_DIR/$NAME/share/chipdb

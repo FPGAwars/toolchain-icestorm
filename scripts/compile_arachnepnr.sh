@@ -25,7 +25,7 @@ rsync -a $ARACHNE $BUILD_DIR --exclude .git
 cd $BUILD_DIR/$ARACHNE
 
 # -- Compile it
-make -j$J bin/arachne-pnr LIBS="-static"
+make -j$J LIBS="-static" ICEBOX="../icestorm/icebox"
 
 if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables
@@ -34,3 +34,7 @@ fi
 
 # -- Copy the executable to the bin dir
 cp bin/arachne-pnr$EXT $PACKAGE_DIR/$NAME/bin
+
+# -- Copy the chipdb*.bin data files
+mkdir -p $PACKAGE_DIR/$NAME/share/chipdb
+cp -r share/$ARACHNE/chip*.bin $PACKAGE_DIR/$NAME/share/chipdb
