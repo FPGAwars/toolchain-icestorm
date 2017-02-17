@@ -9,7 +9,7 @@
 VERSION=1.10.0
 
 # -- Target architectures
-ARCHS=( linux_x86_64 )
+ARCHS=( linux_i686 )
 # ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
 # ARCHS=( darwin )
 
@@ -22,7 +22,7 @@ COMPILE_ICESTORM=1
 COMPILE_ARACHNE=1
 COMPILE_YOSYS=0
 COMPILE_ICOTOOLS=0
-CREATE_PACKAGE=0
+CREATE_PACKAGE=1
 
 # -- Store current dir
 WORK_DIR=$PWD

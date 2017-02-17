@@ -3,16 +3,8 @@
 ICESTORM=icestorm
 GIT_ICESTORM=https://github.com/cliffordwolf/icestorm.git
 
-EXT=""
-if [ $ARCH == "windows" ]; then
-  EXT=".exe"
-fi
-
-if [ $ARCH == "darwin" ]; then
-  J=$(($(sysctl -n hw.ncpu)-1))
-else
-  J=$(($(nproc)-1))
-fi
+# -- Setup
+. $WORK_DIR/scripts/build_setup.sh
 
 cd $UPSTREAM_DIR
 
@@ -24,12 +16,14 @@ rsync -a $ICESTORM $BUILD_DIR --exclude .git
 
 cd $BUILD_DIR/$ICESTORM
 
-TOOLS="icepack iceprog icemulti icepll icetime icebram"
-
 # -- Compile it
-make -j3 SUBDIRS="iceprog" LDLIBS="-lftdi1 -lusb-1.0 -lm -lpthread" \
-         LDFLAGS="-static -L $WORK_DIR/build-data/linux_x86_64/lib"
-make -j3 SUBDIRS="icebox icepack icemulti icepll icetime icebram" STATIC=1
+make -j3 SUBDIRS="iceprog" CC="$CC" \
+         LDLIBS="-lftdi1 -lusb-1.0 -lm -lpthread" \
+         LDFLAGS="-static -L $WORK_DIR/build-data/$ARCH/lib"
+make -j3 SUBDIRS="icebox icepack icemulti icepll icetime icebram" \
+         CXX="$CXX" STATIC=1
+
+TOOLS="icepack iceprog icemulti icepll icetime icebram"
 
 # -- Test the generated executables
 if [ $ARCH != "darwin" ]; then
@@ -44,5 +38,5 @@ for dir in $TOOLS; do
 done
 
 # -- Copy the chipdb*.txt data files
-mkdir -p $PACKAGE_DIR/$NAME/share/chipdb
-cp -r icebox/chip*.txt $PACKAGE_DIR/$NAME/share/chipdb
+mkdir -p $PACKAGE_DIR/$NAME/share/icebox
+cp -r icebox/chip*.txt $PACKAGE_DIR/$NAME/share/icebox

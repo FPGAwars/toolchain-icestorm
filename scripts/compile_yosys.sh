@@ -5,16 +5,8 @@ YOSYS=yosys-yosys-$VER
 TAR_YOSYS=yosys-$VER.tar.gz
 REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/$TAR_YOSYS
 
-EXT=""
-if [ $ARCH == "windows" ]; then
-  EXT=".exe"
-fi
-
-if [ $ARCH == "darwin" ]; then
-  J=$(($(sysctl -n hw.ncpu)-1))
-else
-  J=$(($(nproc)-1))
-fi
+# -- Setup
+. $WORK_DIR/scripts/build_setup.sh
 
 cd $UPSTREAM_DIR
 
@@ -31,9 +23,11 @@ cd $BUILD_DIR/$YOSYS
 
 # -- Compile it
 make config-gcc
-make -j$J ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
-          LDLIBS="-static -lstdc++ -lm" \
-          ABCMKARGS="LIBS=\"-static -lm -ldl -lrt -pthread\" ABC_USE_NO_READLINE=1 CC=\"gcc\" CXX=\"gcc\"" \
+sed -i "s/LD = gcc$/LD = $CC/;" Makefile
+sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
+make -j$J LDLIBS="-static -lstdc++ -lm" \
+          ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
+          ABCMKARGS="LIBS=\"-static -lm -ldl -lrt -pthread\" ABC_USE_NO_READLINE=1 CC=\"$CC\" CXX=\"$CXX\"" \
           YOSYS_VER_STR="Yosys 0.7 (Apio build)"
 
 if [ $ARCH != "darwin" ]; then

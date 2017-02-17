@@ -3,16 +3,8 @@
 ARACHNE=arachne-pnr
 GIT_ARACHNE=https://github.com/cseed/arachne-pnr.git
 
-EXT=""
-if [ $ARCH == "windows" ]; then
-  EXT=".exe"
-fi
-
-if [ $ARCH == "darwin" ]; then
-  J=$(($(sysctl -n hw.ncpu)-1))
-else
-  J=$(($(nproc)-1))
-fi
+# -- Setup
+. $WORK_DIR/scripts/build_setup.sh
 
 cd $UPSTREAM_DIR
 
@@ -25,7 +17,7 @@ rsync -a $ARACHNE $BUILD_DIR --exclude .git
 cd $BUILD_DIR/$ARACHNE
 
 # -- Compile it
-make -j$J LIBS="-static" ICEBOX="../icestorm/icebox"
+make -j$J CXX="$CXX" LIBS="-static" ICEBOX="../icestorm/icebox"
 
 if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables
@@ -36,5 +28,9 @@ fi
 cp bin/arachne-pnr$EXT $PACKAGE_DIR/$NAME/bin
 
 # -- Copy the chipdb*.bin data files
-mkdir -p $PACKAGE_DIR/$NAME/share/chipdb
-cp -r share/$ARACHNE/chip*.bin $PACKAGE_DIR/$NAME/share/chipdb
+if [ $ARCH == "windows" ]; then
+  cp -r share/$ARACHNE/chip*.bin $PACKAGE_DIR/$NAME/bin
+else
+  mkdir -p $PACKAGE_DIR/$NAME/share/$ARACHNE
+  cp -r share/$ARACHNE/chip*.bin $PACKAGE_DIR/$NAME/share/$ARACHNE
+fi
