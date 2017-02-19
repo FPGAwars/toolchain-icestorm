@@ -29,13 +29,13 @@ TOOLS="icepack iceprog icemulti icepll icetime icebram"
 # -- Test the generated executables
 if [ $ARCH != "darwin" ]; then
   for dir in $TOOLS; do
-      test_bin $dir/$dir$EXT
+      test_bin $dir/$dir
   done
 fi
 
 # -- Copy the executables to the bin dir
 for dir in $TOOLS; do
-    cp $dir/$dir$EXT $PACKAGE_DIR/$NAME/bin
+  cp $dir/$dir $PACKAGE_DIR/$NAME/bin/$dir$EXE
 done
 
 # -- Copy the chipdb*.txt data files

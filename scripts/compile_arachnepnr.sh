@@ -18,15 +18,16 @@ rsync -a $ARACHNE $BUILD_DIR --exclude .git
 cd $BUILD_DIR/$ARACHNE
 
 # -- Compile it
+sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr\ -d\ /;" Makefile
 make -j$J CXX="$CXX" LIBS="-static" ICEBOX="../icestorm/icebox"
 
 if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables
-  test_bin bin/arachne-pnr$EXT
+  test_bin bin/arachne-pnr
 fi
 
 # -- Copy the executable to the bin dir
-cp bin/arachne-pnr$EXT $PACKAGE_DIR/$NAME/bin
+cp bin/arachne-pnr $PACKAGE_DIR/$NAME/bin/arachne-pnr$EXE
 
 # -- Copy the chipdb*.bin data files
 if [ $ARCH == "windows" ]; then

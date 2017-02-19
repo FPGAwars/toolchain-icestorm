@@ -22,23 +22,30 @@ rsync -a $YOSYS $BUILD_DIR --exclude .git
 cd $BUILD_DIR/$YOSYS
 
 # -- Compile it
-make config-gcc
-sed -i "s/LD = gcc$/LD = $CC/;" Makefile
-sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
-make -j$J LDLIBS="-static -lstdc++ -lm" \
-          ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
-          ABCMKARGS="LIBS=\"-static -lm -ldl -lrt -pthread\" ABC_USE_NO_READLINE=1 CC=\"$CC\" CXX=\"$CXX\" ARCHFLAGS=\"$ABC_ARCHFLAGS\"" \
-          YOSYS_VER_STR="Yosys 0.7 (Apio build)"
+if [ $ARCH == "windows" ]; then
+  make config-msys2
+  make -j$J ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
+            YOSYS_VER_STR="Yosys 0.7 (Apio build)"
+else
+  make config-gcc
+  sed -i "s/LD = gcc$/LD = $CC/;" Makefile
+  sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
+  make -j$J ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
+            YOSYS_VER_STR="Yosys 0.7 (Apio build)" \
+            LDLIBS="-static -lstdc++ -lm" \
+            ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" ARCHFLAGS=\"$ABC_ARCHFLAGS -Wno-unused-but-set-variable\" \
+                       LIBS=\"-static -lm -ldl -lrt -pthread\" ABC_USE_NO_READLINE=1 "
+fi
 
 if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables
-  test_bin yosys$EXT
-  test_bin yosys-abc$EXT
+  test_bin yosys$EXE
+  test_bin yosys-abc$EXE
 fi
 
 # -- Copy the executable file
-cp yosys$EXT $PACKAGE_DIR/$NAME/bin
-cp yosys-abc$EXT $PACKAGE_DIR/$NAME/bin
+cp yosys$EXE $PACKAGE_DIR/$NAME/bin
+cp yosys-abc$EXE $PACKAGE_DIR/$NAME/bin
 
 # -- Copy the share folder to the package folder
 if [ $ARCH == "windows" ]; then
