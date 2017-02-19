@@ -24,8 +24,10 @@ cd $BUILD_DIR/$YOSYS
 # -- Compile it
 if [ $ARCH == "windows" ]; then
   make config-msys2
+  sed -i "s/LIBS=\"lib\/x86\/pthreadVC2.lib -s\" ABC_USE_NO_READLINE=0/LIBS=\"-static -lm\" ABC_USE_NO_READLINE=1 ABC_USE_NO_PTHREADS=1/;" Makefile
   make -j$J ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
-            YOSYS_VER_STR="Yosys 0.7 (Apio build)"
+            YOSYS_VER_STR="Yosys 0.7 (Apio build)" \
+            LDLIBS="-static -lstdc++ -lm"
 else
   make config-gcc
   sed -i "s/LD = gcc$/LD = $CC/;" Makefile

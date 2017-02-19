@@ -32,7 +32,7 @@ if [ $ARCH == "windows" ]; then
   sudo apt-get install -y build-essential clang bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz   \
                           xdot pkg-config python3 libftdi1-dev git-core \
-                          mingw-w64 mingw-w64-tools
+                          mingw-w64 mingw-w64-tools wine
 fi
 
 if [ $ARCH == "darwin" ]; then
