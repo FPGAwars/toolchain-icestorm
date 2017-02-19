@@ -9,7 +9,8 @@ GIT_ICESTORM=https://github.com/cliffordwolf/icestorm.git
 cd $UPSTREAM_DIR
 
 # -- Clone the sources from github
-git -C $ICESTORM pull || git clone --depth=1 $GIT_ICESTORM $ICESTORM
+test -e $ICESTORM || git clone --depth=1 $GIT_ICESTORM $ICESTORM
+git -C $ICESTORM pull
 
 # -- Copy the upstream sources into the build directory
 rsync -a $ICESTORM $BUILD_DIR --exclude .git
@@ -19,7 +20,7 @@ cd $BUILD_DIR/$ICESTORM
 # -- Compile it
 make -j3 SUBDIRS="iceprog" CC="$CC" \
          LDLIBS="-lftdi1 -lusb-1.0 -lm -lpthread" \
-         LDFLAGS="-static -L $WORK_DIR/build-data/$ARCH/lib"
+         LDFLAGS="-static -L $WORK_DIR/build-data/lib/$ARCH"
 make -j3 SUBDIRS="icebox icepack icemulti icepll icetime icebram" \
          CXX="$CXX" STATIC=1
 

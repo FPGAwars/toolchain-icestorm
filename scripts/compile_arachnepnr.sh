@@ -9,7 +9,8 @@ GIT_ARACHNE=https://github.com/cseed/arachne-pnr.git
 cd $UPSTREAM_DIR
 
 # -- Clone the sources from github
-git -C $ARACHNE pull || git clone --depth=1 $GIT_ARACHNE $ARACHNE
+test -e $ARACHNE || git clone --depth=1 $GIT_ARACHNE $ARACHNE
+git -C $ARACHNE pull
 
 # -- Copy the upstream sources into the build directory
 rsync -a $ARACHNE $BUILD_DIR --exclude .git

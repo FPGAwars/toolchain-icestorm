@@ -17,14 +17,14 @@ fi
 if [ $ARCH == "linux_armv7l" ]; then
   sudo apt-get install -y build-essential clang bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz   \
-                          xdot pkg-config python3 libftdi-dev \
+                          xdot pkg-config python3 libftdi1-dev \
                           gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
 fi
 
 if [ $ARCH == "linux_aarch64" ]; then
   sudo apt-get install -y build-essential clang bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz   \
-                          xdot pkg-config python3 libftdi-dev \
+                          xdot pkg-config python3 libftdi1-dev \
                           gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 fi
 

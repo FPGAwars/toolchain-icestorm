@@ -1,46 +1,25 @@
-# -- Compile Icoprog for RPI2 script
-
-WIRINGPI=wirintPi
-GIT_WIRINGPI=git://git.drogon.net/wiringPi
+# -- Compile Icoprog script for RPI
 
 ICOTOOLS=icotools
 GIT_ICOTOOLS=https://github.com/cliffordwolf/icotools.git
 
 J=$(($(nproc)-1))
 
-## WiringPi
-
-cd $UPSTREAM_DIR
-
-# -- Clone the sources from github
-git -C $WIRINGPI pull || git clone --depth=1 $GIT_WIRINGPI $WIRINGPI
-
-# -- Copy the upstream sources into the build directory
-rsync -a $WIRINGPI $BUILD_DIR --exclude .git
-
-cd $BUILD_DIR/$WIRINGPI
-
-# -- Compile it
-cd wiringPi
-make -j$J CC=arm-linux-gnueabihf-gcc static
-
 ## Icoprog
 
 cd $UPSTREAM_DIR
 
 # -- Clone the sources from github
-git -C $ICOTOOLS pull || git clone --depth=1 $GIT_ICOTOOLS $ICOTOOLS
+test -e $ICOTOOLS || git clone --depth=1 $ICOTOOLS $ICOTOOLS
+git -C $ICOTOOLS pull
 
 # -- Copy the upstream sources into the build directory
 rsync -a $ICOTOOLS $BUILD_DIR --exclude .git
 
 cd $BUILD_DIR/$ICOTOOLS
 
-# -- Apply the patches
-cp $DATA/Makefile.icoprog $BUILD_DIR/$ICOTOOLS/icoprog/Makefile
-
 # -- Compile it
-make -j$J WD=$BUILD_DIR/$WIRINGPI/wiringPi/ -C icoprog
+arm-linux-gnueabihf-gcc -o icoprog/icoprog -Wall -Os icoprog/icoprog.cc -D GPIOMODE -static -lrt -lstdc++
 
 # -- Test the generated executables
 test_bin icoprog/icoprog

@@ -9,7 +9,7 @@
 VERSION=1.10.0
 
 # -- Target architectures
-ARCHS=( linux_i686 )
+ARCHS=( )
 # ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
 # ARCHS=( darwin )
 
@@ -20,8 +20,8 @@ NAME=toolchain-icestorm
 INSTALL_DEPS=1
 COMPILE_ICESTORM=1
 COMPILE_ARACHNE=1
-COMPILE_YOSYS=0
-COMPILE_ICOTOOLS=0
+COMPILE_YOSYS=1
+COMPILE_ICOTOOLS=1
 CREATE_PACKAGE=1
 
 # -- Store current dir
@@ -132,7 +132,7 @@ do
 
     if [ $ARCH == "linux_armv7l" ]; then
 
-      print ">> Compile icotools RPI"
+      print ">> Compile icotools for RPI"
       . $WORK_DIR/scripts/compile_icotools.sh
 
     fi

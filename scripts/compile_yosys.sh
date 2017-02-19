@@ -27,7 +27,7 @@ sed -i "s/LD = gcc$/LD = $CC/;" Makefile
 sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
 make -j$J LDLIBS="-static -lstdc++ -lm" \
           ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
-          ABCMKARGS="LIBS=\"-static -lm -ldl -lrt -pthread\" ABC_USE_NO_READLINE=1 CC=\"$CC\" CXX=\"$CXX\"" \
+          ABCMKARGS="LIBS=\"-static -lm -ldl -lrt -pthread\" ABC_USE_NO_READLINE=1 CC=\"$CC\" CXX=\"$CXX\" ARCHFLAGS=\"$ABC_ARCHFLAGS\"" \
           YOSYS_VER_STR="Yosys 0.7 (Apio build)"
 
 if [ $ARCH != "darwin" ]; then
