@@ -46,6 +46,7 @@ function test_bin {
     exit 1
   fi
 }
+
 # -- Print function
 function print {
   echo ""
@@ -84,19 +85,6 @@ do
 
   # --- Directory where the files for patching the upstream are located
   DATA=$WORK_DIR/build-data/$ARCH
-
-  # -- Remove the build dir and the generated packages then exit
-  if [ "$1" == "clean" ]; then
-
-    # -- Remove the package dir
-    rm -r -f $PACKAGE_DIR
-
-    # -- Remove the build dir
-    rm -r -f $BUILD_DIR
-
-    print ">> CLEAN"
-    continue
-  fi
 
   # --------- Instal dependencies ------------------------------------
   if [ $INSTALL_DEPS == "1" ]; then

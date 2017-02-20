@@ -6,10 +6,16 @@ Static binaries of the **Icestorm** tools (yosys, arachne, icetools and icotools
 
 ## Usage
 
-Run the script `build.sh` selecting the architectures. E.g.
+Build:
 
 ```
 bash build.sh "linux_x86_64 linux_armv7l"
+```
+
+Clean:
+
+```
+bash clean.sh "linux_x86_64 linux_armv7l"
 ```
 
 Target architectures:

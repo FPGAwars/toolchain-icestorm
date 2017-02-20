@@ -9,9 +9,7 @@ fi
 if [ $ARCH == "linux_i686" ]; then
   sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
-                          xdot pkg-config python3 gcc-multilib \
-                          g++-multilib libudev-dev:i386 libftdi1-dev:i386 \
-                          libftdi1:i386
+                          xdot pkg-config python3 libftdi1-dev:i386
 fi
 
 if [ $ARCH == "linux_armv7l" ]; then
