@@ -14,7 +14,7 @@ cd $UPSTREAM_DIR
 test -e $TAR_YOSYS || wget $REL_YOSYS
 
 # -- Unpack the release
-tar vzxf $TAR_YOSYS
+tar zxf $TAR_YOSYS
 
 # -- Copy the upstream sources into the build directory
 rsync -a $YOSYS $BUILD_DIR --exclude .git
@@ -25,18 +25,18 @@ cd $BUILD_DIR/$YOSYS
 if [ $ARCH == "windows" ]; then
   make config-msys2
   sed -i "s/LIBS=\"lib\/x86\/pthreadVC2.lib -s\" ABC_USE_NO_READLINE=0/LIBS=\"-static -lm\" ABC_USE_NO_READLINE=1 ABC_USE_NO_PTHREADS=1/;" Makefile
-  make -j$J ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
-            YOSYS_VER_STR="Yosys 0.7 (Apio build)" \
-            LDLIBS="-static -lstdc++ -lm"
+  make -j$J YOSYS_VER_STR="Yosys 0.7 (Apio build)" \
+            LDLIBS="-static -lstdc++ -lm" \
+            ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0
 else
   make config-gcc
   sed -i "s/LD = gcc$/LD = $CC/;" Makefile
   sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
-  make -j$J ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
-            YOSYS_VER_STR="Yosys 0.7 (Apio build)" \
+  make -j$J YOSYS_VER_STR="Yosys 0.7 (Apio build)" \
             LDLIBS="-static -lstdc++ -lm" \
-            ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" ARCHFLAGS=\"$ABC_ARCHFLAGS -Wno-unused-but-set-variable\" \
-                       LIBS=\"-static -lm -ldl -lrt -pthread\" ABC_USE_NO_READLINE=1 "
+            ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
+            ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" LIBS=\"-static -lm -ldl -pthread\" \
+                       ARCHFLAGS=\"$ABC_ARCHFLAGS -Wno-unused-but-set-variable\" ABC_USE_NO_READLINE=1"
 fi
 
 if [ $ARCH != "darwin" ]; then
