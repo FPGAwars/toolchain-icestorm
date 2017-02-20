@@ -9,9 +9,8 @@
 VERSION=1.10.0
 
 # -- Target architectures
-ARCHS=( )
-# ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
-# ARCHS=( darwin )
+ARCHS=$1
+TARGET_ARCHS="linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows darwin"
 
 # -- Toolchain name
 NAME=toolchain-icestorm
@@ -55,13 +54,24 @@ function print {
 }
 
 # -- Check ARCHS
-if [ ${#ARCHS[@]} -eq 0 ]; then
-  print "NOTE: add your architectures to the ARCHS variable in the build.sh script"
+if [ "$ARCHS" == "" ]; then
+  echo ""
+  echo "Usage:"
+  echo "  bash build.sh \"linux_x86_64 linux_armv7l\""
+  echo ""
+  echo "Target archs:"
+  echo "  $TARGET_ARCHS"
 fi
 
 # -- Loop
-for ARCH in ${ARCHS[@]}
+for ARCH in $ARCHS
 do
+
+  if [[ ! $TARGET_ARCHS =~ (^|[[:space:]])$ARCH([[:space:]]|$) ]]; then
+    echo ""
+    echo ">>> WRONG ARCHITECTURE $ARCH"
+    continue
+  fi
 
   echo ""
   echo ">>> ARCHITECTURE $ARCH"
