@@ -18,8 +18,11 @@ rsync -a $ARACHNE $BUILD_DIR --exclude .git
 cd $BUILD_DIR/$ARACHNE
 
 # -- Compile it
-sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr\ -d\ /;" Makefile
-make -j$J CXX="$CXX" LIBS="-static" ICEBOX="../icestorm/icebox"
+if [ $ARCH == "darwin" ]; then
+  make -j$J CXX="$CXX" LIBS="-lm" ICEBOX="../icestorm/icebox"
+else
+  make -j$J CXX="$CXX" LIBS="-static -lm" ICEBOX="../icestorm/icebox"
+fi
 
 if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables

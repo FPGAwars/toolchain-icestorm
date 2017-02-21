@@ -33,6 +33,9 @@ if [ $ARCH == "windows" ]; then
 fi
 
 if [ $ARCH == "darwin" ]; then
+  CC="clang"
+  CXX="clang++"
+  ABC_ARCHFLAGS="-DLIN64 -DSIZEOF_VOID_P=8 -DSIZEOF_LONG=8 -DSIZEOF_INT=4"
   J=$(($(sysctl -n hw.ncpu)-1))
 else
   J=$(($(nproc)-1))

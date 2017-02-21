@@ -5,10 +5,8 @@ language: cpp
 
 matrix:
   include:
-    - os: linux
-      env: TARGET=linux_armv7l
-    - os: linux
-      env: TARGET=linux_aarch64
+    - os: osx
+      env: TARGET=darwin
 
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi

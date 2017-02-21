@@ -22,23 +22,34 @@ rsync -a $YOSYS $BUILD_DIR --exclude .git
 cd $BUILD_DIR/$YOSYS
 
 # -- Compile it
-if [ $ARCH == "windows" ]; then
-  make config-msys2
-  sed -i "s/LIBS=\"lib\/x86\/pthreadVC2.lib -s\" ABC_USE_NO_READLINE=0/LIBS=\"-static -lm\" ABC_USE_NO_READLINE=1 ABC_USE_NO_PTHREADS=1/;" Makefile
+
+if [ $ARCH == "darwin" ]; then
+  make config-clang
+  gsed -i "s/-ggdb //;" Makefile
   make -j$J YOSYS_VER="0.7 (Apio build)" \
-            LDLIBS="-static -lstdc++ -lm" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0
+            ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" OPTFLAGS=\"-O\" \
+                       ARCHFLAGS=\"$ABC_ARCHFLAGS\" ABC_USE_NO_READLINE=1"
 else
   make config-gcc
   sed -i "s/-ggdb //;" Makefile
   sed -i "s/LD = gcc$/LD = $CC/;" Makefile
   sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
+  sed -i "s/LDLIBS += -lrt/LDLIBS +=/;" Makefile
+  sed -i "s/LDFLAGS += -rdynamic/LDFLAGS +=/;" Makefile
   make -j$J YOSYS_VER="0.7 (Apio build)" \
             LDLIBS="-static -lstdc++ -lm" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
             ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" LIBS=\"-static -lm -ldl -pthread\" OPTFLAGS=\"-O\" \
                        ARCHFLAGS=\"$ABC_ARCHFLAGS -Wno-unused-but-set-variable\" ABC_USE_NO_READLINE=1"
 fi
+
+#make config-msys2
+#sed -i "s/LIBS=\"lib\/x86\/pthreadVC2.lib -s\" ABC_USE_NO_READLINE=0/LIBS=\"-static -lm\" ABC_USE_NO_READLINE=1 ABC_USE_NO_PTHREADS=1/;" Makefile
+#make -j$J YOSYS_VER="0.7 (Apio build)" \
+#          LDLIBS="-static -lstdc++ -lm" \
+#          ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0
+
 
 if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables

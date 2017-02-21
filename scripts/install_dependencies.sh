@@ -37,6 +37,9 @@ if [ $ARCH == "windows" ]; then
 fi
 
 if [ $ARCH == "darwin" ]; then
-  brew install bison flex gawk libffi git mercurial graphviz \
-               pkg-config python3 libusb libftdi gnu-sed wget
+  DEPS="bison flex gawk libffi git mercurial graphviz \
+        pkg-config python3 libusb libftdi gnu-sed wget"
+  brew update
+  brew install --force $DEPS
+  brew unlink $DEPS && brew link --force $DEPS
 fi
