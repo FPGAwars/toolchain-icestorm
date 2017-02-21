@@ -10,7 +10,7 @@ J=$(($(nproc)-1))
 cd $UPSTREAM_DIR
 
 # -- Clone the sources from github
-test -e $ICOTOOLS || git clone --depth=1 $ICOTOOLS $ICOTOOLS
+test -e $ICOTOOLS || git clone --depth=1 $GIT_ICOTOOLS $ICOTOOLS
 git -C $ICOTOOLS pull
 
 # -- Copy the upstream sources into the build directory

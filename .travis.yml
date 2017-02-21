@@ -2,17 +2,18 @@ sudo: required
 dist: trusty
 
 language: cpp
-compiler: gcc
 
 matrix:
   include:
     - os: linux
-      env: TARGET=linux_i686
+      env: TARGET=linux_armv7l
+    - os: linux
+      env: TARGET=linux_aarch64
 
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository -y ppa:tes/ams; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo dpkg --add-architecture i386; fi
+  - if [[ "$TARGET" == "linux_i686" ]]; then sudo dpkg --add-architecture i386; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -y -qq; fi
 
 script:

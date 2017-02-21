@@ -19,7 +19,7 @@ cd $BUILD_DIR/$ICESTORM
 
 # -- Compile it
 make -j3 SUBDIRS="iceprog" CC="$CC" \
-         LDLIBS="-lftdi1 -lusb-1.0 -lm -lpthread" \
+         LDLIBS="-lftdi1 -lusb-1.0 -lm -pthread" \
          LDFLAGS="-static -L $WORK_DIR/build-data/lib/$ARCH"
 make -j3 SUBDIRS="icebox icepack icemulti icepll icetime icebram" \
          CXX="$CXX" STATIC=1
