@@ -23,9 +23,14 @@ if [ $ARCH == "linux_aarch64" ]; then
   sed -i "s/%SYSTEM%/\"linux_aarch64\"/;" $PACKAGE_DIR/$NAME/package.json
 fi
 
-if [ $ARCH == "windows" ]; then
+if [ $ARCH == "windows_x86" ]; then
   sed -i "s/%VERSION%/\"$VERSION\"/;" $PACKAGE_DIR/$NAME/package.json
-  sed -i "s/%SYSTEM%/\"windows\", \"windows_amd64\", \"windows_x86\"/;" $PACKAGE_DIR/$NAME/package.json
+  sed -i "s/%SYSTEM%/\"windows\", \"windows_x86\"/;" $PACKAGE_DIR/$NAME/package.json
+fi
+
+if [ $ARCH == "windows_amd64" ]; then
+  sed -i "s/%VERSION%/\"$VERSION\"/;" $PACKAGE_DIR/$NAME/package.json
+  sed -i "s/%SYSTEM%/\"windows_amd64\"/;" $PACKAGE_DIR/$NAME/package.json
 fi
 
 if [ $ARCH == "darwin" ]; then

@@ -5,7 +5,7 @@
 
 # -- Target architectures
 ARCHS=$1
-TARGET_ARCHS="linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows darwin"
+TARGET_ARCHS="linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows_x86 windows_amd64 darwin"
 
 # -- Store current dir
 WORK_DIR=$PWD
@@ -45,19 +45,27 @@ do
   echo ""
   echo ">>> ARCHITECTURE $ARCH"
 
-  # -- Directory for compiling the tools
-  BUILD_DIR=$BUILDS_DIR/build_$ARCH
+  printf "Are you sure? [y/N]:${NC} "
+  read RESP
+  case "$RESP" in
+      [yY][eE][sS]|[yY])
+        # -- Directory for compiling the tools
+        BUILD_DIR=$BUILDS_DIR/build_$ARCH
 
-  # -- Directory for installation the target files
-  PACKAGE_DIR=$PACKAGES_DIR/build_$ARCH
+        # -- Directory for installation the target files
+        PACKAGE_DIR=$PACKAGES_DIR/build_$ARCH
 
-  # -- Remove the package dir
-  rm -r -f $PACKAGE_DIR
+        # -- Remove the package dir
+        rm -r -f $PACKAGE_DIR
 
-  # -- Remove the build dir
-  rm -r -f $BUILD_DIR
+        # -- Remove the build dir
+        rm -r -f $BUILD_DIR
 
-  echo ""
-  echo ">> CLEAN"
+        echo ""
+        echo ">> CLEAN"
+        ;;
+      *)
+        ;;
+  esac
 
 done

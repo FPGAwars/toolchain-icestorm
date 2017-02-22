@@ -30,6 +30,20 @@ if [ $ARCH == "darwin" ]; then
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0
             ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" OPTFLAGS=\"-O\" \
                        ARCHFLAGS=\"$ABC_ARCHFLAGS\" ABC_USE_NO_READLINE=1"
+
+elif [ ${ARCH:0:7} == "windows" ]; then
+  make config-gcc
+  sed -i "s/-fPIC //;" Makefile
+  sed -i "s/-ggdb //;" Makefile
+  sed -i "s/LD = gcc$/LD = $CC/;" Makefile
+  sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
+  sed -i "s/LDLIBS += -lrt/LDLIBS +=/;" Makefile
+  sed -i "s/LDFLAGS += -rdynamic/LDFLAGS +=/;" Makefile
+  make -j$J YOSYS_VER="0.7 (Apio build)" \
+            LDLIBS="-static -lstdc++ -lm" \
+            ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
+            ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" LIBS=\"-static -lm\" OPTFLAGS=\"-O\" \
+                       ARCHFLAGS=\"$ABC_ARCHFLAGS -Wno-unused-but-set-variable\" ABC_USE_NO_READLINE=1 ABC_USE_NO_PTHREADS=1"
 else
   make config-gcc
   sed -i "s/-ggdb //;" Makefile
@@ -44,25 +58,18 @@ else
                        ARCHFLAGS=\"$ABC_ARCHFLAGS -Wno-unused-but-set-variable\" ABC_USE_NO_READLINE=1"
 fi
 
-#make config-msys2
-#sed -i "s/LIBS=\"lib\/x86\/pthreadVC2.lib -s\" ABC_USE_NO_READLINE=0/LIBS=\"-static -lm\" ABC_USE_NO_READLINE=1 ABC_USE_NO_PTHREADS=1/;" Makefile
-#make -j$J YOSYS_VER="0.7 (Apio build)" \
-#          LDLIBS="-static -lstdc++ -lm" \
-#          ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0
-
-
 if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables
-  test_bin yosys$EXE
-  test_bin yosys-abc$EXE
+  test_bin yosys
+  test_bin yosys-abc
 fi
 
 # -- Copy the executable file
-cp yosys$EXE $PACKAGE_DIR/$NAME/bin
-cp yosys-abc$EXE $PACKAGE_DIR/$NAME/bin
+cp yosys $PACKAGE_DIR/$NAME/bin/yosys$EXE
+cp yosys-abc $PACKAGE_DIR/$NAME/bin/yosys-abc$EXE
 
 # -- Copy the share folder to the package folder
-if [ $ARCH == "windows" ]; then
+if [ ${ARCH:0:7} == "windows" ]; then
   cp -r share/* $PACKAGE_DIR/$NAME/share
 else
   mkdir -p $PACKAGE_DIR/$NAME/share/yosys

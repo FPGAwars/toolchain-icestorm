@@ -23,7 +23,8 @@ Target architectures:
 * linux_i686
 * linux_armv7l
 * linux_aarch64
-* windows
+* windows_x86
+* windows_amd64
 * darwin
 
 Final packages will be generated in **\_packages/build_ARCH/** directory.
