@@ -6,22 +6,33 @@ Static binaries of the **Icestorm** tools (yosys, arachne, icetools and icotools
 
 ## Usage
 
-Edit the target architectures in the `build.sh` script:
+Build:
 
 ```
-# -- Target architectures
-ARCHS=( linux_x86_64 linux_armv7l )
-# ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
-# ARCHS=( darwin )
+bash build.sh "linux_x86_64 linux_i686"
 ```
 
-Run the script `./build.sh`
+Clean:
 
-Final packages will be generated in **\_packages/build_ARCH/** directory.
+```
+bash clean.sh "linux_x86_64 linux_i686"
+```
 
+Target architectures:
+* linux_x86_64
+* linux_i686
+* linux_armv7l
+* linux_aarch64
+* windows_x86
+* windows_amd64
+* darwin
+
+Final packages will be deployed in the **\_packages/build_ARCH/** directories.
+
+NOTE: *libftdi1.a* and *libusb-1.0.a* files have been generated for each architecture using the [Tools-system scripts](https://github.com/FPGAwars/tools-system).
 # Documentation
 
-[The project documentation is located in the wiki](https://github.com/FPGAwars/toolchain-icestorm/wiki)
+[The project documentation is located in the wiki](https://github.com/FPGAwars/toolchain-icestorm/wiki).
 
 # Authors
 
@@ -30,4 +41,4 @@ Final packages will be generated in **\_packages/build_ARCH/** directory.
 
 ## License
 
-Licensed under a GPL v2 and [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/)
+Licensed under a GPL v2 and [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).

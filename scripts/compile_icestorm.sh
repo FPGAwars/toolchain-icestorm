@@ -18,11 +18,21 @@ rsync -a $ICESTORM $BUILD_DIR --exclude .git
 cd $BUILD_DIR/$ICESTORM
 
 # -- Compile it
-make -j3 SUBDIRS="iceprog" CC="$CC" \
-         LDLIBS="-lftdi1 -lusb-1.0 -lm -lpthread" \
-         LDFLAGS="-static -L $WORK_DIR/build-data/lib/$ARCH"
-make -j3 SUBDIRS="icebox icepack icemulti icepll icetime icebram" \
-         CXX="$CXX" STATIC=1
+if [ $ARCH == "darwin" ]; then
+  gsed -i "s/-ggdb //;" config.mk
+  make -j$J CC="$CC" \
+            SUBDIRS="iceprog"
+  make -j$J CXX="$CXX" \
+            SUBDIRS="icebox icepack icemulti icepll icetime icebram"
+else
+  sed -i "s/-ggdb //;" config.mk
+  make -j$J CC="$CC" \
+            SUBDIRS="iceprog" \
+            LDFLAGS="-static -pthread -L$WORK_DIR/build-data/lib/$ARCH" \
+            CFLAGS="-MD -O0 -Wall -std=c99 -I$WORK_DIR/build-data/include/libftdi1"
+  make -j$J CXX="$CXX" STATIC=1 \
+            SUBDIRS="icebox icepack icemulti icepll icetime icebram"
+fi
 
 TOOLS="icepack iceprog icemulti icepll icetime icebram"
 

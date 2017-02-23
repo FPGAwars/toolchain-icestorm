@@ -18,8 +18,12 @@ rsync -a $ARACHNE $BUILD_DIR --exclude .git
 cd $BUILD_DIR/$ARACHNE
 
 # -- Compile it
-sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr\ -d\ /;" Makefile
-make -j$J CXX="$CXX" LIBS="-static" ICEBOX="../icestorm/icebox"
+if [ $ARCH == "darwin" ]; then
+  make -j$J CXX="$CXX" LIBS="-lm" ICEBOX="../icestorm/icebox"
+else
+  sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr\ -d\ /;" Makefile
+  make -j$J CXX="$CXX" LIBS="-static -lm" ICEBOX="../icestorm/icebox"
+fi
 
 if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables
@@ -30,7 +34,7 @@ fi
 cp bin/arachne-pnr $PACKAGE_DIR/$NAME/bin/arachne-pnr$EXE
 
 # -- Copy the chipdb*.bin data files
-if [ $ARCH == "windows" ]; then
+if [ ${ARCH:0:7} == "windows" ]; then
   cp -r share/$ARACHNE/chip*.bin $PACKAGE_DIR/$NAME/bin
 else
   mkdir -p $PACKAGE_DIR/$NAME/share/$ARACHNE
