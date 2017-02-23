@@ -33,7 +33,7 @@ if [ $ARCH == "linux_aarch64" ]; then
   sudo apt-get autoremove -y
 fi
 
-if [[ $ARCH == "windows_x86" || $ARCH == "windows_amd64" ]]; then
+if [ ${ARCH:0:7} == "windows" ]; then
   sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
                           xdot pkg-config python3 libftdi1-dev \

@@ -21,11 +21,19 @@ rsync -a $YOSYS $BUILD_DIR --exclude .git
 
 cd $BUILD_DIR/$YOSYS
 
+# -- Yosys patch: https://github.com/cliffordwolf/yosys/pull/318
+# --- required for windows_amd64
+
+if [ $ARCH != "darwin" ]; then
+  sed -i "s/else if (pos >= arg1.bits.size())/else if (pos.toUnsignedLong() >= arg1.bits.size())/;" kernel/calc.cc
+  sed -i "s/if (pos < 0 || pos >= arg1.bits.size())/if (pos < 0 || pos.toUnsignedLong() >= arg1.bits.size())/;" kernel/calc.cc
+fi
+
 # -- Compile it
 
 if [ $ARCH == "darwin" ]; then
   make config-clang
-  gsed -i "s/-ggdb //;" Makefile
+  gsed -i "s/-Wall -Wextra -ggdb/-w/;" Makefile
   make -j$J YOSYS_VER="0.7 (Apio build)" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0
             ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" OPTFLAGS=\"-O\" \
@@ -33,8 +41,8 @@ if [ $ARCH == "darwin" ]; then
 
 elif [ ${ARCH:0:7} == "windows" ]; then
   make config-gcc
-  sed -i "s/-fPIC //;" Makefile
-  sed -i "s/-ggdb //;" Makefile
+  sed -i "s/-fPIC/-fpermissive/;" Makefile
+  sed -i "s/-Wall -Wextra -ggdb/-w/;" Makefile
   sed -i "s/LD = gcc$/LD = $CC/;" Makefile
   sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
   sed -i "s/LDLIBS += -lrt/LDLIBS +=/;" Makefile
@@ -46,7 +54,7 @@ elif [ ${ARCH:0:7} == "windows" ]; then
                        ARCHFLAGS=\"$ABC_ARCHFLAGS\" ABC_USE_NO_READLINE=1 ABC_USE_NO_PTHREADS=1"
 else
   make config-gcc
-  sed -i "s/-ggdb //;" Makefile
+  sed -i "s/-Wall -Wextra -ggdb/-w/;" Makefile
   sed -i "s/LD = gcc$/LD = $CC/;" Makefile
   sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
   sed -i "s/LDLIBS += -lrt/LDLIBS +=/;" Makefile

@@ -29,13 +29,13 @@ if [ $ARCH == "windows_x86" ]; then
   CC="i686-w64-mingw32-gcc"
   CXX="i686-w64-mingw32-g++"
   ABC_ARCHFLAGS="-DWIN32 -DSIZEOF_VOID_P=4 -DSIZEOF_LONG=4 -DSIZEOF_INT=4 -DWIN32_NO_DLL -DHAVE_STRUCT_TIMESPEC -x c++ -fpermissive -w"
-
 fi
 
 if [ $ARCH == "windows_amd64" ]; then
   EXE=".exe"
   CC="x86_64-w64-mingw32-gcc"
   CXX="x86_64-w64-mingw32-g++"
+  ABC_ARCHFLAGS="-DWIN32 -DSIZEOF_VOID_P=8 -DSIZEOF_LONG=8 -DSIZEOF_INT=4 -DWIN32_NO_DLL -DHAVE_STRUCT_TIMESPEC -x c++ -fpermissive -w"
 fi
 
 if [ $ARCH == "darwin" ]; then
