@@ -25,8 +25,8 @@ cd $BUILD_DIR/$YOSYS
 # --- required for windows_amd64
 
 if [ $ARCH != "darwin" ]; then
-  sed -i "s/else if (pos >= arg1.bits.size())/else if (pos.toUnsignedLong() >= arg1.bits.size())/;" kernel/calc.cc
-  sed -i "s/if (pos < 0 || pos >= arg1.bits.size())/if (pos < 0 || pos.toUnsignedLong() >= arg1.bits.size())/;" kernel/calc.cc
+  sed -i "s/else if (pos >= arg1.bits.size())/else if (pos >= BigInteger(int(arg1.bits.size())))/;" kernel/calc.cc
+  sed -i "s/if (pos < 0 || pos >= arg1.bits.size())/if (pos < 0 || pos >= BigInteger(int(arg1.bits.size())))/;" kernel/calc.cc
 fi
 
 # -- Compile it
