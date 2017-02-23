@@ -26,7 +26,7 @@ function test_bin {
 if [ "$ARCHS" == "" ]; then
   echo ""
   echo "Usage:"
-  echo "  bash clean.sh \"linux_x86_64 linux_armv7l\""
+  echo "  bash clean.sh \"linux_x86_64 linux_i686\""
   echo ""
   echo "Target archs:"
   echo "  $TARGET_ARCHS"
@@ -65,6 +65,8 @@ do
         echo ">> CLEAN"
         ;;
       *)
+        echo ""
+        echo ">> ABORT"
         ;;
   esac
 

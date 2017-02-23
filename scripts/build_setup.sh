@@ -1,7 +1,5 @@
 # Build setup script
 
-EXE=""
-
 if [ $ARCH == "linux_x86_64" ]; then
   CC="gcc"
   CXX="g++"

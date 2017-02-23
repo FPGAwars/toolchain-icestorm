@@ -58,7 +58,7 @@ function print {
 if [ "$ARCHS" == "" ]; then
   echo ""
   echo "Usage:"
-  echo "  bash build.sh \"linux_x86_64 linux_armv7l\""
+  echo "  bash build.sh \"linux_x86_64 linux_i686\""
   echo ""
   echo "Target archs:"
   echo "  $TARGET_ARCHS"
@@ -82,9 +82,6 @@ do
 
   # -- Directory for installation the target files
   PACKAGE_DIR=$PACKAGES_DIR/build_$ARCH
-
-  # --- Directory where the files for patching the upstream are located
-  DATA=$WORK_DIR/build-data/$ARCH
 
   # --------- Instal dependencies ------------------------------------
   if [ $INSTALL_DEPS == "1" ]; then
