@@ -9,7 +9,7 @@
 VERSION=1.10.0
 
 # -- Target architectures
-ARCHS=$1
+ARCH=$1
 TARGET_ARCHS="linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows_x86 windows_amd64 darwin"
 
 # -- Toolchain name
@@ -54,92 +54,91 @@ function print {
   echo ""
 }
 
-# -- Check ARCHS
-if [ "$ARCHS" == "" ]; then
+# -- Check ARCH
+if [[ $# > 1 ]]; then
   echo ""
-  echo "Usage:"
-  echo "  bash build.sh \"linux_x86_64 linux_i686\""
-  echo ""
-  echo "Target archs:"
-  echo "  $TARGET_ARCHS"
+  echo "Error: too many arguments"
+  exit 1
 fi
 
-# -- Loop
-for ARCH in $ARCHS
-do
-
-  if [[ ! $TARGET_ARCHS =~ (^|[[:space:]])$ARCH([[:space:]]|$) ]]; then
-    echo ""
-    echo ">>> WRONG ARCHITECTURE $ARCH"
-    continue
-  fi
-
+if [[ $# < 1 ]]; then
   echo ""
-  echo ">>> ARCHITECTURE $ARCH"
+  echo "Usage: bash build.sh TARGET"
+  echo ""
+  echo "Targets: $TARGET_ARCHS"
+  exit 1
+fi
 
-  # -- Directory for compiling the tools
-  BUILD_DIR=$BUILDS_DIR/build_$ARCH
+if [[ $ARCH =~ [[:space:]] || ! $TARGET_ARCHS =~ (^|[[:space:]])$ARCH([[:space:]]|$) ]]; then
+  echo ""
+  echo ">>> WRONG ARCHITECTURE \"$ARCH\""
+  exit 1
+fi
 
-  # -- Directory for installation the target files
-  PACKAGE_DIR=$PACKAGES_DIR/build_$ARCH
+echo ""
+echo ">>> ARCHITECTURE \"$ARCH\""
 
-  # --------- Instal dependencies ------------------------------------
-  if [ $INSTALL_DEPS == "1" ]; then
+# -- Directory for compiling the tools
+BUILD_DIR=$BUILDS_DIR/build_$ARCH
 
-    print ">> Install dependencies"
-    . $WORK_DIR/scripts/install_dependencies.sh
+# -- Directory for installation the target files
+PACKAGE_DIR=$PACKAGES_DIR/build_$ARCH
+
+# --------- Instal dependencies ------------------------------------
+if [ $INSTALL_DEPS == "1" ]; then
+
+  print ">> Install dependencies"
+  . $WORK_DIR/scripts/install_dependencies.sh
+
+fi
+
+# -- Create the build dir
+mkdir -p $BUILD_DIR
+
+# -- Create the package folders
+mkdir -p $PACKAGE_DIR/$NAME/bin
+mkdir -p $PACKAGE_DIR/$NAME/share
+
+# --------- Compile icestorm ---------------------------------------
+if [ $COMPILE_ICESTORM == "1" ]; then
+
+  print ">> Compile icestorm"
+  . $WORK_DIR/scripts/compile_icestorm.sh
+
+fi
+
+# --------- Compile arachne-pnr ------------------------------------
+if [ $COMPILE_ARACHNE == "1" ]; then
+
+  print ">> Compile arachne-pnr"
+  . $WORK_DIR/scripts/compile_arachnepnr.sh
+
+fi
+
+# --------- Compile yosys ------------------------------------------
+if [ $COMPILE_YOSYS == "1" ]; then
+
+  print ">> Compile yosys"
+  . $WORK_DIR/scripts/compile_yosys.sh
+
+fi
+
+# --------- Compile icotools ----------------------------------------
+if [ $COMPILE_ICOTOOLS == "1" ]; then
+
+  if [ $ARCH == "linux_armv7l" ]; then
+
+    print ">> Compile icotools for RPI"
+    . $WORK_DIR/scripts/compile_icotools.sh
 
   fi
 
-  # -- Create the build dir
-  mkdir -p $BUILD_DIR
+fi
 
-  # -- Create the package folders
-  mkdir -p $PACKAGE_DIR/$NAME/bin
-  mkdir -p $PACKAGE_DIR/$NAME/share
+# --------- Create the package -------------------------------------
+if [ $CREATE_PACKAGE == "1" ]; then
 
-  # --------- Compile icestorm ---------------------------------------
-  if [ $COMPILE_ICESTORM == "1" ]; then
+  print ">> Create package"
+  . $WORK_DIR/scripts/create_package.sh
 
-    print ">> Compile icestorm"
-    . $WORK_DIR/scripts/compile_icestorm.sh
-
-  fi
-
-  # --------- Compile arachne-pnr ------------------------------------
-  if [ $COMPILE_ARACHNE == "1" ]; then
-
-    print ">> Compile arachne-pnr"
-    . $WORK_DIR/scripts/compile_arachnepnr.sh
-
-  fi
-
-  # --------- Compile yosys ------------------------------------------
-  if [ $COMPILE_YOSYS == "1" ]; then
-
-    print ">> Compile yosys"
-    . $WORK_DIR/scripts/compile_yosys.sh
-
-  fi
-
-  # --------- Compile icotools ----------------------------------------
-  if [ $COMPILE_ICOTOOLS == "1" ]; then
-
-    if [ $ARCH == "linux_armv7l" ]; then
-
-      print ">> Compile icotools for RPI"
-      . $WORK_DIR/scripts/compile_icotools.sh
-
-    fi
-
-  fi
-
-  # --------- Create the package -------------------------------------
-  if [ $CREATE_PACKAGE == "1" ]; then
-
-    print ">> Create package"
-    . $WORK_DIR/scripts/create_package.sh
-
-  fi
-
-done
+fi

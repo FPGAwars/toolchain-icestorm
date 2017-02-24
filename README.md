@@ -2,20 +2,20 @@
 
 ## Introduction
 
-Static binaries of the **Icestorm** tools (yosys, arachne, icetools and icotools). Packaged for [Apio](https://github.com/FPGAwars/apio) and [Platformio](http://platformio.org/).
+Static binaries of the [Icestorm](http://www.clifford.at/icestorm) tools (yosys, arachne, icetools and icotools). Packaged for [Apio](https://github.com/FPGAwars/apio) and [Platformio](http://platformio.org/).
 
 ## Usage
 
 Build:
 
 ```
-bash build.sh "linux_x86_64 linux_i686"
+bash build.sh linux_x86_64
 ```
 
 Clean:
 
 ```
-bash clean.sh "linux_x86_64 linux_i686"
+bash clean.sh linux_x86_64
 ```
 
 Target architectures:

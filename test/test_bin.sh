@@ -31,6 +31,10 @@ function test3 {
     test0 "- 3. File is static" test -n "$output"
 }
 
+file $FILE
+
+echo "------------------------------" >&2
+
 test1 $FILE
 test2 $FILE
 test3 $FILE

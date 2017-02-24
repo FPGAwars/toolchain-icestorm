@@ -37,7 +37,7 @@ if [ ${ARCH:0:7} == "windows" ]; then
   sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
                           xdot pkg-config python3 libftdi1-dev \
-                          mingw-w64 wine
+                          mingw-w64 mingw-w64-tools wine
   sudo apt-get autoremove -y
 fi
 

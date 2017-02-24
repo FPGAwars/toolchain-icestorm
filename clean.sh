@@ -4,7 +4,7 @@
 ##################################
 
 # -- Target architectures
-ARCHS=$1
+ARCH=$1
 TARGET_ARCHS="linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows_x86 windows_amd64 darwin"
 
 # -- Store current dir
@@ -22,52 +22,51 @@ function test_bin {
   fi
 }
 
-# -- Check ARCHS
-if [ "$ARCHS" == "" ]; then
+# -- Check ARCH
+if [[ $# > 1 ]]; then
   echo ""
-  echo "Usage:"
-  echo "  bash clean.sh \"linux_x86_64 linux_i686\""
-  echo ""
-  echo "Target archs:"
-  echo "  $TARGET_ARCHS"
+  echo "Error: too many arguments"
+  exit 1
 fi
 
-# -- Loop
-for ARCH in $ARCHS
-do
-
-  if [[ ! $TARGET_ARCHS =~ (^|[[:space:]])$ARCH([[:space:]]|$) ]]; then
-    echo ""
-    echo ">>> WRONG ARCHITECTURE $ARCH"
-    continue
-  fi
-
+if [[ $# < 1 ]]; then
   echo ""
-  echo ">>> ARCHITECTURE $ARCH"
+  echo "Usage: bash clean.sh TARGET"
+  echo ""
+  echo "Targets: $TARGET_ARCHS"
+  exit 1
+fi
 
-  printf "Are you sure? [y/N]:${NC} "
-  read RESP
-  case "$RESP" in
-      [yY][eE][sS]|[yY])
-        # -- Directory for compiling the tools
-        BUILD_DIR=$BUILDS_DIR/build_$ARCH
+if [[ $ARCH =~ [[:space:]] || ! $TARGET_ARCHS =~ (^|[[:space:]])$ARCH([[:space:]]|$) ]]; then
+  echo ""
+  echo ">>> WRONG ARCHITECTURE \"$ARCH\""
+  exit 1
+fi
 
-        # -- Directory for installation the target files
-        PACKAGE_DIR=$PACKAGES_DIR/build_$ARCH
+echo ""
+echo ">>> ARCHITECTURE \"$ARCH\""
 
-        # -- Remove the package dir
-        rm -r -f $PACKAGE_DIR
+printf "Are you sure? [y/N]: "
+read RESP
+case "$RESP" in
+    [yY][eE][sS]|[yY])
+      # -- Directory for compiling the tools
+      BUILD_DIR=$BUILDS_DIR/build_$ARCH
 
-        # -- Remove the build dir
-        rm -r -f $BUILD_DIR
+      # -- Directory for installation the target files
+      PACKAGE_DIR=$PACKAGES_DIR/build_$ARCH
 
-        echo ""
-        echo ">> CLEAN"
-        ;;
-      *)
-        echo ""
-        echo ">> ABORT"
-        ;;
-  esac
+      # -- Remove the package dir
+      rm -r -f $PACKAGE_DIR
 
-done
+      # -- Remove the build dir
+      rm -r -f $BUILD_DIR
+
+      echo ""
+      echo ">> CLEAN"
+      ;;
+    *)
+      echo ""
+      echo ">> ABORT"
+      ;;
+esac
