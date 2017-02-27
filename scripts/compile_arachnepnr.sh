@@ -22,7 +22,7 @@ if [ $ARCH == "darwin" ]; then
   make -j$J CXX="$CXX" LIBS="-lm" ICEBOX="../icestorm/icebox"
 else
   sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr\ -d\ /;" Makefile
-  make -j$J CXX="$CXX" LIBS="-static -lm" ICEBOX="../icestorm/icebox"
+  make -j$J CXX="$CXX" LIBS="-static -static-libstdc++ -static-libgcc -lm" ICEBOX="../icestorm/icebox"
 fi
 
 if [ $ARCH != "darwin" ]; then
