@@ -6,8 +6,11 @@ if [ $ARCH == "linux_x86_64" ]; then
                           xdot pkg-config python3 libftdi1-dev # <- v1
                           gcc-5 g++-5
   sudo apt-get autoremove -y
-  sudo ln -sf /usr/bin/gcc-5 /usr/bin/gcc
-  sudo ln -sf /usr/bin/g++-5 /usr/bin/g++
+  sudo update-alternatives \
+    --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 \
+    --slave /usr/bin/g++ g++ /usr/bin/g++-5
+  gcc --version
+  g++ --version
 fi
 
 if [ $ARCH == "linux_i686" ]; then
@@ -16,8 +19,11 @@ if [ $ARCH == "linux_i686" ]; then
                           xdot pkg-config python3 libftdi1-dev \
                           gcc-5-multilib g++-5-multilib
   sudo apt-get autoremove -y
-  sudo ln -sf /usr/bin/gcc-5 /usr/bin/gcc
-  sudo ln -sf /usr/bin/g++-5 /usr/bin/g++
+  sudo update-alternatives \
+    --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 \
+    --slave /usr/bin/g++ g++ /usr/bin/g++-5
+  gcc --version
+  g++ --version
 fi
 
 if [ $ARCH == "linux_armv7l" ]; then
@@ -27,6 +33,8 @@ if [ $ARCH == "linux_armv7l" ]; then
                           gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf \
                           binfmt-support qemu-user-static
   sudo apt-get autoremove -y
+  arm-linux-gnueabihf-gcc --version
+  arm-linux-gnueabihf-g++ --version
 fi
 
 if [ $ARCH == "linux_aarch64" ]; then
@@ -36,6 +44,8 @@ if [ $ARCH == "linux_aarch64" ]; then
                           gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \
                           binfmt-support qemu-user-static
   sudo apt-get autoremove -y
+  aarch64-linux-gnu-gcc --version
+  aarch64-linux-gnu-g++ --version
 fi
 
 if [ $ARCH == "windows_x86" ]; then
@@ -46,8 +56,11 @@ if [ $ARCH == "windows_x86" ]; then
                           #mingw-w64 mingw-w64-tools \
                           wine
   sudo apt-get autoremove -y
-  sudo ln -sf /usr/bin/i386-mingw32-gcc-5 /usr/bin/i386-mingw32-gcc
-  sudo ln -sf /usr/bin/i386-mingw32-g++-5 /usr/bin/i386-mingw32-g++
+  sudo update-alternatives \
+    --install /usr/bin/i686-w64-mingw32-gcc i686-w64-mingw32-gcc /usr/bin/i686-w64-mingw32-gcc-5 60 \
+    --slave /usr/bin/i686-w64-mingw32-g++ i686-w64-mingw32-g++ /usr/bin/i686-w64-mingw32-g++-5
+  i686-w64-mingw32-gcc --version
+  i686-w64-mingw32-g++ --version
 fi
 
 if [ $ARCH == "windows_amd64" ]; then
@@ -58,8 +71,11 @@ if [ $ARCH == "windows_amd64" ]; then
                           #mingw-w64 mingw-w64-tools \
                           wine
   sudo apt-get autoremove -y
-  sudo ln -sf /usr/bin/x86-w64-mingw32-gcc-5 /usr/bin/x86-w64-mingw32-gcc
-  sudo ln -sf /usr/bin/x86-w64-mingw32-g++-5 /usr/bin/x86-w64-mingw32-g++
+  sudo update-alternatives \
+    --install /usr/bin/x86_64-w64-mingw32-gcc x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-5 60 \
+    --slave /usr/bin/x86_64-w64-mingw32-g++ x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-5
+  x86_64-w64-mingw32-gcc --version
+  x86_64-w64-mingw32-g++ --version
 fi
 
 if [ $ARCH == "darwin" ]; then
