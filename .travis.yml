@@ -29,6 +29,7 @@ before_script:
 
 script:
   - bash build.sh $TARGET
+  - openssl sha1 _packages/**/*.tar.gz
 
 deploy:
   provider: releases
