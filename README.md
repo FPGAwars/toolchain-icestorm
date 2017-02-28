@@ -1,21 +1,44 @@
-
-# Packages for the Icestorm toolchain
+# Toolchain-icestorm
 
 ## Introduction
 
-Binaries for the **Icestorm** tools (yosys, arachne and icetools). They have been
-compiled statically and packaged for [Platformio](http://platformio.org/) and [Apio](https://github.com/FPGAwars/apio)
+Static binaries of the [Icestorm](http://www.clifford.at/icestorm) tools (yosys, arachne, icetools and icotools). Packaged for [Apio](https://github.com/FPGAwars/apio) and [Platformio](http://platformio.org/).
 
+## Usage
+
+Build:
+
+```
+bash build.sh linux_x86_64
+```
+
+Clean:
+
+```
+bash clean.sh linux_x86_64
+```
+
+Target architectures:
+* linux_x86_64
+* linux_i686
+* linux_armv7l
+* linux_aarch64
+* windows_x86
+* windows_amd64
+* darwin
+
+Final packages will be deployed in the **\_packages/build_ARCH/** directories.
+
+NOTE: *libftdi1.a* and *libusb-1.0.a* files have been generated for each architecture using the [Tools-system scripts](https://github.com/FPGAwars/tools-system).
 # Documentation
 
-[The project documentation is located in the wiki](https://github.com/FPGAwars/toolchain-icestorm/wiki)
+[The project documentation is located in the wiki](https://github.com/FPGAwars/toolchain-icestorm/wiki).
 
 # Authors
-* Jesús Arroyo
-* Juan González (Obijuan)  
 
+* [Jesús Arroyo Torrens](https://github.com/Jesus89)
+* [Juan González (Obijuan)](https://github.com/Obijuan)
 
-# License
-![](https://github.com/FPGAwars/toolchain-icestorm/raw/master/doc/bq-logo-cc-sa-small-150px.png)
+## License
 
-Licensed under a GPL v2 and [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/)
+Licensed under a GPL v2 and [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).

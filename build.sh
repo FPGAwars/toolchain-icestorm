@@ -6,21 +6,21 @@
 # Generate toolchain-icestorm-arch-ver.tar.gz from source code
 # sources: http://www.clifford.at/icestorm/
 
-VERSION=9
+VERSION=1.10.0
 
 # -- Target architectures
-ARCHS=( )
-# ARCHS=( linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows )
-# ARCHS=( darwin )
+ARCH=$1
+TARGET_ARCHS="linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows_x86 windows_amd64 darwin"
 
 # -- Toolchain name
 NAME=toolchain-icestorm
 
 # -- Debug flags
+INSTALL_DEPS=1
 COMPILE_ICESTORM=1
 COMPILE_ARACHNE=1
 COMPILE_YOSYS=1
-COMPILE_YOSYS_ABC=1
+COMPILE_ICOTOOLS=1
 CREATE_PACKAGE=1
 
 # -- Store current dir
@@ -46,6 +46,7 @@ function test_bin {
     exit 1
   fi
 }
+
 # -- Print function
 function print {
   echo ""
@@ -53,90 +54,91 @@ function print {
   echo ""
 }
 
-# -- Check ARCHS
-if [ ${#ARCHS[@]} -eq 0 ]; then
-  print "NOTE: add your architectures to the ARCHS variable in the build.sh script"
+# -- Check ARCH
+if [[ $# > 1 ]]; then
+  echo ""
+  echo "Error: too many arguments"
+  exit 1
 fi
 
-# -- Loop
-for ARCH in ${ARCHS[@]}
-do
-
+if [[ $# < 1 ]]; then
   echo ""
-  echo ">>> ARCHITECTURE $ARCH"
+  echo "Usage: bash build.sh TARGET"
+  echo ""
+  echo "Targets: $TARGET_ARCHS"
+  exit 1
+fi
 
-  # -- Directory for compiling the tools
-  BUILD_DIR=$BUILDS_DIR/build_$ARCH
+if [[ $ARCH =~ [[:space:]] || ! $TARGET_ARCHS =~ (^|[[:space:]])$ARCH([[:space:]]|$) ]]; then
+  echo ""
+  echo ">>> WRONG ARCHITECTURE \"$ARCH\""
+  exit 1
+fi
 
-  # -- Directory for installation the target files
-  PACKAGE_DIR=$PACKAGES_DIR/build_$ARCH
+echo ""
+echo ">>> ARCHITECTURE \"$ARCH\""
 
-  # --- Directory where the files for patching the upstream are located
-  DATA=$WORK_DIR/build-data/$ARCH
+# -- Directory for compiling the tools
+BUILD_DIR=$BUILDS_DIR/build_$ARCH
 
-  # -- Remove the build dir and the generated packages then exit
-  if [ "$1" == "clean" ]; then
+# -- Directory for installation the target files
+PACKAGE_DIR=$PACKAGES_DIR/build_$ARCH
 
-    # -- Remove the package dir
-    rm -r -f $PACKAGE_DIR
+# --------- Instal dependencies ------------------------------------
+if [ $INSTALL_DEPS == "1" ]; then
 
-    # -- Remove the build dir
-    rm -r -f $BUILD_DIR
-
-    print ">> CLEAN"
-    continue
-  fi
-
-  # -- Install dependencies
   print ">> Install dependencies"
-  . $WORK_DIR/install_dependencies.sh
+  . $WORK_DIR/scripts/install_dependencies.sh
 
-  # -- Create the build dir
-  mkdir -p $BUILD_DIR
+fi
 
-  # -- Create the package folders
-  mkdir -p $PACKAGE_DIR/$NAME/bin
-  mkdir -p $PACKAGE_DIR/$NAME/share
-  cp -r $WORK_DIR/build-data/examples $PACKAGE_DIR/$NAME
+# -- Create the build dir
+mkdir -p $BUILD_DIR
 
-  # --------- Compile icestorm ---------------------------------------
-  if [ $COMPILE_ICESTORM == "1" ]; then
+# -- Create the package folders
+mkdir -p $PACKAGE_DIR/$NAME/bin
+mkdir -p $PACKAGE_DIR/$NAME/share
 
-    print ">> Compile icestorm"
-    . $WORK_DIR/compile_icestorm.sh
+# --------- Compile icestorm ---------------------------------------
+if [ $COMPILE_ICESTORM == "1" ]; then
 
-  fi
+  print ">> Compile icestorm"
+  . $WORK_DIR/scripts/compile_icestorm.sh
 
-  # --------- Compile arachne-pnr ------------------------------------
-  if [ $COMPILE_ARACHNE == "1" ]; then
+fi
 
-    print ">> Compile arachne-pnr"
-    . $WORK_DIR/compile_arachnepnr.sh
+# --------- Compile arachne-pnr ------------------------------------
+if [ $COMPILE_ARACHNE == "1" ]; then
 
-  fi
+  print ">> Compile arachne-pnr"
+  . $WORK_DIR/scripts/compile_arachnepnr.sh
 
-  # --------- Compile yosys ------------------------------------------
-  if [ $COMPILE_YOSYS == "1" ]; then
+fi
 
-    print ">> Compile yosys"
-    . $WORK_DIR/compile_yosys.sh
+# --------- Compile yosys ------------------------------------------
+if [ $COMPILE_YOSYS == "1" ]; then
 
-  fi
+  print ">> Compile yosys"
+  . $WORK_DIR/scripts/compile_yosys.sh
 
-  # --------- Compile yosys-abc --------------------------------------
-  if [ $COMPILE_YOSYS_ABC == "1" ]; then
+fi
 
-    print ">> Compile yosys abc"
-    . $WORK_DIR/compile_yosys_abc.sh
+# --------- Compile icotools ----------------------------------------
+if [ $COMPILE_ICOTOOLS == "1" ]; then
 
-  fi
+  if [ $ARCH == "linux_armv7l" ]; then
 
-  # --------- Create the package -------------------------------------
-  if [ $CREATE_PACKAGE == "1" ]; then
-
-    print ">> Create package"
-    . $WORK_DIR/create_package.sh
+    print ">> Compile icotools for RPI"
+    . $WORK_DIR/scripts/compile_icotools.sh
 
   fi
 
-done
+fi
+
+# --------- Create the package -------------------------------------
+if [ $CREATE_PACKAGE == "1" ]; then
+
+  print ">> Create package"
+  . $WORK_DIR/scripts/create_package.sh
+
+fi
