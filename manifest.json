@@ -32,13 +32,13 @@
         "system": ["linux_x86_64"]
       },
       {
-        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.0/toolchain-icestorm-windows-1.10.0.tar.gz",
+        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.0/toolchain-icestorm-windows_x86-1.10.0.tar.gz",
         "sha1": "136dd6f6f40433ca5e80fc0ea959c88c2ed0fa49",
         "version": "1.10.0",
         "system": ["windows", "windows_x86"]
       },
       {
-        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.0/toolchain-icestorm-windows-1.10.0.tar.gz",
+        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.0/toolchain-icestorm-windows_amd64-1.10.0.tar.gz",
         "sha1": "8b9e108a5a0acd8261ff11591156457b433be39f",
         "version": "1.10.0",
         "system": ["windows_amd64"]
