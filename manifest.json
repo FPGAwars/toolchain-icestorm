@@ -2,45 +2,45 @@
   "toolchain-icestorm":
     [
       {
-        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.0/toolchain-icestorm-darwin-1.10.0.tar.gz",
-        "sha1": "5ca1716ef6ba5921ba86b3d1ae8ec58c73ac7f48",
-        "version": "1.10.0",
+        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.1/toolchain-icestorm-darwin-1.10.1.tar.gz",
+        "sha1": "dfa9bd9cf7e8c447f7e29e2c10a7ea4524815bc5",
+        "version": "1.10.1",
         "system": ["darwin", "darwin_x86_64", "darwin_i386"]
       },
       {
-        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.0/toolchain-icestorm-linux_aarch64-1.10.0.tar.gz",
-        "sha1": "31a443c4ae9b53bbf295995be789d40b9159c05a",
-        "version": "1.10.0",
+        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.1/toolchain-icestorm-linux_aarch64-1.10.1.tar.gz",
+        "sha1": "983babe5ac8ee9fd88ee0fe116ed7169983c2660",
+        "version": "1.10.1",
         "system": ["linux_aarch64"]
       },
       {
-        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.0/toolchain-icestorm-linux_armv7l-1.10.0.tar.gz",
-        "sha1": "1e62f6a50d9c49909cbad9cf39b564f78a6d277d",
-        "version": "1.10.0",
+        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.1/toolchain-icestorm-linux_armv7l-1.10.1.tar.gz",
+        "sha1": "a08c091f053604b9f06188cc63840fdc3ebaa863",
+        "version": "1.10.1",
         "system": ["linux_armv7l"]
       },
       {
-        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.0/toolchain-icestorm-linux_i686-1.10.0.tar.gz",
-        "sha1": "ff1f8607eec528cc431a90e699e116426a2ae3b6",
-        "version": "1.10.0",
+        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.1/toolchain-icestorm-linux_i686-1.10.1.tar.gz",
+        "sha1": "d2985604c815438f4fee41bb8f4ee4ba13b9d756",
+        "version": "1.10.1",
         "system": ["linux_i686"]
       },
       {
-        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.0/toolchain-icestorm-linux_x86_64-1.10.0.tar.gz",
-        "sha1": "4797287bf6c3665918798bd62b581667df3d924f",
-        "version": "1.10.0",
+        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.1/toolchain-icestorm-linux_x86_64-1.10.1.tar.gz",
+        "sha1": "235d79c2b65cc89645689a3564dd042e536b03cb",
+        "version": "1.10.1",
         "system": ["linux_x86_64"]
       },
       {
-        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.0/toolchain-icestorm-windows_x86-1.10.0.tar.gz",
-        "sha1": "136dd6f6f40433ca5e80fc0ea959c88c2ed0fa49",
-        "version": "1.10.0",
+        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.1/toolchain-icestorm-windows_x86-1.10.1.tar.gz",
+        "sha1": "018e2c6a2a2f80ba1bd0b25577447ecdeb42db3b",
+        "version": "1.10.1",
         "system": ["windows", "windows_x86"]
       },
       {
-        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.0/toolchain-icestorm-windows_amd64-1.10.0.tar.gz",
-        "sha1": "8b9e108a5a0acd8261ff11591156457b433be39f",
-        "version": "1.10.0",
+        "url": "https://github.com/FPGAwars/toolchain-icestorm/releases/download/v1.10.1/toolchain-icestorm-windows_amd64-1.10.1.tar.gz",
+        "sha1": "2249517bb49c93e244db03f82b7f7da5fb90fc0f",
+        "version": "1.10.1",
         "system": ["windows_amd64"]
       }
     ]
