@@ -11,6 +11,8 @@ cd $UPSTREAM_DIR
 # -- Clone the sources from github
 test -e $ICESTORM || git clone --depth=1 $GIT_ICESTORM $ICESTORM
 git -C $ICESTORM pull
+echo ""
+git -C $ARACHNE log -1
 
 # -- Copy the upstream sources into the build directory
 rsync -a $ICESTORM $BUILD_DIR --exclude .git
