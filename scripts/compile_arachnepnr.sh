@@ -29,9 +29,10 @@ fi
 
 if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables
-  test_bin bin/arachne-pnr
   test -e share/$ARACHNE/chipdb-1k.bin || exit 1
   test -e share/$ARACHNE/chipdb-8k.bin || exit 1
+  test -e share/$ARACHNE/chipdb-384.bin || exit 1
+  test_bin bin/arachne-pnr
 fi
 
 # -- Copy the executable to the bin dir
