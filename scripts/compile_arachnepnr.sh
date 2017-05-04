@@ -11,6 +11,8 @@ cd $UPSTREAM_DIR
 # -- Clone the sources from github
 test -e $ARACHNE || git clone --depth=1 $GIT_ARACHNE $ARACHNE
 git -C $ARACHNE pull
+echo ""
+git -C $ARACHNE log -1
 
 # -- Copy the upstream sources into the build directory
 rsync -a $ARACHNE $BUILD_DIR --exclude .git

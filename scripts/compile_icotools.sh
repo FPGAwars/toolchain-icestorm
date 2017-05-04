@@ -12,6 +12,8 @@ cd $UPSTREAM_DIR
 # -- Clone the sources from github
 test -e $ICOTOOLS || git clone --depth=1 $GIT_ICOTOOLS $ICOTOOLS
 git -C $ICOTOOLS pull
+echo ""
+git -C $ARACHNE log -1
 
 # -- Copy the upstream sources into the build directory
 rsync -a $ICOTOOLS $BUILD_DIR --exclude .git
