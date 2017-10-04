@@ -21,7 +21,7 @@ rsync -a $ICOTOOLS $BUILD_DIR --exclude .git
 cd $BUILD_DIR/$ICOTOOLS
 
 # -- Compile it
-arm-linux-gnueabihf-gcc -o icoprog/icoprog -Wall -Os icoprog/icoprog.cc -D GPIOMODE -static -lrt -lstdc++
+arm-linux-gnueabihf-gcc -o icoprog/icoprog -Wall -Os icoprog/icoprog.cc -D GPIOMODE -static -lrt -lstdc++ $CFLAGS
 
 # -- Test the generated executables
 test_bin icoprog/icoprog

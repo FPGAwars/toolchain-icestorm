@@ -5,7 +5,7 @@
 
 # -- Target architectures
 ARCH=$1
-TARGET_ARCHS="linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows_x86 windows_amd64 darwin"
+TARGET_ARCHS="linux_x86_64 linux_i686 linux_armv6l linux_armv7l linux_aarch64 windows_x86 windows_amd64 darwin"
 
 # -- Store current dir
 WORK_DIR=$PWD

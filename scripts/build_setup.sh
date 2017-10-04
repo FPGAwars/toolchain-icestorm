@@ -12,6 +12,13 @@ if [ $ARCH == "linux_i686" ]; then
   ABC_ARCHFLAGS="-DLIN -DSIZEOF_VOID_P=4 -DSIZEOF_LONG=4 -DSIZEOF_INT=4"
 fi
 
+if [ $ARCH == "linux_armv6l" ]; then
+  CC="arm-linux-gnueabihf-gcc -marm -march=armv6"
+  CXX="arm-linux-gnueabihf-g++ -marm -march=armv6"
+  C_FLAGS="-marm -march=armv6"
+  ABC_ARCHFLAGS="-DLIN -DSIZEOF_VOID_P=4 -DSIZEOF_LONG=4 -DSIZEOF_INT=4"
+fi
+
 if [ $ARCH == "linux_armv7l" ]; then
   CC="arm-linux-gnueabihf-gcc"
   CXX="arm-linux-gnueabihf-g++"

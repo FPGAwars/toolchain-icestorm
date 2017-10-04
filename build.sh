@@ -10,7 +10,7 @@ VERSION=1.10.1
 
 # -- Target architectures
 ARCH=$1
-TARGET_ARCHS="linux_x86_64 linux_i686 linux_armv7l linux_aarch64 windows_x86 windows_amd64 darwin"
+TARGET_ARCHS="linux_x86_64 linux_i686 linux_armv6l linux_armv7l linux_aarch64 windows_x86 windows_amd64 darwin"
 
 # -- Toolchain name
 NAME=toolchain-icestorm
@@ -126,7 +126,7 @@ fi
 # --------- Compile icotools ----------------------------------------
 if [ $COMPILE_ICOTOOLS == "1" ]; then
 
-  if [ $ARCH == "linux_armv7l" ]; then
+  if [ $ARCH == "linux_armv6l" ] || [ $ARCH == "linux_armv7l" ]; then
 
     print ">> Compile icotools for RPI"
     . $WORK_DIR/scripts/compile_icotools.sh

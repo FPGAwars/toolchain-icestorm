@@ -13,6 +13,11 @@ if [ $ARCH == "linux_i686" ]; then
   sed -i "s/%SYSTEM%/\"linux_i686\"/;" $PACKAGE_DIR/$NAME/package.json
 fi
 
+if [ $ARCH == "linux_armv6l" ]; then
+  sed -i "s/%VERSION%/\"$VERSION\"/;" $PACKAGE_DIR/$NAME/package.json
+  sed -i "s/%SYSTEM%/\"linux_armv6l\"/;" $PACKAGE_DIR/$NAME/package.json
+fi
+
 if [ $ARCH == "linux_armv7l" ]; then
   sed -i "s/%VERSION%/\"$VERSION\"/;" $PACKAGE_DIR/$NAME/package.json
   sed -i "s/%SYSTEM%/\"linux_armv7l\"/;" $PACKAGE_DIR/$NAME/package.json

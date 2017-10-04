@@ -26,7 +26,7 @@ if [ $ARCH == "linux_i686" ]; then
   g++ --version
 fi
 
-if [ $ARCH == "linux_armv7l" ]; then
+if [ $ARCH == "linux_armv6l" ] || [ $ARCH == "linux_armv7l" ]; then
   sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
                           xdot pkg-config python3 libftdi1-dev \
