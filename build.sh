@@ -6,7 +6,7 @@
 # Generate toolchain-icestorm-arch-ver.tar.gz from source code
 # sources: http://www.clifford.at/icestorm/
 
-VERSION=1.10.1
+VERSION=1.10.2
 
 # -- Target architectures
 ARCH=$1

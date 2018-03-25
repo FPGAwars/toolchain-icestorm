@@ -1,9 +1,10 @@
 # -- Compile Yosys script
 
-VER=0.7
+VER=0.8-dev
 YOSYS=yosys-yosys-$VER
-TAR_YOSYS=yosys-$VER.tar.gz
-REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/$TAR_YOSYS
+# TAR_YOSYS=yosys-$VER.tar.gz
+# REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/$TAR_YOSYS
+GIT_YOSYS=https://github.com/cliffordwolf/yosys.git
 
 # -- Setup
 . $WORK_DIR/scripts/build_setup.sh
@@ -11,10 +12,16 @@ REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/$TAR_YOSYS
 cd $UPSTREAM_DIR
 
 # -- Check and download the release
-test -e $TAR_YOSYS || wget $REL_YOSYS
+# test -e $TAR_YOSYS || wget $REL_YOSYS
 
 # -- Unpack the release
-tar zxf $TAR_YOSYS
+# tar zxf $TAR_YOSYS
+
+# -- Clone the sources from github
+git clone --depth=1 $GIT_YOSYS $YOSYS
+git -C $YOSYS pull
+echo ""
+git -C $YOSYS log -1
 
 # -- Copy the upstream sources into the build directory
 rsync -a $YOSYS $BUILD_DIR --exclude .git
@@ -34,7 +41,7 @@ fi
 if [ $ARCH == "darwin" ]; then
   make config-clang
   gsed -i "s/-Wall -Wextra -ggdb/-w/;" Makefile
-  make -j$J YOSYS_VER="0.7 (Apio build)" \
+  make -j$J YOSYS_VER="$VER (Apio build)" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0
             ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" OPTFLAGS=\"-O\" \
                        ARCHFLAGS=\"$ABC_ARCHFLAGS\" ABC_USE_NO_READLINE=1"
@@ -48,7 +55,7 @@ elif [ ${ARCH:0:7} == "windows" ]; then
   sed -i "s/LDLIBS += -lrt/LDLIBS +=/;" Makefile
   sed -i "s/LDFLAGS += -rdynamic/LDFLAGS +=/;" Makefile
   CXXFLAGS="-D_POSIX_SOURCE -D_WIN32"
-  make -j$J YOSYS_VER="0.7 (Apio build)" \
+  make -j$J YOSYS_VER="$VER (Apio build)" \
             LDLIBS="-static -lstdc++ -lm" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
             ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" LIBS=\"-static -lm\" OPTFLAGS=\"-O\" \
@@ -59,7 +66,7 @@ else
   sed -i "s/LD = gcc$/LD = $CC/;" Makefile
   sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
   sed -i "s/LDFLAGS += -rdynamic/LDFLAGS +=/;" Makefile
-  make -j$J YOSYS_VER="0.7 (Apio build)" \
+  make -j$J YOSYS_VER="$VER (Apio build)" \
             LDLIBS="-static -lstdc++ -lm" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
             ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" LIBS=\"-static -lm -ldl -pthread\" OPTFLAGS=\"-O\" \
