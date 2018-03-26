@@ -81,5 +81,6 @@ if [ $ARCH == "darwin" ]; then
         pkg-config python3 libusb libftdi gnu-sed wget"
   brew update
   brew install --force $DEPS
+  brew upgrade python
   brew unlink $DEPS && brew link --force $DEPS
 fi
