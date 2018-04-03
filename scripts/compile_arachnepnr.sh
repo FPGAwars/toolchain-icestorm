@@ -1,7 +1,7 @@
 # -- Compile Arachne PnR script
 
 ARACHNE=arachne-pnr
-GIT_ARACHNE=https://github.com/cseed/arachne-pnr.git
+GIT_ARACHNE=https://github.com/Jesus89/arachne-pnr.git
 
 # -- Setup
 . $WORK_DIR/scripts/build_setup.sh
@@ -9,7 +9,7 @@ GIT_ARACHNE=https://github.com/cseed/arachne-pnr.git
 cd $UPSTREAM_DIR
 
 # -- Clone the sources from github
-test -e $ARACHNE || git clone --depth=1 $GIT_ARACHNE $ARACHNE
+test -e $ARACHNE || git clone -b fix-makefile --single-branch --depth=1 $GIT_ARACHNE $ARACHNE
 git -C $ARACHNE pull
 echo ""
 git -C $ARACHNE log -1
