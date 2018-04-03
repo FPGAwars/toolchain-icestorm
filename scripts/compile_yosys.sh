@@ -54,7 +54,6 @@ elif [ ${ARCH:0:7} == "windows" ]; then
   sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
   sed -i "s/LDLIBS += -lrt/LDLIBS +=/;" Makefile
   sed -i "s/LDFLAGS += -rdynamic/LDFLAGS +=/;" Makefile
-  CXXFLAGS="-D_POSIX_SOURCE -D_WIN32"
   make -j$J YOSYS_VER="$VER (Apio build)" \
             LDLIBS="-static -lstdc++ -lm" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
