@@ -46,6 +46,7 @@ elif [ ${ARCH:0:7} == "windows" ]; then
   sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
   sed -i "s/LDLIBS += -lrt/LDLIBS +=/;" Makefile
   sed -i "s/LDFLAGS += -rdynamic/LDFLAGS +=/;" Makefile
+  CXXFLAGS="-DYOSYS_WIN32_UNIX_DIR"
   make -j$J YOSYS_VER="$VER (Apio build)" \
             LDLIBS="-static -lstdc++ -lm" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
@@ -75,9 +76,5 @@ cp yosys $PACKAGE_DIR/$NAME/bin/yosys$EXE
 cp yosys-abc $PACKAGE_DIR/$NAME/bin/yosys-abc$EXE
 
 # -- Copy the share folder to the package folder
-if [ ${ARCH:0:7} == "windows" ]; then
-  cp -r share/* $PACKAGE_DIR/$NAME/share
-else
-  mkdir -p $PACKAGE_DIR/$NAME/share/yosys
-  cp -r share/* $PACKAGE_DIR/$NAME/share/yosys
-fi
+mkdir -p $PACKAGE_DIR/$NAME/share/yosys
+cp -r share/* $PACKAGE_DIR/$NAME/share/yosys
