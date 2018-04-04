@@ -40,9 +40,5 @@ fi
 cp bin/arachne-pnr $PACKAGE_DIR/$NAME/bin/arachne-pnr$EXE
 
 # -- Copy the chipdb*.bin data files
-if [ ${ARCH:0:7} == "windows" ]; then
-  cp -r share/$ARACHNE/chipdb*.bin $PACKAGE_DIR/$NAME/bin
-else
-  mkdir -p $PACKAGE_DIR/$NAME/share/$ARACHNE
-  cp -r share/$ARACHNE/chipdb*.bin $PACKAGE_DIR/$NAME/share/$ARACHNE
-fi
+mkdir -p $PACKAGE_DIR/$NAME/share/$ARACHNE
+cp -r share/$ARACHNE/chipdb*.bin $PACKAGE_DIR/$NAME/share/$ARACHNE
