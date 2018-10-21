@@ -1,6 +1,7 @@
 # -- Compile Arachne PnR script
 
 ARACHNE=arachne-pnr
+COMMIT=840bdfdeb38809f9f6af4d89dd7b22959b176fdd
 GIT_ARACHNE=https://github.com/cseed/arachne-pnr.git
 
 # -- Setup
@@ -9,9 +10,9 @@ GIT_ARACHNE=https://github.com/cseed/arachne-pnr.git
 cd $UPSTREAM_DIR
 
 # -- Clone the sources from github
-test -e $ARACHNE || git clone --depth=1 $GIT_ARACHNE $ARACHNE
+test -e $ARACHNE || git clone $GIT_ARACHNE $ARACHNE
 git -C $ARACHNE pull
-echo ""
+git -C $ARACHNE checkout $COMMIT
 git -C $ARACHNE log -1
 
 # -- Copy the upstream sources into the build directory
@@ -29,18 +30,17 @@ fi
 
 if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables
-  test_bin bin/arachne-pnr
   test -e share/$ARACHNE/chipdb-1k.bin || exit 1
+  test -e share/$ARACHNE/chipdb-5k.bin || exit 1
   test -e share/$ARACHNE/chipdb-8k.bin || exit 1
+  test -e share/$ARACHNE/chipdb-384.bin || exit 1
+  test -e share/$ARACHNE/chipdb-lm4k.bin || exit 1
+  test_bin bin/arachne-pnr
 fi
 
 # -- Copy the executable to the bin dir
 cp bin/arachne-pnr $PACKAGE_DIR/$NAME/bin/arachne-pnr$EXE
 
 # -- Copy the chipdb*.bin data files
-if [ ${ARCH:0:7} == "windows" ]; then
-  cp -r share/$ARACHNE/chipdb*.bin $PACKAGE_DIR/$NAME/bin
-else
-  mkdir -p $PACKAGE_DIR/$NAME/share/$ARACHNE
-  cp -r share/$ARACHNE/chipdb*.bin $PACKAGE_DIR/$NAME/share/$ARACHNE
-fi
+mkdir -p $PACKAGE_DIR/$NAME/share/$ARACHNE
+cp -r share/$ARACHNE/chipdb*.bin $PACKAGE_DIR/$NAME/share/$ARACHNE

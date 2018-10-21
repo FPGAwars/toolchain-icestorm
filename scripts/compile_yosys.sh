@@ -1,40 +1,42 @@
 # -- Compile Yosys script
 
-VER=0.7
+REL=1 # 1: load from release tag. 0: load from source code
+
+VER=0.8
 YOSYS=yosys-yosys-$VER
 TAR_YOSYS=yosys-$VER.tar.gz
 REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/$TAR_YOSYS
+GIT_YOSYS=https://github.com/cliffordwolf/yosys.git
 
 # -- Setup
 . $WORK_DIR/scripts/build_setup.sh
 
 cd $UPSTREAM_DIR
 
-# -- Check and download the release
-test -e $TAR_YOSYS || wget $REL_YOSYS
-
-# -- Unpack the release
-tar zxf $TAR_YOSYS
+if [ $REL -eq 1 ]; then
+  # -- Check and download the release
+  test -e $TAR_YOSYS || wget $REL_YOSYS
+  # -- Unpack the release
+  tar zxf $TAR_YOSYS
+else
+  # -- Clone the sources from github
+  git clone --depth=1 $GIT_YOSYS $YOSYS
+  git -C $YOSYS pull
+  echo ""
+  git -C $YOSYS log -1
+fi
 
 # -- Copy the upstream sources into the build directory
 rsync -a $YOSYS $BUILD_DIR --exclude .git
 
 cd $BUILD_DIR/$YOSYS
 
-# -- Yosys patch: https://github.com/cliffordwolf/yosys/pull/318
-# --- required for windows_amd64
-
-if [ $ARCH != "darwin" ]; then
-  sed -i "s/else if (pos >= arg1.bits.size())/else if (pos >= BigInteger(int(arg1.bits.size())))/;" kernel/calc.cc
-  sed -i "s/if (pos < 0 || pos >= arg1.bits.size())/if (pos < 0 || pos >= BigInteger(int(arg1.bits.size())))/;" kernel/calc.cc
-fi
-
 # -- Compile it
 
 if [ $ARCH == "darwin" ]; then
   make config-clang
   gsed -i "s/-Wall -Wextra -ggdb/-w/;" Makefile
-  make -j$J YOSYS_VER="0.7 (Apio build)" \
+  make -j$J YOSYS_VER="$VER (Apio build)" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0
             ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" OPTFLAGS=\"-O\" \
                        ARCHFLAGS=\"$ABC_ARCHFLAGS\" ABC_USE_NO_READLINE=1"
@@ -47,19 +49,18 @@ elif [ ${ARCH:0:7} == "windows" ]; then
   sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
   sed -i "s/LDLIBS += -lrt/LDLIBS +=/;" Makefile
   sed -i "s/LDFLAGS += -rdynamic/LDFLAGS +=/;" Makefile
-  CXXFLAGS="-D_POSIX_SOURCE -D_WIN32"
-  make -j$J YOSYS_VER="0.7 (Apio build)" \
+  make -j$J YOSYS_VER="$VER (Apio build)" CPPFLAGS="-DYOSYS_WIN32_UNIX_DIR" \
             LDLIBS="-static -lstdc++ -lm" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
             ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" LIBS=\"-static -lm\" OPTFLAGS=\"-O\" \
-                       ARCHFLAGS=\"$ABC_ARCHFLAGS\" ABC_USE_NO_READLINE=1 ABC_USE_NO_PTHREADS=1"
+                       ARCHFLAGS=\"$ABC_ARCHFLAGS\" ABC_USE_NO_READLINE=1 ABC_USE_NO_PTHREADS=1 ABC_USE_LIBSTDCXX=1"
 else
   make config-gcc
   sed -i "s/-Wall -Wextra -ggdb/-w/;" Makefile
   sed -i "s/LD = gcc$/LD = $CC/;" Makefile
   sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
   sed -i "s/LDFLAGS += -rdynamic/LDFLAGS +=/;" Makefile
-  make -j$J YOSYS_VER="0.7 (Apio build)" \
+  make -j$J YOSYS_VER="$VER (Apio build)" \
             LDLIBS="-static -lstdc++ -lm" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
             ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" LIBS=\"-static -lm -ldl -pthread\" OPTFLAGS=\"-O\" \
@@ -70,16 +71,18 @@ if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables
   test_bin yosys
   test_bin yosys-abc
+  test_bin yosys-config
+  test_bin yosys-filterlib
+  test_bin yosys-smtbmc
 fi
 
-# -- Copy the executable file
+# -- Copy the executable files
 cp yosys $PACKAGE_DIR/$NAME/bin/yosys$EXE
 cp yosys-abc $PACKAGE_DIR/$NAME/bin/yosys-abc$EXE
+cp yosys-config $PACKAGE_DIR/$NAME/bin/yosys-config$EXE
+cp yosys-filterlib $PACKAGE_DIR/$NAME/bin/yosys-filterlib$EXE
+cp yosys-smtbmc $PACKAGE_DIR/$NAME/bin/yosys-smtbmc$EXE
 
 # -- Copy the share folder to the package folder
-if [ ${ARCH:0:7} == "windows" ]; then
-  cp -r share/* $PACKAGE_DIR/$NAME/share
-else
-  mkdir -p $PACKAGE_DIR/$NAME/share/yosys
-  cp -r share/* $PACKAGE_DIR/$NAME/share/yosys
-fi
+mkdir -p $PACKAGE_DIR/$NAME/share/yosys
+cp -r share/* $PACKAGE_DIR/$NAME/share/yosys

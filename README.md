@@ -1,6 +1,6 @@
 # Toolchain-icestorm
 
-[![Build Status](https://travis-ci.org/FPGAwars/toolchain-icestorm.svg?branch=v1.10.1)](https://travis-ci.org/FPGAwars/toolchain-icestorm)
+[![Build Status](https://travis-ci.org/FPGAwars/toolchain-icestorm.svg)](https://travis-ci.org/FPGAwars/toolchain-icestorm)
 
 ## Introduction
 
@@ -40,6 +40,10 @@ NOTE: *libftdi1.a* and *libusb-1.0.a* files have been generated for each archite
 
 * [Jesús Arroyo Torrens](https://github.com/Jesus89)
 * [Juan González (Obijuan)](https://github.com/Obijuan)
+
+## Collaborators
+
+* [Miodrag Milanovic](https://github.com/mmicko)
 
 ## License
 
