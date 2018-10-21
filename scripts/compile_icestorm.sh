@@ -1,6 +1,7 @@
 # -- Compile Icestorm script
 
 ICESTORM=icestorm
+COMMIT=5ab07ed32a768d484284f1d0e58f61c2ef9d398a
 GIT_ICESTORM=https://github.com/cliffordwolf/icestorm.git
 
 # -- Setup
@@ -9,9 +10,9 @@ GIT_ICESTORM=https://github.com/cliffordwolf/icestorm.git
 cd $UPSTREAM_DIR
 
 # -- Clone the sources from github
-test -e $ICESTORM || git clone --depth=1 $GIT_ICESTORM $ICESTORM
+test -e $ICESTORM || git clone $GIT_ICESTORM $ICESTORM
 git -C $ICESTORM pull
-echo ""
+git -C $ICESTORM checkout $COMMIT
 git -C $ICESTORM log -1
 
 # -- Copy the upstream sources into the build directory
