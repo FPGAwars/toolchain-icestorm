@@ -1,9 +1,11 @@
 # -- Compile Yosys script
 
-VER=0.8-dev
+REL=1 # 1: load from release tag. 0: load from source code
+
+VER=0.8
 YOSYS=yosys-yosys-$VER
-# TAR_YOSYS=yosys-$VER.tar.gz
-# REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/$TAR_YOSYS
+TAR_YOSYS=yosys-$VER.tar.gz
+REL_YOSYS=https://github.com/cliffordwolf/yosys/archive/$TAR_YOSYS
 GIT_YOSYS=https://github.com/cliffordwolf/yosys.git
 
 # -- Setup
@@ -11,17 +13,18 @@ GIT_YOSYS=https://github.com/cliffordwolf/yosys.git
 
 cd $UPSTREAM_DIR
 
-# -- Check and download the release
-# test -e $TAR_YOSYS || wget $REL_YOSYS
-
-# -- Unpack the release
-# tar zxf $TAR_YOSYS
-
-# -- Clone the sources from github
-git clone --depth=1 $GIT_YOSYS $YOSYS
-git -C $YOSYS pull
-echo ""
-git -C $YOSYS log -1
+if [ $REL -eq 1 ]; then
+  # -- Check and download the release
+  test -e $TAR_YOSYS || wget $REL_YOSYS
+  # -- Unpack the release
+  tar zxf $TAR_YOSYS
+else
+  # -- Clone the sources from github
+  git clone --depth=1 $GIT_YOSYS $YOSYS
+  git -C $YOSYS pull
+  echo ""
+  git -C $YOSYS log -1
+fi
 
 # -- Copy the upstream sources into the build directory
 rsync -a $YOSYS $BUILD_DIR --exclude .git
