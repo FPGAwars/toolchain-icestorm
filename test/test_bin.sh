@@ -37,7 +37,9 @@ echo "------------------------------" >&2
 
 test1 $FILE
 test2 $FILE
-test3 $FILE
+if [ -z $2 ]; then
+	test3 $FILE
+fi
 
 echo "------------------------------" >&2
 echo "All tests [PASSED]" >&2

@@ -19,13 +19,26 @@ git -C $ARACHNE log -1
 rsync -a $ARACHNE $BUILD_DIR --exclude .git
 
 cd $BUILD_DIR/$ARACHNE
-
+EXE_O=
 # -- Compile it
 if [ $ARCH == "darwin" ]; then
   make -j$J CXX="$CXX" LIBS="-lm" ICEBOX="../icestorm/icebox"
 else
-  sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr\ -d\ /;" Makefile
-  make -j$J CXX="$CXX" LIBS="-static -static-libstdc++ -static-libgcc -lm" ICEBOX="../icestorm/icebox"
+
+    if [ $ARCH == "windows_amd64" ] || [ $ARCH == "windows_x86" ]; then
+        # create dummy file to test output format for windows
+        echo "int main(){}" >testgcc.c
+        $CXX -o testgcc testgcc.c
+        if [ -f testgcc.exe ]; then
+            EXE_O=.exe
+        fi
+        sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr.exe\ -d\ /;" Makefile
+        grep -l "bin/arachne-pnr" Makefile | xargs sed -i 's/bin\/arachne-pnr\$(EXE)/bin\/arachne-pnr.exe/g'
+
+    else
+        sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr\ -d\ /;" Makefile
+    fi
+    make -j$J CXX="$CXX" LIBS="-static -static-libstdc++ -static-libgcc -lm" ICEBOX="../icestorm/icebox"
 fi
 
 if [ $ARCH != "darwin" ]; then
@@ -35,11 +48,11 @@ if [ $ARCH != "darwin" ]; then
   test -e share/$ARACHNE/chipdb-8k.bin || exit 1
   test -e share/$ARACHNE/chipdb-384.bin || exit 1
   test -e share/$ARACHNE/chipdb-lm4k.bin || exit 1
-  test_bin bin/arachne-pnr
+  test_bin bin/arachne-pnr$EXE_O
 fi
 
 # -- Copy the executable to the bin dir
-cp bin/arachne-pnr $PACKAGE_DIR/$NAME/bin/arachne-pnr$EXE
+cp bin/arachne-pnr$EXE_O $PACKAGE_DIR/$NAME/bin/arachne-pnr$EXE
 
 # -- Copy the chipdb*.bin data files
 mkdir -p $PACKAGE_DIR/$NAME/share/$ARACHNE

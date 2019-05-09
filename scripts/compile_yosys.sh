@@ -32,6 +32,7 @@ rsync -a $YOSYS $BUILD_DIR --exclude .git
 cd $BUILD_DIR/$YOSYS
 
 # -- Compile it
+EXE_O=
 
 if [ $ARCH == "darwin" ]; then
   make config-clang
@@ -42,13 +43,25 @@ if [ $ARCH == "darwin" ]; then
                        ARCHFLAGS=\"$ABC_ARCHFLAGS\" ABC_USE_NO_READLINE=1"
 
 elif [ ${ARCH:0:7} == "windows" ]; then
-  make config-gcc
+ 
+make config-gcc
   sed -i "s/-fPIC/-fpermissive/;" Makefile
   sed -i "s/-Wall -Wextra -ggdb/-w/;" Makefile
   sed -i "s/LD = gcc$/LD = $CC/;" Makefile
   sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
   sed -i "s/LDLIBS += -lrt/LDLIBS +=/;" Makefile
   sed -i "s/LDFLAGS += -rdynamic/LDFLAGS +=/;" Makefile
+        # create dummy file to test output format for windows
+        echo "int main(){}" >testgcc.c
+        $CXX -o testgcc testgcc.c
+        if [ -f testgcc.exe ]; then
+
+            sed -i 's/EXE =/EXE =.exe/g' Makefile
+            EXE_O=.exe
+        fi
+
+
+
   make -j$J YOSYS_VER="$VER (Apio build)" CPPFLAGS="-DYOSYS_WIN32_UNIX_DIR" \
             LDLIBS="-static -lstdc++ -lm" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
@@ -69,18 +82,18 @@ fi
 
 if [ $ARCH != "darwin" ]; then
   # -- Test the generated executables
-  test_bin yosys
-  test_bin yosys-abc
+  test_bin yosys$EXE_O
+  test_bin yosys-abc$EXE_O
   test_bin yosys-config
-  test_bin yosys-filterlib
+  test_bin yosys-filterlib$EXE_O
   test_bin yosys-smtbmc
 fi
 
 # -- Copy the executable files
-cp yosys $PACKAGE_DIR/$NAME/bin/yosys$EXE
-cp yosys-abc $PACKAGE_DIR/$NAME/bin/yosys-abc$EXE
+cp yosys$EXE_O $PACKAGE_DIR/$NAME/bin/yosys$EXE
+cp yosys-abc$EXE_O $PACKAGE_DIR/$NAME/bin/yosys-abc$EXE
 cp yosys-config $PACKAGE_DIR/$NAME/bin/yosys-config$EXE
-cp yosys-filterlib $PACKAGE_DIR/$NAME/bin/yosys-filterlib$EXE
+cp yosys-filterlib$EXE_O $PACKAGE_DIR/$NAME/bin/yosys-filterlib$EXE
 cp yosys-smtbmc $PACKAGE_DIR/$NAME/bin/yosys-smtbmc$EXE
 
 # -- Copy the share folder to the package folder
