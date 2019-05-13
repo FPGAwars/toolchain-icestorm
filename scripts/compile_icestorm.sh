@@ -29,10 +29,12 @@ if [ $ARCH == "darwin" ]; then
             SUBDIRS="icebox icepack icemulti icepll icetime icebram"
 else
   sed -i "s/-ggdb //;" config.mk
+  sed -i "s/\$^ \$(LDLIBS)/\$^ \$(LDLIBS) \$(LDUSBSTATIC)/g" iceprog/Makefile
   make -j$J CC="$CC" \
             SUBDIRS="iceprog" \
-            LDFLAGS="-static -pthread -L$WORK_DIR/build-data/lib/$ARCH" \
-            CFLAGS="-MD -O0 -Wall -std=c99 -I$WORK_DIR/build-data/include/libftdi1"
+            LDFLAGS="-static -pthread -L$WORK_DIR/build-data/lib/$ARCH " \
+	    LDUSBSTATIC="-lusb-1.0"\
+            CFLAGS="-MD -O0 -Wall -std=c99 -I$WORK_DIR/build-data/include/libftdi1 -I$WORK_DIR/build-data/include/libusb-1.0" 
   make -j$J CXX="$CXX" STATIC=1 \
             SUBDIRS="icebox icepack icemulti icepll icetime icebram"
 fi
