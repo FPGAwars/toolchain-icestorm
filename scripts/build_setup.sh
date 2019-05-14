@@ -46,5 +46,9 @@ if [ $ARCH == "darwin" ]; then
   ABC_ARCHFLAGS="-DLIN64 -DSIZEOF_VOID_P=8 -DSIZEOF_LONG=8 -DSIZEOF_INT=4"
   J=$(($(sysctl -n hw.ncpu)-1))
 else
-  J=$(($(nproc)-1))
+  #support for 1cpu machines
+  J=`nproc`
+  if [ $J -gt 1 ]; then
+	  J=$(($(nproc)-1))
+  fi
 fi
