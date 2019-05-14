@@ -77,7 +77,7 @@ test_bin yosys-smtbmc
 # -- Copy the executable files
 cp yosys $PACKAGE_DIR/$NAME/bin/yosys$EXE
 cp yosys-abc $PACKAGE_DIR/$NAME/bin/yosys-abc$EXE
-cp yosys-config $PACKAGE_DIR/$NAME/bin/yosys-config$EXE
+cp yosys-config $PACKAGE_DIR/$NAME/bin/yosys-config
 cp yosys-filterlib $PACKAGE_DIR/$NAME/bin/yosys-filterlib$EXE
 cp yosys-smtbmc $PACKAGE_DIR/$NAME/bin/yosys-smtbmc$PY
 
