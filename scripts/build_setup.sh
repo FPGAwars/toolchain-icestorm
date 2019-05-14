@@ -25,6 +25,7 @@ if [ $ARCH == "linux_aarch64" ]; then
 fi
 
 if [ $ARCH == "windows_x86" ]; then
+  PY=".py"
   EXE=".exe"
   CC="i686-w64-mingw32-gcc"
   CXX="i686-w64-mingw32-g++"
@@ -32,6 +33,7 @@ if [ $ARCH == "windows_x86" ]; then
 fi
 
 if [ $ARCH == "windows_amd64" ]; then
+  PY=".py"
   EXE=".exe"
   CC="x86_64-w64-mingw32-gcc"
   CXX="x86_64-w64-mingw32-g++"
