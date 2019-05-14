@@ -25,6 +25,7 @@ if [ $ARCH == "linux_aarch64" ]; then
 fi
 
 if [ $ARCH == "windows_x86" ]; then
+  PY=".py"
   EXE=".exe"
   CC="i686-w64-mingw32-gcc"
   CXX="i686-w64-mingw32-g++"
@@ -32,6 +33,7 @@ if [ $ARCH == "windows_x86" ]; then
 fi
 
 if [ $ARCH == "windows_amd64" ]; then
+  PY=".py"
   EXE=".exe"
   CC="x86_64-w64-mingw32-gcc"
   CXX="x86_64-w64-mingw32-g++"
@@ -44,5 +46,9 @@ if [ $ARCH == "darwin" ]; then
   ABC_ARCHFLAGS="-DLIN64 -DSIZEOF_VOID_P=8 -DSIZEOF_LONG=8 -DSIZEOF_INT=4"
   J=$(($(sysctl -n hw.ncpu)-1))
 else
-  J=$(($(nproc)-1))
+  #support for 1cpu machines
+  J=`nproc`
+  if [ $J -gt 1 ]; then
+	  J=$(($(nproc)-1))
+  fi
 fi

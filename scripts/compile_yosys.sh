@@ -67,21 +67,19 @@ else
                        ARCHFLAGS=\"$ABC_ARCHFLAGS -Wno-unused-but-set-variable\" ABC_USE_NO_READLINE=1"
 fi
 
-if [ $ARCH != "darwin" ]; then
-  # -- Test the generated executables
-  test_bin yosys
-  test_bin yosys-abc
-  test_bin yosys-config
-  test_bin yosys-filterlib
-  test_bin yosys-smtbmc
-fi
+# -- Test the generated executables
+test_bin yosys
+test_bin yosys-abc
+test_bin yosys-config
+test_bin yosys-filterlib
+test_bin yosys-smtbmc
 
 # -- Copy the executable files
 cp yosys $PACKAGE_DIR/$NAME/bin/yosys$EXE
 cp yosys-abc $PACKAGE_DIR/$NAME/bin/yosys-abc$EXE
-cp yosys-config $PACKAGE_DIR/$NAME/bin/yosys-config$EXE
+cp yosys-config $PACKAGE_DIR/$NAME/bin/yosys-config
 cp yosys-filterlib $PACKAGE_DIR/$NAME/bin/yosys-filterlib$EXE
-cp yosys-smtbmc $PACKAGE_DIR/$NAME/bin/yosys-smtbmc$EXE
+cp yosys-smtbmc $PACKAGE_DIR/$NAME/bin/yosys-smtbmc$PY
 
 # -- Copy the share folder to the package folder
 mkdir -p $PACKAGE_DIR/$NAME/share/yosys

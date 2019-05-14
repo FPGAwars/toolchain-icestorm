@@ -40,11 +40,9 @@ fi
 TOOLS="icepack iceprog icemulti icepll icetime icebram"
 
 # -- Test the generated executables
-if [ $ARCH != "darwin" ]; then
-  for dir in $TOOLS; do
-      test_bin $dir/$dir
-  done
-fi
+for dir in $TOOLS; do
+    test_bin $dir/$dir
+done
 
 # -- Copy the executables to the bin dir
 for dir in $TOOLS; do
