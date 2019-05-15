@@ -44,6 +44,7 @@ else
     make -j$J $CROSSFLAGS CXX="$CXX" LIBS="-static -static-libstdc++ -static-libgcc -lm" ICEBOX="../icestorm/icebox"
 fi
 
+
 if [ $ARCH != "darwin" ]; then
    # -- Test the generated executables
   test -e share/$ARACHNE/chipdb-1k.bin || exit 1
@@ -53,6 +54,7 @@ if [ $ARCH != "darwin" ]; then
   test -e share/$ARACHNE/chipdb-lm4k.bin || exit 1
   test_bin bin/arachne-pnr$EXE_O
 fi
+
 
 # -- Copy the executable to the bin dir
 cp bin/arachne-pnr$EXE_O $PACKAGE_DIR/$NAME/bin/arachne-pnr$EXE

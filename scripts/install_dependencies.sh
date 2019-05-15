@@ -77,9 +77,15 @@ if [ $ARCH == "windows_amd64" ]; then
 fi
 
 if [ $ARCH == "darwin" ]; then
+  which -s brew
+  if [[ $? != 0 ]] ; then
+      # Install Homebrew
+      ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  else
+      brew update
+  fi
   DEPS="bison flex gawk libffi git mercurial graphviz \
         pkg-config python3 libusb libftdi gnu-sed wget"
-  brew update
   brew install --force $DEPS
   brew upgrade python
   brew unlink $DEPS && brew link --force $DEPS

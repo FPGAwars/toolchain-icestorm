@@ -44,6 +44,7 @@ TOOLS="icepack iceprog icemulti icepll icetime icebram"
 EXE_O=
 
 # -- Test the generated executables
+
 if [ $ARCH != "darwin" ]; then
   
   if [ -f iceprog/iceprog.exe ]; then
@@ -55,6 +56,7 @@ if [ $ARCH != "darwin" ]; then
   done
 
 fi
+
 
 # -- Copy the executables to the bin dir
 for dir in $TOOLS; do
