@@ -24,7 +24,7 @@ EXE_O=
 if [ $ARCH == "darwin" ]; then
   make -j$J CXX="$CXX" LIBS="-lm" ICEBOX="../icestorm/icebox"
 else
-
+    CROSSFLAGS=
     if [ $ARCH == "windows_amd64" ] || [ $ARCH == "windows_x86" ]; then
         # create dummy file to test output format for windows
         echo "int main(){}" >testgcc.c
@@ -32,17 +32,20 @@ else
         if [ -f testgcc.exe ]; then
             EXE_O=.exe
         fi
-        sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr.exe\ -d\ /;" Makefile
-        grep -l "bin/arachne-pnr" Makefile | xargs sed -i 's/bin\/arachne-pnr\$(EXE)/bin\/arachne-pnr.exe/g'
+        sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr\ -d\ /;" Makefile
+        # grep -l "bin/arachne-pnr" Makefile | xargs sed -i 's/bin\/arachne-pnr\$(EXE)/bin\/arachne-pnr.exe/g'
+
+	# In crosscompiling arachnenpr needs test with host compiled app
+	CROSSFLAGS="HOST_CXX=\"clang++\""
 
     else
         sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr\ -d\ /;" Makefile
     fi
-    make -j$J CXX="$CXX" LIBS="-static -static-libstdc++ -static-libgcc -lm" ICEBOX="../icestorm/icebox"
+    make -j$J $CROSSFLAGS CXX="$CXX" LIBS="-static -static-libstdc++ -static-libgcc -lm" ICEBOX="../icestorm/icebox"
 fi
 
 if [ $ARCH != "darwin" ]; then
-  # -- Test the generated executables
+   # -- Test the generated executables
   test -e share/$ARACHNE/chipdb-1k.bin || exit 1
   test -e share/$ARACHNE/chipdb-5k.bin || exit 1
   test -e share/$ARACHNE/chipdb-8k.bin || exit 1
