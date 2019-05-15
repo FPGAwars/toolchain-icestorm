@@ -1,15 +1,15 @@
 #!/bin/sh
 
-#echo "> travis login"
+#echo "> travis login --org"
 #travis login --org
 
 echo "> travis token"
-travis token --org
+travis token
 
-echo "> Enter the token: "
+echo "\n> Enter the token: "
 read TOKEN
 
-echo "> Enter the tag: "
+echo "\n> Enter the tag: "
 read TAG
 
 body="{
@@ -18,7 +18,7 @@ body="{
   }
 }"
 
-echo "> Trigger travis build: "
+echo "\n> Trigger travis build: "
 curl -s -X POST \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -27,4 +27,4 @@ curl -s -X POST \
   -d "$body" \
   https://api.travis-ci.org/repo/FPGAwars%2Ftoolchain-icestorm/requests
 
-echo "> Done!"
+echo "\n> Done!"

@@ -3,6 +3,10 @@
 #   Icestorm toolchain builder   #
 ##################################
 
+# Set english language for propper pattern matching
+export LC_ALL=C
+
+
 # Generate toolchain-icestorm-arch-ver.tar.gz from source code
 # sources: http://www.clifford.at/icestorm/
 
@@ -41,7 +45,7 @@ mkdir -p $UPSTREAM_DIR
 
 # -- Test script function
 function test_bin {
-  . $WORK_DIR/test/test_bin.sh $1
+  $WORK_DIR/test/test_bin.sh $1 $2
   if [ $? != "0" ]; then
     exit 1
   fi
