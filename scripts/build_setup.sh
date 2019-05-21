@@ -49,7 +49,7 @@ else
   J=`nproc`
 fi
 
-#support for 1cpu machines
+# Support for 1cpu machines
 if [ $J -gt 1 ]; then
   J=$(($J-1))
 fi
