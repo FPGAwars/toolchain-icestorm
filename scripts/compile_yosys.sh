@@ -32,8 +32,6 @@ rsync -a $YOSYS $BUILD_DIR --exclude .git
 cd $BUILD_DIR/$YOSYS
 
 # -- Compile it
-EXE_O=
-
 if [ $ARCH == "darwin" ]; then
   make config-clang
   gsed -i "s/-Wall -Wextra -ggdb/-w/;" Makefile
@@ -44,24 +42,13 @@ if [ $ARCH == "darwin" ]; then
 
 elif [ ${ARCH:0:7} == "windows" ]; then
 
-make config-gcc
+  make config-gcc
   sed -i "s/-fPIC/-fpermissive/;" Makefile
   sed -i "s/-Wall -Wextra -ggdb/-w/;" Makefile
   sed -i "s/LD = gcc$/LD = $CC/;" Makefile
   sed -i "s/CXX = gcc$/CXX = $CC/;" Makefile
   sed -i "s/LDLIBS += -lrt/LDLIBS +=/;" Makefile
   sed -i "s/LDFLAGS += -rdynamic/LDFLAGS +=/;" Makefile
-        # create dummy file to test output format for windows
-        echo "int main(){}" >testgcc.c
-        $CXX -o testgcc testgcc.c
-        if [ -f testgcc.exe ]; then
-
-            sed -i 's/EXE =/EXE =.exe/g' Makefile
-            EXE_O=.exe
-        fi
-
-
-
   make -j$J YOSYS_VER="$VER (Apio build)" CPPFLAGS="-DYOSYS_WIN32_UNIX_DIR" \
             LDLIBS="-static -lstdc++ -lm" \
             ENABLE_TCL=0 ENABLE_PLUGINS=0 ENABLE_READLINE=0 ENABLE_COVER=0 \
@@ -80,14 +67,18 @@ else
                        ARCHFLAGS=\"$ABC_ARCHFLAGS -Wno-unused-but-set-variable\" ABC_USE_NO_READLINE=1"
 fi
 
-if [ $ARCH != "darwin" ]; then
-  # -- Test the generated executables
-  test_bin yosys$EXE_O
-  test_bin yosys-abc$EXE_O
-  test_bin yosys-config
-  test_bin yosys-filterlib$EXE_O
-  test_bin yosys-smtbmc
+
+EXE_O=
+if [ -f yosys.exe ]; then
+  EXE_O=.exe
 fi
+
+# -- Test the generated executables
+test_bin yosys$EXE_O
+test_bin yosys-abc$EXE_O
+test_bin yosys-config
+test_bin yosys-filterlib$EXE_O
+test_bin yosys-smtbmc
 
 # -- Copy the executable files
 cp yosys$EXE_O $PACKAGE_DIR/$NAME/bin/yosys$EXE
