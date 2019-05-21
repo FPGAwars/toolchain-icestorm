@@ -37,7 +37,7 @@ echo "------------------------------" >&2
 
 test_exists $FILE
 test_exec $FILE
-if [[ $ARCH != "darwin" ]] || [ -z $2 ]; then
+if [[ $ARCH != "darwin" ]]; then
 	test_static $FILE
 fi
 

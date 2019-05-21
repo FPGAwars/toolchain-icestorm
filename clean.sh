@@ -14,14 +14,6 @@ BUILDS_DIR=$WORK_DIR/_builds
 # -- Folder for storing the generated packages
 PACKAGES_DIR=$WORK_DIR/_packages
 
-# -- Test script function
-function test_bin {
-  $WORK_DIR/test/test_bin.sh $1
-  if [ $? != "0" ]; then
-    exit 1
-  fi
-}
-
 # -- Check ARCH
 if [[ $# > 1 ]]; then
   echo ""
