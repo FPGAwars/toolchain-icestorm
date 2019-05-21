@@ -90,5 +90,5 @@ if [ $ARCH == "darwin" ]; then
   brew upgrade python
   brew unlink $DEPS && brew link --force $DEPS
 else
-  ln -s $WORK_DIR/build-data/lib/$ARCH/libftdi1.a $WORK_DIR/build-data/lib/$ARCH/libftdi.a
+  cp $WORK_DIR/build-data/lib/$ARCH/libftdi1.a $WORK_DIR/build-data/lib/$ARCH/libftdi.a
 fi
