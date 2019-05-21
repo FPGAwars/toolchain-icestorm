@@ -3,6 +3,8 @@ dist: trusty
 language: cpp
 matrix:
   include:
+  - os: osx
+    env: TARGET=darwin
   - os: linux
     env: TARGET=linux_x86_64
   - os: linux
@@ -15,8 +17,6 @@ matrix:
     env: TARGET=windows_x86
   - os: linux
     env: TARGET=windows_amd64
-  - os: osx
-    env: TARGET=darwin
 before_script:
 - if [[ ${TARGET:0:7} == "windows" ]]; then sudo dpkg --add-architecture i386; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
