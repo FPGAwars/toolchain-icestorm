@@ -3,10 +3,13 @@
 #   Icestorm toolchain builder   #
 ##################################
 
+# Set english language for propper pattern matching
+export LC_ALL=C
+
 # Generate toolchain-icestorm-arch-ver.tar.gz from source code
 # sources: http://www.clifford.at/icestorm/
 
-VERSION=1.11.0
+VERSION=1.11.1-beta
 
 # -- Target architectures
 ARCH=$1

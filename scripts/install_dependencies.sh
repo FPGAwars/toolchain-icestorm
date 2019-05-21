@@ -3,7 +3,7 @@
 if [ $ARCH == "linux_x86_64" ]; then
   sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
-                          xdot pkg-config python3 libftdi1-dev # <- v1
+                          xdot pkg-config python3 \
                           gcc-5 g++-5
   sudo apt-get autoremove -y
   sudo update-alternatives \
@@ -16,7 +16,7 @@ fi
 if [ $ARCH == "linux_i686" ]; then
   sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
-                          xdot pkg-config python3 libftdi1-dev \
+                          xdot pkg-config python3 \
                           gcc-5-multilib g++-5-multilib
   sudo apt-get autoremove -y
   sudo update-alternatives \
@@ -29,7 +29,7 @@ fi
 if [ $ARCH == "linux_armv7l" ]; then
   sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
-                          xdot pkg-config python3 libftdi1-dev \
+                          xdot pkg-config python3 \
                           gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf \
                           binfmt-support qemu-user-static
   sudo apt-get autoremove -y
@@ -40,7 +40,7 @@ fi
 if [ $ARCH == "linux_aarch64" ]; then
   sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
-                          xdot pkg-config python3 libftdi1-dev \
+                          xdot pkg-config python3 \
                           gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \
                           binfmt-support qemu-user-static
   sudo apt-get autoremove -y
@@ -51,7 +51,7 @@ fi
 if [ $ARCH == "windows_x86" ]; then
   sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
-                          xdot pkg-config python3 libftdi1-dev \
+                          xdot pkg-config python3 \
                           gcc-5-mingw-w64 gc++-5-mingw-w64 wine
                           #mingw-w64 mingw-w64-tools
   sudo apt-get autoremove -y
@@ -65,7 +65,7 @@ fi
 if [ $ARCH == "windows_amd64" ]; then
   sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
-                          xdot pkg-config python3 libftdi1-dev \
+                          xdot pkg-config python3 \
                           gcc-5-mingw-w64 gc++-5-mingw-w64 wine
                           #mingw-w64 mingw-w64-tools
   sudo apt-get autoremove -y
@@ -79,14 +79,16 @@ fi
 if [ $ARCH == "darwin" ]; then
   which -s brew
   if [[ $? != 0 ]] ; then
-      # Install Homebrew
-      ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    # Install Homebrew
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   else
-      brew update
+    brew update
   fi
   DEPS="bison flex gawk libffi git mercurial graphviz \
         pkg-config python3 libusb libftdi gnu-sed wget"
   brew install --force $DEPS
   brew upgrade python
   brew unlink $DEPS && brew link --force $DEPS
+else
+  cp $WORK_DIR/build-data/lib/$ARCH/libftdi1.a $WORK_DIR/build-data/lib/$ARCH/libftdi.a
 fi

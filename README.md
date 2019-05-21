@@ -43,6 +43,7 @@ NOTE: *libftdi1.a* and *libusb-1.0.a* files have been generated for each archite
 
 ## Collaborators
 
+* [Carlos Venegas](https://github.com/cavearr)
 * [Miodrag Milanovic](https://github.com/mmicko)
 
 ## License

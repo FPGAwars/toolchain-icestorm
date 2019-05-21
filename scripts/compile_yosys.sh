@@ -32,7 +32,6 @@ rsync -a $YOSYS $BUILD_DIR --exclude .git
 cd $BUILD_DIR/$YOSYS
 
 # -- Compile it
-
 if [ $ARCH == "darwin" ]; then
   make config-clang
   gsed -i "s/-Wall -Wextra -ggdb/-w/;" Makefile
@@ -67,18 +66,23 @@ else
                        ARCHFLAGS=\"$ABC_ARCHFLAGS -Wno-unused-but-set-variable\" ABC_USE_NO_READLINE=1"
 fi
 
+EXE_O=
+if [ -f yosys.exe ]; then
+  EXE_O=.exe
+fi
+
 # -- Test the generated executables
-test_bin yosys
-test_bin yosys-abc
+test_bin yosys$EXE_O
+test_bin yosys-abc$EXE_O
 test_bin yosys-config
-test_bin yosys-filterlib
+test_bin yosys-filterlib$EXE_O
 test_bin yosys-smtbmc
 
 # -- Copy the executable files
-cp yosys $PACKAGE_DIR/$NAME/bin/yosys$EXE
-cp yosys-abc $PACKAGE_DIR/$NAME/bin/yosys-abc$EXE
+cp yosys$EXE_O $PACKAGE_DIR/$NAME/bin/yosys$EXE
+cp yosys-abc$EXE_O $PACKAGE_DIR/$NAME/bin/yosys-abc$EXE
 cp yosys-config $PACKAGE_DIR/$NAME/bin/yosys-config
-cp yosys-filterlib $PACKAGE_DIR/$NAME/bin/yosys-filterlib$EXE
+cp yosys-filterlib$EXE_O $PACKAGE_DIR/$NAME/bin/yosys-filterlib$EXE
 cp yosys-smtbmc $PACKAGE_DIR/$NAME/bin/yosys-smtbmc$PY
 
 # -- Copy the share folder to the package folder
