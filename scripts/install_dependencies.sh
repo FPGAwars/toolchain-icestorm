@@ -14,7 +14,7 @@ if [ $ARCH == "linux_x86_64" ]; then
 fi
 
 if [ $ARCH == "linux_i686" ]; then
-  sudo apt-get install -y linux-libc-dev:i386 build-essential bison flex libreadline-dev \
+  sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
                           xdot pkg-config python3 \
                           gcc-5-multilib g++-5-multilib
@@ -49,10 +49,10 @@ if [ $ARCH == "linux_aarch64" ]; then
 fi
 
 if [ $ARCH == "windows_x86" ]; then
-  sudo apt-get install -y linux-libc-dev:i386 build-essential bison flex libreadline-dev \
+  sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
                           xdot pkg-config python3 \
-                          gcc-mingw-w64 g++-mingw-w64 wine-stable clang
+                          gcc-5-mingw-w64 gc++-5-mingw-w64 wine
                           #mingw-w64 mingw-w64-tools
   sudo apt-get autoremove -y
   sudo update-alternatives \
@@ -66,7 +66,7 @@ if [ $ARCH == "windows_amd64" ]; then
   sudo apt-get install -y build-essential bison flex libreadline-dev \
                           gawk tcl-dev libffi-dev git mercurial graphviz \
                           xdot pkg-config python3 \
-                          gcc-mingw-w64 g++-mingw-w64 wine-stable clang
+                          gcc-5-mingw-w64 gc++-5-mingw-w64 wine
                           #mingw-w64 mingw-w64-tools
   sudo apt-get autoremove -y
   sudo update-alternatives \
