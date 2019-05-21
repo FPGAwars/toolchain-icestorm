@@ -33,7 +33,7 @@ else
   make -j$J CC="$CC" \
             SUBDIRS="iceprog" \
             LDFLAGS="-static -pthread -L$WORK_DIR/build-data/lib/$ARCH " \
-	          LDUSBSTATIC="-lusb-1.0"\
+            LDUSBSTATIC="-lusb-1.0"\
             CFLAGS="-MD -O0 -Wall -std=c99 -I$WORK_DIR/build-data/include/libftdi1 -I$WORK_DIR/build-data/include/libusb-1.0"
   make -j$J CXX="$CXX" STATIC=1 \
             SUBDIRS="icebox icepack icemulti icepll icetime icebram"

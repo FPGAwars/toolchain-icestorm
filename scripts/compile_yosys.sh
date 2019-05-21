@@ -41,7 +41,6 @@ if [ $ARCH == "darwin" ]; then
                        ARCHFLAGS=\"$ABC_ARCHFLAGS\" ABC_USE_NO_READLINE=1"
 
 elif [ ${ARCH:0:7} == "windows" ]; then
-
   make config-gcc
   sed -i "s/-fPIC/-fpermissive/;" Makefile
   sed -i "s/-Wall -Wextra -ggdb/-w/;" Makefile
@@ -66,7 +65,6 @@ else
             ABCMKARGS="CC=\"$CC\" CXX=\"$CXX\" LIBS=\"-static -lm -ldl -pthread\" OPTFLAGS=\"-O\" \
                        ARCHFLAGS=\"$ABC_ARCHFLAGS -Wno-unused-but-set-variable\" ABC_USE_NO_READLINE=1"
 fi
-
 
 EXE_O=
 if [ -f yosys.exe ]; then

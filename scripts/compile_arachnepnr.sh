@@ -19,18 +19,13 @@ git -C $ARACHNE log -1
 rsync -a $ARACHNE $BUILD_DIR --exclude .git
 
 cd $BUILD_DIR/$ARACHNE
-EXE_O=
+
 # -- Compile it
 if [ $ARCH == "darwin" ]; then
   make -j$J CXX="$CXX" LIBS="-lm" ICEBOX="../icestorm/icebox"
 else
-    CROSSFLAGS=
-    if [ $ARCH == "windows_amd64" ] || [ $ARCH == "windows_x86" ]; then
-    	# In crosscompiling arachnenpr needs test with host compiled app
-    	# CROSSFLAGS="HOST_CXX=\"clang++\""
-    fi
-    sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr\ -d\ /;" Makefile
-    make -j$J $CROSSFLAGS CXX="$CXX" LIBS="-static -static-libstdc++ -static-libgcc -lm" ICEBOX="../icestorm/icebox"
+  sed -i "s/bin\/arachne-pnr\ -d\ /\.\/bin\/arachne-pnr\ -d\ /;" Makefile
+  make -j$J $CROSSFLAGS CXX="$CXX" LIBS="-static -static-libstdc++ -static-libgcc -lm" ICEBOX="../icestorm/icebox"
 fi
 
 EXE_O=
